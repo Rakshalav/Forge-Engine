@@ -1,0 +1,104 @@
+#include "Application.hpp"
+
+#include <ranges>
+
+namespace Forge
+{
+	static Application* s_Application = nullptr;
+
+	Application::Application(const ApplicationSpecification& specification) : m_Specification(specification)
+	{
+		s_Application = this;
+
+		glfwInit();
+
+		if (m_Specification.WindowSpec.Title.empty())
+			m_Specification.WindowSpec.Title = m_Specification.Name;
+
+		m_Specification.WindowSpec.EventCallback = [this](Event& event) {RaiseEvent(event); };
+
+		m_Window = std::make_shared<Window>(m_Specification.WindowSpec);
+		m_Window->Create();
+
+		//TODO: initilize opengl debugger
+	}
+
+	Application::~Application()
+	{
+		m_Window->Destroy();
+		glfwTerminate();
+		s_Application = nullptr;
+	}
+
+	void Application::Run()
+	{
+		m_Running = true;
+
+		float lastTime = GetTime();
+
+		while (m_Running)
+		{
+			glfwPollEvents();
+
+			if (m_Window->ShouldClose())
+			{
+				Stop();
+				break;
+			}
+
+			float currentTime = GetTime();
+			float timeStep = glm::clamp(currentTime - lastTime, 0.001f, 0.1f);
+			lastTime = currentTime;
+
+			for (const auto& layer : m_LayerStack)
+				layer->onUpdate(timeStep);
+
+			//TODO: add render thread
+			for (const auto& layer : m_LayerStack)
+				layer->onRender();
+
+			UpdateLayerTransitions();
+
+			m_Window->Update();
+		}
+	}
+
+	void Application::Stop()
+	{
+		m_Running = false;
+	}
+
+	void Application::RaiseEvent(Event& event)
+	{
+		for (auto& layer : std::views::reverse(m_LayerStack))
+		{
+			layer->onEvent(event);
+			if (event.Handled)
+				break;
+		}
+	}
+
+	glm::vec2 Application::GetFrameBufferSize() const
+	{
+		return m_Window->GetFrameBufferSize();
+	}
+
+	Application& Application::Get()
+	{
+		assert(s_Application);
+		return *s_Application;
+	}
+
+	float Application::GetTime()
+	{
+		return (float)glfwGetTime();
+	}
+
+	void Application::UpdateLayerTransitions()
+	{
+		for (auto& function : m_TransitionFunctions)
+			function();
+
+		m_TransitionFunctions.clear();
+	}
+}
