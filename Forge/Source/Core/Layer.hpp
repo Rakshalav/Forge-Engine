@@ -2,9 +2,6 @@
 
 #include "../Event/Event.hpp"
 
-#include <concepts>
-#include <memory>
-
 namespace Forge
 {
 	class Layer
