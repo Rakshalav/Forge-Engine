@@ -4,35 +4,18 @@
 
 namespace Forge
 {
-    void Layer::QueueTransition(std::unique_ptr<Layer> toLayer)
+    void Layer::QueueTransition(Layer* toLayer, bool type)
     {
         auto& app = Application::Get();
-        auto& layerStack = app.m_LayerStack;
+        auto& layerStack = app.m_LayerStack.GetLayerStack();
 
-        for (size_t i = 0; i < layerStack.size(); ++i)
-        {
-            if (layerStack[i].get() == this)
-            {
-                //app.m_TransitionFunctions.push_back(
-                //    [&, index = i, newLayer = std::move(toLayer)]() mutable
-                //    {
-                //        layerStack[index] = std::move(newLayer);
-                //    }
-                //);
-                return;
-            }
-        }
-    }
-
-	void Layer::QueueSuspend(std::unique_ptr<Layer> toLayer)
-	{
-		auto& layerStack = Application::Get().m_LayerStack;
-		for (auto& layer : layerStack)
+		for (auto layer : layerStack)
 		{
-			if (layer.get() == this)
+			if (layer == this)
 			{
-	
+				app.m_Commands.push_back(std::make_tuple(layer, toLayer, type));
+				return;
 			}
 		}
-	}
+    }
 }

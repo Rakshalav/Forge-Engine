@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Event.hpp"
+#include "../Event/Event.hpp"
 
 #include <concepts>
 #include <memory>
@@ -17,20 +17,21 @@ namespace Forge
 		virtual void onUpdate(float ts) {}
 		virtual void onRender() {}
 
-		template <std::derived_from<Layer> T, typename... Args>
+		template <std::derived_from<Layer> TLayer, typename... Args>
 		inline void TransitionTo(Args&&... args)
 		{
-			QueueTransition(std::move(std::make_unique<T>(std::forward<Args>(args)...)));
+			TLayer* newLayer = new TLayer(std::forward<Args>(args)...);
+			QueueTransition(newLayer, true);
 		}
 
-		template <std::derived_from<Layer> T, typename... Args>
+		template <std::derived_from<Layer> TLayer, typename... Args>
 		inline void SuspendTo(Args&&... args)
 		{
-			QueueSuspend(std::move(std::make_unique<T>(std::forward<Args>(args)...)));
+			TLayer* newLayer = new TLayer(std::forward<Args>(args)...);
+			QueueTransition(newLayer, false);
 		}
 
 	private:
-		void QueueTransition(std::unique_ptr<Layer> toLayer);
-		void QueueSuspend(std::unique_ptr<Layer> toLayer);
+		void QueueTransition(Layer* toLayer, bool type);
 	};
 }

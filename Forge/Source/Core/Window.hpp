@@ -7,8 +7,7 @@
 #include <string>
 #include <functional>
 
-#include "Event.hpp"
-
+#include "../Event/Event.hpp"
 
 namespace Forge
 {
@@ -34,6 +33,8 @@ namespace Forge
 		void Destroy();
 
 		void Update();
+
+		void RaiseEvent(Event& event);
 
 		glm::vec2 GetFrameBufferSize() const;
 		glm::vec2 GetMousePos() const;

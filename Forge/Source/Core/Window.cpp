@@ -1,4 +1,6 @@
 #include "Window.hpp"
+#include "../Event/WindowEvents.hpp"
+#include "../Event/InputEvent.hpp"
 
 namespace Forge
 {
@@ -42,13 +44,15 @@ namespace Forge
 		glfwSetWindowCloseCallback(m_Handle, [](GLFWwindow* handle) 
 		{
 			Window& window = *((Window*)glfwGetWindowUserPointer(handle));
-			//TODO: Window close event
+			WindowClosedEvent event;
+			window.RaiseEvent(event);
 		});
 
 		glfwSetWindowSizeCallback(m_Handle, [](GLFWwindow* handle, int width, int height)
 		{
 			Window& window = *((Window*)glfwGetWindowUserPointer(handle));
-			//TODO: WINDOW RESIZE EVENT
+			WindowResizeEvent event((uint32_t)width, (uint32_t)height);
+			window.RaiseEvent(event);
 		});
 
 		glfwSetKeyCallback(m_Handle, [](GLFWwindow* handle, int key, int scancode, int action, int mods)
@@ -60,11 +64,14 @@ namespace Forge
 			case GLFW_PRESS:
 			case GLFW_REPEAT:
 			{
-				//TODO: KEY EVENT
+				KeyPressedEvent event(key, action == GLFW_REPEAT);
+				window.RaiseEvent(event);
 				break;
 			}
 			case GLFW_RELEASE:
 			{
+				KeyReleasedEvent event(key);
+				window.RaiseEvent(event);
 				break;
 			}
 			}
@@ -78,10 +85,14 @@ namespace Forge
 			{
 			case GLFW_PRESS:
 			{
+				MouseButtonPressedEvent event(button);
+				window.RaiseEvent(event);
 				break;
 			}
 			case GLFW_RELEASE:
 			{
+				MouseButtonReleasedEvent event(button);
+				window.RaiseEvent(event);
 				break;
 			}
 			}
@@ -90,13 +101,15 @@ namespace Forge
 		glfwSetScrollCallback(m_Handle, [](GLFWwindow* handle, double xOffset, double yOffset)
 		{
 			Window& window = *((Window*)glfwGetWindowUserPointer(handle));
-
+			MouseScrolledEvent event(xOffset, yOffset);
+			window.RaiseEvent(event);
 		});
 
 		glfwSetCursorPosCallback(m_Handle, [](GLFWwindow* handle, double x, double y)
 		{
 			Window& window = *((Window*)glfwGetWindowUserPointer(handle));
-
+			MouseMovedEvent event(x, y);
+			window.RaiseEvent(event);
 		});
 	}
 
@@ -114,6 +127,12 @@ namespace Forge
 	void Window::Update()
 	{
 		glfwSwapBuffers(m_Handle);
+	}
+
+	void Window::RaiseEvent(Event& event)
+	{
+		if (m_Specification.EventCallback)
+			m_Specification.EventCallback(event);
 	}
 
 	glm::vec2 Window::GetFrameBufferSize() const

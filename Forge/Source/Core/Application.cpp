@@ -50,14 +50,14 @@ namespace Forge
 			float timeStep = glm::clamp(currentTime - lastTime, 0.001f, 0.1f);
 			lastTime = currentTime;
 
-			for (const auto& layer : m_LayerStack)
+			for (const auto& layer : m_LayerStack.GetLayerStack())
 				layer->onUpdate(timeStep);
 
 			//TODO: add render thread
-			for (const auto& layer : m_LayerStack)
+			for (const auto& layer : m_LayerStack.GetLayerStack())
 				layer->onRender();
 
-			UpdateLayerTransitions();
+			ExecuteTransitions();
 
 			m_Window->Update();
 		}
@@ -70,7 +70,7 @@ namespace Forge
 
 	void Application::RaiseEvent(Event& event)
 	{
-		for (auto& layer : std::views::reverse(m_LayerStack))
+		for (auto& layer : std::views::reverse(m_LayerStack.GetLayerStack()))
 		{
 			layer->onEvent(event);
 			if (event.Handled)
@@ -94,11 +94,31 @@ namespace Forge
 		return (float)glfwGetTime();
 	}
 
-	void Application::UpdateLayerTransitions()
+	void Application::ExecuteTransitions()
 	{
-		for (auto& function : m_TransitionFunctions)
-			function();
+		auto& stack = m_LayerStack.GetLayerStack();
 
-		m_TransitionFunctions.clear();
+		for (auto& command : m_Commands)
+		{
+			if (std::get<2>(command) == true) //transition
+			{
+				Layer* current = std::get<0>(command);
+				Layer* next = std::get<1>(command);
+
+				auto it = std::find(stack.begin(), stack.end(), current);
+				if (it != stack.end())
+				{
+					delete* it; 
+					*it = next;   
+				}
+			}
+
+			else //suspend
+			{
+				
+			}
+		}
+
+		m_Commands.clear();
 	}
 }

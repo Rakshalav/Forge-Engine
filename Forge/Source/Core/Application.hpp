@@ -1,11 +1,11 @@
 #pragma once
 
 #include "Window.hpp"
-#include "Event.hpp"
+#include "../Event/Event.hpp"
 #include "Layer.hpp"
+#include "LayerStack.hpp"
 
-#include <vector>
-#include <functional>
+#include <tuple>
 
 namespace Forge
 {
@@ -26,20 +26,44 @@ namespace Forge
 
 		void RaiseEvent(Event& event);
 
-		template<typename TLayer>
+		template<typename TLayer, typename... Args>
 		requires(std::is_base_of_v<Layer, TLayer>)
-		inline void PushLayer()
+		inline void PushLayer(Args&&... args)
 		{
-			m_LayerStack.push_back(std::make_unique<TLayer>());
+			TLayer* layer = new TLayer(std::forward<Args>(args)...);
+			m_LayerStack.PushLayer(layer);
+		}
+
+		template<typename TLayer, typename... Args>
+		requires(std::is_base_of_v<Layer, TLayer>)
+		inline void PushOverlay(Args&&... args)
+		{
+			TLayer* overlay = new TLayer(std::forward<Args>(args)...);
+			m_LayerStack.PushOverlay(overlay);
+		}
+
+		template<std::derived_from<Layer> TLayer>
+		void PopLayer()
+		{
+			if (auto* layer = GetLayer<TLayer>())
+				m_LayerStack.PopLayer(layer);
+		}
+
+
+		template<std::derived_from<Layer> TLayer>
+		inline void PopOverlay()
+		{
+			if (auto* overlay = GetLayer<TLayer>())
+				m_LayerStack.PopOverlay(overlay);
 		}
 
 		template<typename TLayer>
 		requires(std::is_base_of_v<Layer, TLayer>)
-		inline TLayer* GetLayer()
+		inline Layer* GetLayer()
 		{
-			for (const auto& layer : m_LayerStack)
+			for (const auto& layer : m_LayerStack.GetLayerStack())
 			{
-				if (auto casted = dynamic_cast<TLayer*>(layer.get()))
+				if (auto casted = dynamic_cast<TLayer*>(layer))
 					return casted;
 			}
 
@@ -58,11 +82,12 @@ namespace Forge
 		std::shared_ptr<Window> m_Window;
 		bool m_Running = false;
 
-		std::vector<std::unique_ptr<Layer>> m_LayerStack;
+		LayerStack m_LayerStack;
 
-		std::vector<std::function<void()>> m_TransitionFunctions;
+		using LayerCommand = std::tuple<Layer*, Layer*, bool>;
+		std::vector<LayerCommand> m_Commands;
 
-		void UpdateLayerTransitions();
+		void ExecuteTransitions();
 
 		friend class Layer;
 	};

@@ -51,10 +51,7 @@
     <ClInclude Include="Source\Core\Application.hpp">
       <Filter>Source\Core</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Core\Core.h">
-      <Filter>Source\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Core\Event.hpp">
+    <ClInclude Include="Source\Event\Event.hpp">
       <Filter>Source\Core</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\Layer.hpp">
@@ -1384,12 +1381,13 @@
       <Filter>Vendor\include\stb-image</Filter>
     </ClInclude>
     <ClInclude Include="Forge.hpp" />
+    <ClInclude Include="Source\Core\LayerStack.hpp" />
+    <ClInclude Include="Source\Event\InputEvent.hpp" />
+    <ClInclude Include="Source\Event\WindowEvents.hpp" />
+    <ClInclude Include="Source\Renderer\Shader.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Core\Application.cpp">
-      <Filter>Source\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Core\Core.cpp">
       <Filter>Source\Core</Filter>
     </ClCompile>
     <ClCompile Include="Source\Core\Layer.cpp">
@@ -1428,6 +1426,8 @@
     <ClCompile Include="Vendor\include\stb-image\stb_image.cpp">
       <Filter>Vendor\include\stb-image</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Core\LayerStack.cpp" />
+    <ClCompile Include="Source\Renderer\Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Build-Core.lua" />
