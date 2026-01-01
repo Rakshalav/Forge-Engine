@@ -1,4 +1,4 @@
-#include <Source/Core/Application.hpp>
+#include <Forge.hpp>
 #include "Applayer.hpp"
 
 int main()

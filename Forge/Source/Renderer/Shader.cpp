@@ -1,4 +1,8 @@
+#include <glad/glad.h>
 #include "Shader.hpp"
+
+#include <fstream>
+#include <sstream>
 
 namespace Forge
 {
@@ -78,7 +82,17 @@ namespace Forge
 		glDeleteShader(fragment);
 	}
 
-	void Shader::applyUniforms()
+	Shader::~Shader()
+	{
+		glDeleteProgram(ID); 
+	}
+
+	void Shader::use() const
+	{
+		glUseProgram(ID);
+	}
+
+	void Shader::applyUniforms() const
 	{
 		use();
 		for (auto& [name, value] : m_uniforms)
@@ -87,7 +101,7 @@ namespace Forge
 		}
 	}
 
-	GLint Shader::getLocation(const std::string& name) const
+	uint32_t Shader::getLocation(const std::string& name) const
 	{
 		if (m_locationCache.contains(name))
 			return m_locationCache[name];

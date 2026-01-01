@@ -1,11 +1,8 @@
 #pragma once
 
-#include <glad/glad.h>
 #include <glm/glm.hpp>
 
 #include <string>
-#include <fstream>
-#include <sstream>
 #include <variant>
 #include <unordered_map>
 #include <tuple>
@@ -38,9 +35,9 @@ namespace Forge
 		unsigned int ID;
 
 		Shader(const char* vertexPath, const char* fragmentPath);
-		~Shader() { glDeleteProgram(ID); }
+		~Shader();
 
-		inline void use() const { glUseProgram(ID); }
+		void use() const;
 
 		void setBool(const std::string& name, bool value) const;
 		void setInt(const std::string& name, int value) const;
@@ -59,15 +56,15 @@ namespace Forge
 
 		inline const std::unordered_map<std::string, uniform_type>& getUniforms() const { return m_uniforms; }
 
-		void applyUniforms();
+		void applyUniforms() const;
 
 	private:
-		GLint getLocation(const std::string& name) const;
+		uint32_t getLocation(const std::string& name) const;
 
 		template<typename T>
-		void uploadUniform(const std::string& name, const T& value);
+		void uploadUniform(const std::string& name, const T& value) const;
 
-		mutable std::unordered_map<std::string, GLint> m_locationCache;
+		mutable std::unordered_map<std::string, uint32_t> m_locationCache;
 		std::unordered_map<std::string, uniform_type> m_uniforms;
 	};
 
@@ -91,7 +88,7 @@ namespace Forge
 	}
 
 	template<typename T>
-	inline void Shader::uploadUniform(const std::string& name, const T& value)
+	inline void Shader::uploadUniform(const std::string& name, const T& value) const
 	{
 		if constexpr (std::is_same_v<T, bool>)
 			setBool(name, value);

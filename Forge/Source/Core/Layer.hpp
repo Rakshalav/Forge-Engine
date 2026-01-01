@@ -9,10 +9,10 @@ namespace Forge
 	public:
 		virtual ~Layer() = default;
 
-		virtual void onEvent(Event& event){}
+		virtual void OnEvent(Event& event){}
 
-		virtual void onUpdate(float ts) {}
-		virtual void onRender() {}
+		virtual void OnUpdate(float ts) {}
+		virtual void OnRender() {}
 
 		template <std::derived_from<Layer> TLayer, typename... Args>
 		inline void TransitionTo(Args&&... args)

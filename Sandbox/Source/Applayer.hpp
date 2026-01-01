@@ -6,5 +6,7 @@ public:
 	GameLayer();
 
 private:
-	void onEvent(Forge::Event& event) override;
+	void OnEvent(Forge::Event& event) override;
+	void OnUpdate(float ts) override;
+	void OnRender() override;
 };

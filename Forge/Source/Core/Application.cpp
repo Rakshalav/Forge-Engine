@@ -1,4 +1,5 @@
 #include "Application.hpp"
+#include "../Renderer/Renderer.hpp"
 
 #include <ranges>
 
@@ -6,7 +7,9 @@ namespace Forge
 {
 	static Application* s_Application = nullptr;
 
-	Application::Application(const ApplicationSpecification& specification) : m_Specification(specification)
+	Application::Application(const ApplicationSpecification& specification) 
+		:	m_Specification(specification),
+			BackGroundColor(0.f, 0.f, 0.f, 1.f)
 	{
 		s_Application = this;
 
@@ -21,12 +24,17 @@ namespace Forge
 		m_Window->Create();
 
 		//TODO: initilize opengl debugger
+
+		Renderer::Init();
 	}
 
 	Application::~Application()
 	{
+		Renderer::ShutDown();
+
 		m_Window->Destroy();
 		glfwTerminate();
+
 		s_Application = nullptr;
 	}
 
@@ -46,16 +54,19 @@ namespace Forge
 				break;
 			}
 
+			Renderer::ClearColor(BackGroundColor);
+			Renderer::Clear();
+
 			float currentTime = GetTime();
 			float timeStep = glm::clamp(currentTime - lastTime, 0.001f, 0.1f);
 			lastTime = currentTime;
 
 			for (const auto& layer : m_LayerStack.GetLayerStack())
-				layer->onUpdate(timeStep);
+				layer->OnUpdate(timeStep);
 
 			//TODO: add render thread
 			for (const auto& layer : m_LayerStack.GetLayerStack())
-				layer->onRender();
+				layer->OnRender();
 
 			ExecuteTransitions();
 
@@ -72,7 +83,7 @@ namespace Forge
 	{
 		for (auto& layer : std::views::reverse(m_LayerStack.GetLayerStack()))
 		{
-			layer->onEvent(event);
+			layer->OnEvent(event);
 			if (event.Handled)
 				break;
 		}

@@ -4,4 +4,4 @@
 *.vcxproj.user
 *.vcxproj.filters
 
-Binaries/
+/Binaries/

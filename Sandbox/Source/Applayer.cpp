@@ -3,10 +3,20 @@
 
 GameLayer::GameLayer()
 {
-	std::println("Hello World");
+
 }
 
-void GameLayer::onEvent(Forge::Event& event)
+void GameLayer::OnEvent(Forge::Event& event)
 {
-	std::println("{}", event.ToString());
+	
+}
+
+void GameLayer::OnUpdate(float ts)
+{
+
+}
+
+void GameLayer::OnRender()
+{
+
 }
