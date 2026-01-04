@@ -8,8 +8,7 @@ namespace Forge
 	static Application* s_Application = nullptr;
 
 	Application::Application(const ApplicationSpecification& specification) 
-		:	m_Specification(specification),
-			BackGroundColor(0.f, 0.f, 0.f, 1.f)
+		:	m_Specification(specification)
 	{
 		s_Application = this;
 
@@ -54,7 +53,6 @@ namespace Forge
 				break;
 			}
 
-			Renderer::ClearColor(BackGroundColor);
 			Renderer::Clear();
 
 			float currentTime = GetTime();

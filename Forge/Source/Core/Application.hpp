@@ -77,8 +77,6 @@ namespace Forge
 		static Application& Get();
 		static float GetTime();
 
-		glm::vec4 BackGroundColor;
-
 	private:
 		ApplicationSpecification m_Specification;
 		std::shared_ptr<Window> m_Window;

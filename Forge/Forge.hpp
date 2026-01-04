@@ -16,3 +16,7 @@
 #include "Source/Renderer/VertexBuffer.hpp"
 #include "Source/Renderer/IndexBuffer.hpp"
 #include "Source/Renderer/Renderer.hpp"
+#include "Source/Renderer/Camera.hpp"
+#include "Source/Renderer/PerspectiveCamera.hpp"
+#include "Source/Renderer/CameraController.hpp"
+#include "Source/Renderer/PerspectiveCameraController.hpp"
