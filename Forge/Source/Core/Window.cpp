@@ -111,6 +111,8 @@ namespace Forge
 			MouseMovedEvent event(x, y);
 			window.RaiseEvent(event);
 		});
+
+		glfwSetInputMode(m_Handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	}
 
 	void Window::Destroy()

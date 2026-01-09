@@ -67,8 +67,10 @@ unsigned int indices[] = {
     22, 23, 20
 };
 
+auto& renderer = Forge::Renderer::GetInstance();
+
 GameLayer::GameLayer() 
-	:	m_CameraController(&m_Camera),
+	:   m_CameraController(&m_Camera),
 		m_LightingShader("C:/Dev/OpenGL/OpenGL/shaders/vertex.glsl", "C:/Dev/OpenGL/OpenGL/shaders/fragment.glsl"),
 		m_LightCubeShader("C:/Dev/OpenGL/OpenGL/shaders/vertex.glsl", "C:/Dev/OpenGL/OpenGL/shaders/Light_source.glsl"),
         m_VertexBuffer(vertices, sizeof(vertices)),
@@ -77,6 +79,7 @@ GameLayer::GameLayer()
         m_SpecularMap("C:/Dev/OpenGL/OpenGL/textures/container2_specular.png")
 {
 	m_Camera.SetPosition({ 0.0f, 0.0f, 3.0f });
+    m_CameraController.SetMouseSensitivity(0.09f);
 
     Forge::BufferLayout layout;
     layout.Push(3, GL_FLOAT);
@@ -93,17 +96,47 @@ GameLayer::GameLayer()
 
 void GameLayer::OnEvent(Forge::Event& event)
 {
-	
+    m_CameraController.OnEvent(event);
 }
 
 void GameLayer::OnUpdate(float ts)
 {
-
+    m_CameraController.OnUpdate(ts);
 }
 
 void GameLayer::OnRender()
 {
-    glm::mat4 projection = glm::perspective(glm::radians(m_Camera.GetFOV()), 1.778f, 0.1f, 100.0f);
-    glm::mat4 view = m_Camera.GetViewMatrix();
+    glm::mat4 viewProjMatrix = m_Camera.GetViewProjectionMatrix();
 
+    m_LightingShader.set("light.position", m_LightPos);
+    m_LightingShader.set("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+    m_LightingShader.set("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
+    m_LightingShader.set("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+
+    m_LightingShader.set("material.shininess", 64.0f);
+    m_LightingShader.set("viewPos", m_Camera.GetPosition());
+    m_LightingShader.set("view_projection", viewProjMatrix);
+
+    glm::mat4 cubeModel(1.0f);
+    m_LightingShader.set("model", cubeModel);
+
+    glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(cubeModel)));
+    m_LightingShader.set("normalMatrix", normalMatrix);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, m_DiffuseMap.ID);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, m_SpecularMap.ID);
+
+    renderer.Draw(m_VertexArrayCube, m_IndexBuffer, m_LightingShader);
+
+    m_LightCubeShader.set("view_projection", viewProjMatrix);
+
+    glm::mat4 lightModel(1.0f);
+    lightModel = glm::translate(lightModel, m_LightPos);
+    lightModel = glm::scale(lightModel, glm::vec3(0.2f));
+
+    m_LightCubeShader.set("model", lightModel);
+
+    renderer.Draw(m_VertexArrayLightCube, m_IndexBuffer, m_LightCubeShader);
 }

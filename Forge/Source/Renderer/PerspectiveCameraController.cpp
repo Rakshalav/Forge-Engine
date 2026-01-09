@@ -1,4 +1,3 @@
-#include "GLFW/glfw3.h"
 #include "PerspectiveCameraController.hpp"
 #include "../Core/Application.hpp"
 
@@ -24,12 +23,12 @@ namespace Forge
 		}
 		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 		{
-			position -= velocity * right;
+			position -= right * velocity;
 			m_Camera.SetPosition(position);
 		}
 		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		{
-			position += velocity * right;
+			position += right * velocity;
 			m_Camera.SetPosition(position);
 		}
 	}
@@ -61,11 +60,11 @@ namespace Forge
 
 		offsetX *= m_MouseSensitivity;
 		offsetY *= m_MouseSensitivity;
+		
+		m_InvertedYaw ? m_Yaw += offsetX : m_Yaw -= offsetX;
+		m_InvertedPitch ? m_Pitch -= offsetY : m_Pitch += offsetY;
 
-		m_Yaw += offsetX;
-		m_Pitch += offsetY;
-
-		m_Pitch = glm::clamp(m_Pitch, -89.0f, 89.0f);
+		m_Pitch = glm::clamp(m_Pitch, -m_Constain, m_Constain);
 
 		glm::quat yaw = glm::angleAxis(glm::radians(m_Yaw), glm::vec3(0.0f, 1.0f, 0.0f));
 		glm::quat pitch = glm::angleAxis(glm::radians(m_Pitch), glm::vec3(1.0f, 0.0f, 0.0f));
@@ -80,6 +79,7 @@ namespace Forge
 		float yOffset = (float)event.GetYOffset();
 
 		float zoomLevel = m_Camera.GetZoomLevel();
-			
+		
+		return true;
 	}
 }

@@ -26,5 +26,5 @@ private:
 	Forge::Texture m_DiffuseMap;
 	Forge::Texture m_SpecularMap;
 
-
+	glm::vec3 m_LightPos{ 1.2f, 1.0f, 2.0f };
 };
