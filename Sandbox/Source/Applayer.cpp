@@ -1,44 +1,50 @@
 #include "Applayer.hpp"
 #include <print>
 
+#include <Platform/OpenGL/OpenGLShader.hpp>
+
 float vertices[] = {
-    // Positions             // Normals           // Texture Coords
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
 
-    // --- Face 1: Back (-Z) ---
-    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f, // 0 (bottom-left)
-     0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 0.0f, // 1 (bottom-right)
-     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f, // 2 (top-right)
-    -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 1.0f, // 3 (top-left)
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+         0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
 
-    // --- Face 2: Front (+Z) ---
-    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f, 0.0f, // 4
-     0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f, 0.0f, // 5
-     0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f, 1.0f, // 6
-    -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f, 1.0f, // 7
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
 
-    // --- Face 3: Left (-X) ---
-    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f, // 8
-    -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 1.0f, // 9
-    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f, // 10
-    -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 0.0f, // 11
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
 
-    // --- Face 4: Right (+X) ---
-     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, // 12
-     0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, // 13
-     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f, // 14
-     0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f, // 15
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
 
-     // --- Face 5: Bottom (-Y) ---
-     -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f, // 16
-      0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 1.0f, // 17
-      0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f, // 18
-     -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 0.0f, // 19
-
-     // --- Face 6: Top (+Y) ---
-     -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f, // 20
-      0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 1.0f, // 21
-      0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f, // 22
-     -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 0.0f  // 23
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
 };
 
 unsigned int indices[] = {
@@ -70,73 +76,41 @@ unsigned int indices[] = {
 auto& renderer = Forge::Renderer::GetInstance();
 
 GameLayer::GameLayer() 
-	:   m_CameraController(&m_Camera),
-		m_LightingShader("C:/Dev/OpenGL/OpenGL/shaders/vertex.glsl", "C:/Dev/OpenGL/OpenGL/shaders/fragment.glsl"),
-		m_LightCubeShader("C:/Dev/OpenGL/OpenGL/shaders/vertex.glsl", "C:/Dev/OpenGL/OpenGL/shaders/Light_source.glsl"),
-        m_VertexBuffer(vertices, sizeof(vertices)),
-        m_IndexBuffer(indices, sizeof(indices)),
-        m_DiffuseMap("C:/Dev/OpenGL/OpenGL/textures/container2.png"),
-        m_SpecularMap("C:/Dev/OpenGL/OpenGL/textures/container2_specular.png")
 {
-	m_Camera.SetPosition({ 0.0f, 0.0f, 3.0f });
-    m_CameraController.SetMouseSensitivity(0.09f);
+    m_Camera = Forge::CreateRef<Forge::Camera>(Forge::CameraProjection::Perspective);
+    m_Controller = Forge::CreateRef<Forge::PerspectiveCameraController>(m_Camera.get());
 
-    Forge::BufferLayout layout;
-    layout.Push(3, GL_FLOAT);
-    layout.Push(3, GL_FLOAT);
-    layout.Push(2, GL_FLOAT);
-
-    m_VertexArrayCube.AddBuffer(m_VertexBuffer, layout);
-    m_VertexArrayLightCube.AddBuffer(m_VertexBuffer, layout);
-
-    m_LightingShader.use();
-    m_LightingShader.set("material.diffuse", 0);
-    m_LightingShader.set("material.specular", 1);
+    m_lightingShader = Forge::Shader::Create("C:/Dev/OpenGL/OpenGL/shaders/vertex.glsl", "C:/Dev/OpenGL/OpenGL/shaders/test_frage.glsl");
+    
 }
 
 void GameLayer::OnEvent(Forge::Event& event)
 {
-    m_CameraController.OnEvent(event);
+    m_Controller->OnEvent(event);
+
+    std::print("{}", event.ToString());
+
+    Forge::EventDispatcher dispatcher(event);
+    dispatcher.Dispatch<Forge::KeyPressedEvent>([this](Forge::KeyPressedEvent& e) {return OnKeyBoardPressed(e); });
 }
 
 void GameLayer::OnUpdate(float ts)
 {
-    m_CameraController.OnUpdate(ts);
+    m_Controller->OnUpdate(ts);
 }
 
 void GameLayer::OnRender()
 {
-    glm::mat4 viewProjMatrix = m_Camera.GetViewProjectionMatrix();
 
-    m_LightingShader.set("light.position", m_LightPos);
-    m_LightingShader.set("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
-    m_LightingShader.set("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-    m_LightingShader.set("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+}
 
-    m_LightingShader.set("material.shininess", 64.0f);
-    m_LightingShader.set("viewPos", m_Camera.GetPosition());
-    m_LightingShader.set("view_projection", viewProjMatrix);
+bool GameLayer::OnKeyBoardPressed(Forge::KeyPressedEvent& event)
+{
+    if (event.GetKeyCode() == GLFW_KEY_ESCAPE)
+    {
+        Forge::Application::Get().~Application();
+        std::print("window closed!");
+    }
 
-    glm::mat4 cubeModel(1.0f);
-    m_LightingShader.set("model", cubeModel);
-
-    glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(cubeModel)));
-    m_LightingShader.set("normalMatrix", normalMatrix);
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, m_DiffuseMap.ID);
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, m_SpecularMap.ID);
-
-    renderer.Draw(m_VertexArrayCube, m_IndexBuffer, m_LightingShader);
-
-    m_LightCubeShader.set("view_projection", viewProjMatrix);
-
-    glm::mat4 lightModel(1.0f);
-    lightModel = glm::translate(lightModel, m_LightPos);
-    lightModel = glm::scale(lightModel, glm::vec3(0.2f));
-
-    m_LightCubeShader.set("model", lightModel);
-
-    renderer.Draw(m_VertexArrayLightCube, m_IndexBuffer, m_LightCubeShader);
+    return true;
 }

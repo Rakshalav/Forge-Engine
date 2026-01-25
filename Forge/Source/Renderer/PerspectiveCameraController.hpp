@@ -1,6 +1,6 @@
 #pragma once
 
-#include "PerspectiveCamera.hpp"
+#include "Camera.hpp"
 #include "CameraController.hpp"
 #include "../Event/InputEvent.hpp"
 
@@ -9,22 +9,26 @@ namespace Forge
 	class PerspectiveCameraController : public CameraController
 	{
 	public:
-		PerspectiveCameraController(PerspectiveCamera* Camera) : m_Camera(*Camera) {}
+		PerspectiveCameraController(Camera* camera) : m_Camera(*camera) {}
 
 		void OnUpdate(float ts) override;
 		void OnEvent(Event& event) override;
 
 		inline void SetMouseSensitivity(float newSensitivity) { m_MouseSensitivity = newSensitivity; }
 		inline void SetCameraMovementSpeed(float speed) { m_CameraSpeed = speed; }
+		inline const void YawShouldInvert(bool value) { m_InvertedYaw = value; }
+		inline const void PitchShouldInvert(bool value) { m_InvertedPitch = value; }
 
 		inline const float GetMouseSensitivity() const { return m_MouseSensitivity; }
+		inline const bool YawInverted() const { return m_InvertedYaw; }
+		inline const bool PitchInverted() const { return m_InvertedPitch; }
 
 	private:
 		bool OnMouseMoved(MouseMovedEvent& event);
 		bool OnMouseScrolled(MouseScrolledEvent& event);
 		
 	private:
-		PerspectiveCamera& m_Camera;
+		Camera& m_Camera;
 
 		float m_Yaw = -90.0f;
 		float m_Pitch = 0.0f;

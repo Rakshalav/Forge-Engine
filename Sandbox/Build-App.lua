@@ -8,6 +8,10 @@ project "Sandbox"
     objdir ("../Binaries/Intermediates/" .. OutputDir .. "/%{prj.name}")
 
     files { 
+        "Platform/**.h",
+        "Platform/**.hpp",
+        "Platform/**.cpp",
+    
         "Source/**.h",
         "Source/**.cpp",
         "Source/**.hpp",
@@ -22,6 +26,8 @@ project "Sandbox"
     includedirs {
         "Source",
         "../Forge",
+        "../Forge/Platform",
+        "../Forge/Source",
         "../Forge/Vendor/include"
     }
 

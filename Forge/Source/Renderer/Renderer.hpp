@@ -1,21 +1,23 @@
 #pragma once
 
 #include "VertexArray.hpp"
-#include "IndexBuffer.hpp"
 #include "Shader.hpp"
-
-#include "../Core/Application.hpp"
 
 namespace Forge
 {
+	enum class RendererAPI
+	{
+		None = 0,	
+		OpenGL,
+		Vulkan
+	};
+
 	class Renderer
 	{
 	public:
-		void Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader);
+		void Draw(const Ref<VertexArray>& vertexarray, const Ref<Shader>& shader);
 		static Renderer& GetInstance();
 
-	private:
-		Renderer();
 		static void Init();
 		static void ShutDown();
 
@@ -23,7 +25,11 @@ namespace Forge
 		static void ClearColor(glm::vec4& color);
 		static void ClearColor(float x, float y, float z, float w);
 
-		friend class Application;
+		inline static void SetAPI(RendererAPI api) { s_RendererAPI = api; }
+		inline static RendererAPI GetAPI() { return s_RendererAPI; }
+
+	private:
+		inline static RendererAPI s_RendererAPI = RendererAPI::OpenGL;
+		Renderer();
 	};
 }
-

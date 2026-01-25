@@ -4,6 +4,7 @@
 #include "../Event/Event.hpp"
 #include "Layer.hpp"
 #include "LayerStack.hpp"
+#include "Base.hpp"
 
 #include <tuple>
 
@@ -72,19 +73,25 @@ namespace Forge
 
 		glm::vec2 GetFrameBufferSize() const;
 
-		inline std::shared_ptr<Window> GetWindow() const { return m_Window; }
+		inline Ref<Window> GetWindow() const { return m_Window; }
 
 		static Application& Get();
 		static float GetTime();
 
 	private:
 		ApplicationSpecification m_Specification;
-		std::shared_ptr<Window> m_Window;
+		Ref<Window> m_Window;
 		bool m_Running = false;
 
 		LayerStack m_LayerStack;
 
-		using LayerCommand = std::tuple<Layer*, Layer*, bool>;
+		struct LayerCommand
+		{
+			Layer* current = nullptr;
+			Layer* next = nullptr;
+			bool type; 
+		};
+
 		std::vector<LayerCommand> m_Commands;
 
 		void ExecuteTransitions();

@@ -1,8 +1,6 @@
 #pragma once
 
 #include <vector>
-#include <memory>
-
 #include "Layer.hpp"
 
 namespace Forge

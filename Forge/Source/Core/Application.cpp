@@ -19,7 +19,7 @@ namespace Forge
 
 		m_Specification.WindowSpec.EventCallback = [this](Event& event) {RaiseEvent(event); };
 
-		m_Window = std::make_shared<Window>(m_Specification.WindowSpec);
+		m_Window = CreateRef<Window>(m_Specification.WindowSpec);
 		m_Window->Create();
 
 		//TODO: initilize opengl debugger
@@ -109,16 +109,13 @@ namespace Forge
 
 		for (auto& command : m_Commands)
 		{
-			if (std::get<2>(command) == true) //transition
+			if (command.type == true) //transition
 			{
-				Layer* current = std::get<0>(command);
-				Layer* next = std::get<1>(command);
-
-				auto it = std::find(stack.begin(), stack.end(), current);
+				auto it = std::find(stack.begin(), stack.end(), command.current);
 				if (it != stack.end())
 				{
 					delete* it; 
-					*it = next;   
+					*it = command.next;
 				}
 			}
 

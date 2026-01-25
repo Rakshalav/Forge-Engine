@@ -10,13 +10,13 @@ namespace Forge
 		s_Instance = this;
 	}
 
-	void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader)
-	{
-		shader.applyUniforms();
-		va.Bind();
-		ib.Bind();
+	void Renderer::Draw(const Ref<VertexArray>& vertexarray, const Ref<Shader>& shader)
+	{	
+		shader->Bind();
+		vertexarray->Bind();
+		const auto& index_count = vertexarray->GetIndexBuffer()->GetCount();
 
-		glDrawElements(GL_TRIANGLES, ib.GetCount(), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, 0);
 	}
 
 	Renderer& Renderer::GetInstance()

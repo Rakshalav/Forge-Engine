@@ -1,6 +1,7 @@
 #include "LayerStack.hpp"
 
-namespace Forge {
+namespace Forge 
+{
 	LayerStack::~LayerStack()
 	{
 		for (auto layer : m_LayerStack)

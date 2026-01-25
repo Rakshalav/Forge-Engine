@@ -1,6 +1,8 @@
+#include <glad/glad.h>
 #include "Window.hpp"
 #include "../Event/WindowEvents.hpp"
 #include "../Event/InputEvent.hpp"
+#include "../Renderer/Renderer.hpp"
 
 namespace Forge
 {
@@ -18,7 +20,7 @@ namespace Forge
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 #ifdef DEBUG
-		glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);			
+		glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 #endif
 
 		m_Handle = glfwCreateWindow(m_Specification.Width, m_Specification.Height, m_Specification.Title.c_str(), nullptr, nullptr);
@@ -31,11 +33,25 @@ namespace Forge
 		}
 
 		glfwMakeContextCurrent(m_Handle);
-		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+
+		switch (Renderer::GetAPI())
 		{
-			//TODO: Failed to initialize GLAD
+		case RendererAPI::None:
+			static_assert("No API!");
+			return false;
+		case RendererAPI::OpenGL:
+		{
+			if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+			{
+				//TODO: Failed to initialize GLAD
+				return false;
+			}
+		}
+		case RendererAPI::Vulkan:
+			static_assert("Vulkan not supported!");
 			return false;
 		}
+
 
 		glfwSwapInterval(m_Specification.Vsync ? 1 : 0);
 
@@ -62,6 +78,9 @@ namespace Forge
 			switch (action)
 			{
 			case GLFW_PRESS:
+			{
+				break;
+			}
 			case GLFW_REPEAT:
 			{
 				KeyPressedEvent event(key, action == GLFW_REPEAT);
@@ -113,6 +132,8 @@ namespace Forge
 		});
 
 		glfwSetInputMode(m_Handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+		return true;
 	}
 
 	void Window::Destroy()

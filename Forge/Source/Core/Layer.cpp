@@ -9,11 +9,16 @@ namespace Forge
         auto& app = Application::Get();
         auto& layerStack = app.m_LayerStack.GetLayerStack();
 
-		for (auto layer : layerStack)
+		for (auto& layer : layerStack)
 		{
 			if (layer == this)
 			{
-				app.m_Commands.push_back(std::make_tuple(layer, toLayer, type));
+				Application::LayerCommand command;
+				command.current = this;
+				command.next = toLayer;
+				command.type = type;
+
+				app.m_Commands.push_back(command);
 				return;
 			}
 		}

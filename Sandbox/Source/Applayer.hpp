@@ -11,20 +11,11 @@ private:
 	void OnRender() override;
 
 private:
-	Forge::PerspectiveCamera m_Camera;
-	Forge::PerspectiveCameraController m_CameraController;
+	bool OnKeyBoardPressed(Forge::KeyPressedEvent& event);
 
-	Forge::Shader m_LightingShader;
-	Forge::Shader m_LightCubeShader;
+private:
+	Forge::Ref<Forge::Camera> m_Camera;
+	Forge::Ref<Forge::PerspectiveCameraController> m_Controller;
 
-	Forge::VertexBuffer m_VertexBuffer;
-	Forge::IndexBuffer m_IndexBuffer;
-
-	Forge::VertexArray m_VertexArrayCube;
-	Forge::VertexArray m_VertexArrayLightCube;
-
-	Forge::Texture m_DiffuseMap;
-	Forge::Texture m_SpecularMap;
-
-	glm::vec3 m_LightPos{ 1.2f, 1.0f, 2.0f };
+	Forge::Ref<Forge::Shader> m_lightingShader;
 };

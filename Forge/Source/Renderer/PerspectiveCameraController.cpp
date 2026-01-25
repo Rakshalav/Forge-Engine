@@ -75,11 +75,7 @@ namespace Forge
 	}
 
 	bool PerspectiveCameraController::OnMouseScrolled(MouseScrolledEvent& event)
-	{
-		float yOffset = (float)event.GetYOffset();
-
-		float zoomLevel = m_Camera.GetZoomLevel();
-		
+	{		
 		return true;
 	}
 }

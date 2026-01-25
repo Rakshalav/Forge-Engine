@@ -8,6 +8,10 @@ project "Forge"
    objdir ("../Binaries/Intermediates/" .. OutputDir .. "/%{prj.name}")
 
    files { 
+        "Platform/**.h",
+        "Platform/**.hpp",
+        "Platform/**.cpp",
+    
         "Source/**.h",
         "Source/**.cpp",
         "Source/**.hpp",
@@ -20,6 +24,7 @@ project "Forge"
     }
 
    includedirs {
+        "Platform",
         "Source",
         "Vendor/include"
    }

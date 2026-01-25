@@ -4,7 +4,7 @@
 int main()
 {
 	Forge::ApplicationSpecification appSpec;
-	appSpec.Name = "LearnOpenGL";
+	appSpec.Name = "Forge Engine";
 	appSpec.WindowSpec.Width = 1280;
 	appSpec.WindowSpec.Height = 720;
 
