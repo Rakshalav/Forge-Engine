@@ -36,7 +36,8 @@ namespace Forge
 		float m_LastMouseX = 0.0f;
 		float m_LastMouseY = 0.0f;
 		bool  m_FirstMouse = true;
-		float m_MouseSensitivity = 0.5f;
+		
+		float m_MouseSensitivity = 1.0f;
 
 		float m_CameraSpeed = 5.0f;
 

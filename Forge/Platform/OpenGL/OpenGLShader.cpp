@@ -5,6 +5,8 @@
 #include <fstream>
 #include <sstream>
 
+#include <print>
+
 namespace Forge
 {
 	OpenGLShader::OpenGLShader(const std::string& vertexpath, const std::string& fragmentpath)
@@ -35,6 +37,7 @@ namespace Forge
 		catch (std::ifstream::failure e)
 		{
 			//TODO: log error: File not succesfully read.
+			std::println("log error: File not succesfully read");
 		}
 
 		const char* vShaderCode = vertexCode.c_str();

@@ -10,6 +10,9 @@ private:
 	void OnUpdate(float ts) override;
 	void OnRender() override;
 
+	void OnAttach() override;
+	void OnDetach() override;
+
 private:
 	bool OnKeyBoardPressed(Forge::KeyPressedEvent& event);
 
@@ -18,4 +21,8 @@ private:
 	Forge::Ref<Forge::PerspectiveCameraController> m_Controller;
 
 	Forge::Ref<Forge::Shader> m_lightingShader;
+	Forge::Ref<Forge::Shader> m_ligtCubeShader;
+
+	Forge::Ref<Forge::VertexArray> m_VertexArrayCube;
+	Forge::Ref<Forge::VertexArray> m_VertexArrayLight;
 };

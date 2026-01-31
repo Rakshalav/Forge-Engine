@@ -5,27 +5,30 @@
 
 #include "../Platform/OpenGL/OpenGLBuffer.hpp"
 
+
 namespace Forge
 {
-	size_t BufferElement::GetSizeOfType(uint32_t type)
+	uint8_t BufferElement::GetSizeOfType(ElementType type)
 	{
 		switch (type)
 		{
-		case GL_FLOAT:
-			return 4;
-		case GL_UNSIGNED_INT:
-			return 4;
-		case GL_UNSIGNED_BYTE:
-			return 1;
-		default:
-			return 0;
+			case Forge::ElementType::BYTE:				return 1;
+			case Forge::ElementType::UNSIGNED_BYTE:		return 1;
+			case Forge::ElementType::SHORT:				return 2;
+			case Forge::ElementType::UNSIGNED_SHORT:	return 2;
+			case Forge::ElementType::INT:				return 4;
+			case Forge::ElementType::UNSIGNED_INT:		return 4;
+			case Forge::ElementType::FLOAT:				return 4;
 		}
 	}
 
-	void BufferLayout::Push(uint32_t count, uint32_t type, uint8_t normalized)
+	void BufferLayout::Push(uint32_t count, ElementType Etype, uint8_t normalized)
 	{
-		m_Elements.push_back({ count, type, normalized, count * BufferElement::GetSizeOfType(type) });
-		m_Stride += count * BufferElement::GetSizeOfType(type);
+		auto type = static_cast<uint32_t>(Etype);
+		auto size = (uint8_t)(count * BufferElement::GetSizeOfType(Etype));
+
+		m_Elements.emplace_back(count, type, normalized, size);
+		m_Stride += size;
 	}
 
 	Ref<VertexBuffer> VertexBuffer::Create(float* vertices, uint32_t size)

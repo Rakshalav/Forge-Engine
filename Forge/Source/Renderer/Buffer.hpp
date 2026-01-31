@@ -15,14 +15,25 @@ namespace Forge
 		PosNormTex
 	};
 
+	enum class ElementType
+	{
+		BYTE			= 0x1400,
+		UNSIGNED_BYTE	= 0x1401,
+		SHORT			= 0x1402,
+		UNSIGNED_SHORT	= 0x1403,
+		INT				= 0x1404,
+		UNSIGNED_INT	= 0x1405,
+		FLOAT			= 0x1406
+	};
+
 	struct BufferElement
 	{
 		uint32_t Count;
 		uint32_t Type;
 		uint8_t Normalized;
-		size_t Size;
+		uint8_t Size;
 
-		static size_t GetSizeOfType(uint32_t type);
+		static uint8_t GetSizeOfType(ElementType type);
 	};
 
 	class BufferLayout
@@ -31,9 +42,9 @@ namespace Forge
 		BufferLayout() : m_Stride(0) {}
 
 		template<LayoutType lt>
-		void Push(const uint32_t& type);
+		void Push(ElementType Etype);
 
-		void Push(uint32_t count, uint32_t type, uint8_t normalized = false);
+		void Push(uint32_t count, ElementType Etype, uint8_t normalized = false);
 
 		inline const std::vector<BufferElement>& GetElements() const { return m_Elements; }
 		inline const size_t GetStride() const { return m_Stride; }
@@ -71,25 +82,34 @@ namespace Forge
 	};
 
 	template<LayoutType lt>
-	inline void BufferLayout::Push(const uint32_t& type)
+	inline void BufferLayout::Push(ElementType Etype)
 	{
 		switch (lt)
 		{
-		case Forge::LayoutType::Pos:
-			Push(3, type);
+		case LayoutType::Pos:
+			Push(3, Etype);
 			return;
-		case Forge::LayoutType::PosCol:
-			Push(3, type);
-			Push(3, type);
+		case LayoutType::PosCol:
+			Push(3, Etype);
+			Push(3, Etype);
 			return;
-		case Forge::LayoutType::PosTex:
-			Push(3, type);
-			Push(2, type);
+		case LayoutType::PosTex:
+			Push(3, Etype);
+			Push(2, Etype);
 			return;
-		case Forge::LayoutType::PosColTex:
-			Push(3, type);
-			Push(3, type);
-			Push(2, type);
+		case LayoutType::PosColTex:
+			Push(3, Etype);
+			Push(3, Etype);
+			Push(2, Etype);
+			return;
+		case LayoutType::PosNorm:
+			Push(3, Etype);
+			Push(3, Etype);
+			return;
+		case LayoutType::PosNormTex:
+			Push(3, Etype);
+			Push(3, Etype);
+			Push(2, Etype);
 			return;
 		}
 	}

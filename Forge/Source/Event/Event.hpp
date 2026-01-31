@@ -23,7 +23,7 @@ namespace Forge
 	public:
 		bool Handled = false;
 
-		virtual ~Event() {}
+		virtual ~Event() = default;
 		virtual EventType GetEventType() const = 0;
 		virtual const char* GetName() const = 0;
 		virtual std::string ToString() const { return GetName(); }
@@ -38,7 +38,7 @@ namespace Forge
 			: m_Event(event) {
 		}
 
-		template<typename T>
+		template<std::derived_from<Event> T>
 		bool Dispatch(EventFn<T> func)
 		{
 			if (m_Event.GetEventType() == T::GetStaticType() && !m_Event.Handled)

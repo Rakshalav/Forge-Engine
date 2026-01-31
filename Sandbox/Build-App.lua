@@ -16,6 +16,9 @@ project "Sandbox"
         "Source/**.cpp",
         "Source/**.hpp",
 
+        "Debug/**.hpp",
+        "Debug/**.cpp",
+
         "Vendor/include/**.h",
         "Vendor/include/**.c",
         "Vendor/include/**.hpp",

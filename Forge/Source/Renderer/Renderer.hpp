@@ -15,7 +15,7 @@ namespace Forge
 	class Renderer
 	{
 	public:
-		void Draw(const Ref<VertexArray>& vertexarray, const Ref<Shader>& shader);
+		static void Draw(const Ref<VertexArray>& vertexarray, const Ref<Shader>& shader);
 		static Renderer& GetInstance();
 
 		static void Init();
@@ -29,7 +29,7 @@ namespace Forge
 		inline static RendererAPI GetAPI() { return s_RendererAPI; }
 
 	private:
-		inline static RendererAPI s_RendererAPI = RendererAPI::OpenGL;
+		inline static RendererAPI s_RendererAPI;
 		Renderer();
 	};
 }

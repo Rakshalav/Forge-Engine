@@ -1,3 +1,5 @@
+#include <GLFW/glfw3.h>
+
 #include "Application.hpp"
 #include "../Renderer/Renderer.hpp"
 
@@ -14,6 +16,10 @@ namespace Forge
 
 		glfwInit();
 
+		//TODO: initilize opengl debugger
+		Renderer::SetAPI(RendererAPI::OpenGL);
+		Renderer::Init();
+
 		if (m_Specification.WindowSpec.Title.empty())
 			m_Specification.WindowSpec.Title = m_Specification.Name;
 
@@ -21,14 +27,13 @@ namespace Forge
 
 		m_Window = CreateRef<Window>(m_Specification.WindowSpec);
 		m_Window->Create();
-
-		//TODO: initilize opengl debugger
-
-		Renderer::Init();
 	}
 
 	Application::~Application()
 	{
+		for (const auto& layer : m_LayerStack.GetLayerStack())
+			layer->OnDetach();
+
 		Renderer::ShutDown();
 
 		m_Window->Destroy();
@@ -42,6 +47,9 @@ namespace Forge
 		m_Running = true;
 
 		float lastTime = GetTime();
+
+		for (const auto& layer : m_LayerStack.GetLayerStack())
+			layer->OnAttach();
 
 		while (m_Running)
 		{

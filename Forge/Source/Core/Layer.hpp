@@ -14,6 +14,9 @@ namespace Forge
 		virtual void OnUpdate(float ts) {}
 		virtual void OnRender() {}
 
+		virtual void OnAttach() = 0;
+		virtual void OnDetach() = 0;
+
 		template <std::derived_from<Layer> TLayer, typename... Args>
 		inline void TransitionTo(Args&&... args)
 		{

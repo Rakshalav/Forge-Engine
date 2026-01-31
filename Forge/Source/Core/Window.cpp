@@ -1,8 +1,11 @@
 #include <glad/glad.h>
+
 #include "Window.hpp"
 #include "../Event/WindowEvents.hpp"
 #include "../Event/InputEvent.hpp"
 #include "../Renderer/Renderer.hpp"
+
+#include <print>
 
 namespace Forge
 {
@@ -22,6 +25,7 @@ namespace Forge
 #ifdef DEBUG
 		glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 #endif
+		 
 
 		m_Handle = glfwCreateWindow(m_Specification.Width, m_Specification.Height, m_Specification.Title.c_str(), nullptr, nullptr);
 
@@ -43,9 +47,14 @@ namespace Forge
 		{
 			if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 			{
-				//TODO: Failed to initialize GLAD
+				std::println("CRITICAL ERROR: GLAD could not load functions!");
 				return false;
 			}
+			glEnable(GL_DEPTH_TEST); 
+			glEnable(GL_CULL_FACE); 
+			glCullFace(GL_BACK);     
+			glFrontFace(GL_CCW);     
+			break;
 		}
 		case RendererAPI::Vulkan:
 			static_assert("Vulkan not supported!");
@@ -53,11 +62,12 @@ namespace Forge
 		}
 
 
+
 		glfwSwapInterval(m_Specification.Vsync ? 1 : 0);
 
 		glfwSetWindowUserPointer(m_Handle, this);
 
-		glfwSetWindowCloseCallback(m_Handle, [](GLFWwindow* handle) 
+		glfwSetWindowCloseCallback(m_Handle, [](GLFWwindow* handle)
 		{
 			Window& window = *((Window*)glfwGetWindowUserPointer(handle));
 			WindowClosedEvent event;
