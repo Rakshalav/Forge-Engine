@@ -2,6 +2,7 @@
 
 #include "Application.hpp"
 #include "../Renderer/Renderer.hpp"
+#include "../Debug/Log.hpp"
 
 #include <ranges>
 
@@ -16,9 +17,8 @@ namespace Forge
 
 		glfwInit();
 
-		//TODO: initilize opengl debugger
-		Renderer::SetAPI(RendererAPI::OpenGL);
-		Renderer::Init();
+		Log::Init();
+		Renderer::Init(Renderer::API::OpenGL);
 
 		if (m_Specification.WindowSpec.Title.empty())
 			m_Specification.WindowSpec.Title = m_Specification.Name;
@@ -27,19 +27,25 @@ namespace Forge
 
 		m_Window = CreateRef<Window>(m_Specification.WindowSpec);
 		m_Window->Create();
+
+		Renderer::DepthTesting(true);
+		Renderer::FaceCulling(true);
 	}
 
 	Application::~Application()
 	{
-		for (const auto& layer : m_LayerStack.GetLayerStack())
-			layer->OnDetach();
-
 		Renderer::ShutDown();
+		Log::UnInit();
 
 		m_Window->Destroy();
 		glfwTerminate();
 
 		s_Application = nullptr;
+	}
+
+	void Application::Close()
+	{
+		this->~Application();
 	}
 
 	void Application::Run()

@@ -51,5 +51,4 @@ namespace Forge
 	private:
 		Event& m_Event;
 	};
-
 }

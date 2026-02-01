@@ -35,6 +35,14 @@ namespace Forge
 		m_FarClip = FarClip;
 	}
 
+	void Camera::SetViewPortSize(uint32_t width, uint32_t height)
+	{
+		if (height == 0)
+			return;
+		m_AspectRatio = (float)width / (float)height;
+		m_ProjectionDirty = true;
+	}
+
 	const glm::vec3 Camera::GetFront() const
 	{
 		return m_Orientation * glm::vec3(0.0f, 0.0f, -1.0f);

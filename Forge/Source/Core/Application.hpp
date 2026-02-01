@@ -24,6 +24,7 @@ namespace Forge
 
 		void Run();
 		void Stop();
+		void Close();
 
 		void RaiseEvent(Event& event);
 

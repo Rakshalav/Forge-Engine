@@ -2,6 +2,7 @@
 #include <print>
 
 #include <Platform/OpenGL/OpenGLShader.hpp>
+#include <Source/Debug/Log.hpp>
 
 float vertices[] = {
     // Positions          // Normals
@@ -58,6 +59,8 @@ GameLayer::GameLayer()
 
     m_Controller = Forge::CreateRef<Forge::PerspectiveCameraController>(m_Camera.get());
     m_Controller->SetMouseSensitivity(0.08f);
+
+    Forge::Application::Get().GetWindow()->ToggleCursor(false);
 }
 
 void GameLayer::OnAttach()
@@ -80,6 +83,8 @@ void GameLayer::OnAttach()
     m_VertexArrayLight = Forge::VertexArray::Create();
     m_VertexArrayLight->AddVertexBuffer(vertexbuffer);
     m_VertexArrayLight->SetIndexBuffer(indexbuffer);
+
+    FG_CORE_TRACE("Attcahed succesfully!");
 }
 
 void GameLayer::OnEvent(Forge::Event& event)
@@ -98,12 +103,16 @@ void GameLayer::OnUpdate(float ts)
 void GameLayer::OnRender()
 {
     glm::mat4 view_projection = m_Camera->GetViewProjectionMatrix();
-    glm::vec3 lightPos = { 1.2f, 1.0f, 2.0f };
 
+    float time = Forge::Application::Get().GetTime();
+
+    m_lightPos.x = cos(time);
+    m_lightPos.z = sin(time);
+    
     auto& gl_lightingShader = *std::dynamic_pointer_cast<Forge::OpenGLShader>(m_lightingShader);
     gl_lightingShader.Bind();
 
-    gl_lightingShader.Set("light.position", lightPos);
+    gl_lightingShader.Set("light.position", m_lightPos);
     gl_lightingShader.Set("light.ambient", glm::vec3(0.2f));
     gl_lightingShader.Set("light.diffuse", glm::vec3(0.5f));
     gl_lightingShader.Set("light.specular", glm::vec3(1.0f));
@@ -124,7 +133,7 @@ void GameLayer::OnRender()
 
     gl_lightCubeShader.Set("u_view_projection", view_projection);
 
-    glm::mat4 lightModel = glm::translate(glm::mat4(1.0f), lightPos);
+    glm::mat4 lightModel = glm::translate(glm::mat4(1.0f), m_lightPos);
     lightModel = glm::scale(lightModel, glm::vec3(0.2f));
     gl_lightCubeShader.Set("u_model", lightModel);
 
@@ -138,12 +147,9 @@ void GameLayer::OnDetach()
 
 bool GameLayer::OnKeyBoardPressed(Forge::KeyPressedEvent& event)
 {
-
-    if (event.GetKeyCode() == GLFW_KEY_ESCAPE)
+    if (event.GetKeyCode() == GLFW_KEY_Q && !event.IsRepeat())
     {
-        Forge::Application::Get().~Application();
-        std::print("window closed!");
+        Forge::Application::Get().Close();
+        return true;
     }
-
-    return true;
 }

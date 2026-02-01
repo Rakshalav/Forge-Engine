@@ -1,8 +1,6 @@
 #pragma once
 
 #include "Event.hpp"
-
-#include <glm/glm.hpp>
 #include <format>
 
 namespace Forge
@@ -17,23 +15,20 @@ namespace Forge
 
 	class WindowResizeEvent : public Event
 	{
-		using vec2int = glm::vec<2, uint32_t, glm::qualifier::defaultp>;
-
 	public:
-		WindowResizeEvent(uint32_t width, uint32_t height) : m_Size(width, height) {}
+		WindowResizeEvent(uint32_t width, uint32_t height) : m_Width(width), m_Height(height) {}
 		
-		inline vec2int GetSize() const { return m_Size; }
-		inline uint32_t GetWidth() const { return m_Size.x; }
-		inline uint32_t GetHeight() const { return m_Size.y; }
+		inline uint32_t GetWidth() const { return m_Width; }
+		inline uint32_t GetHeight() const { return m_Height; }
 
 		std::string ToString() const override
 		{
-			return std::format("WindowResizeEvent: {}, {}", m_Size.x, m_Size.y);
+			return std::format("WindowResizeEvent: {}, {}", m_Width, m_Height);
 		}
 
 		EVENT_CLASS_TYPE(WindowResize)
 
 	private:
-		vec2int m_Size;
+		uint32_t m_Width, m_Height;
 	};
 }

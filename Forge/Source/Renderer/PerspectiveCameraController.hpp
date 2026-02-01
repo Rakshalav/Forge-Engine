@@ -1,15 +1,16 @@
 #pragma once
 
 #include "Camera.hpp"
-#include "CameraController.hpp"
+#include "Controller.hpp"
 #include "../Event/InputEvent.hpp"
+#include "../Event/WindowEvents.hpp"
 
 namespace Forge
 {
-	class PerspectiveCameraController : public CameraController
+	class PerspectiveCameraController : public Controller
 	{
 	public:
-		PerspectiveCameraController(Camera* camera) : m_Camera(*camera) {}
+		PerspectiveCameraController(Camera* camera);
 
 		void OnUpdate(float ts) override;
 		void OnEvent(Event& event) override;
@@ -26,15 +27,17 @@ namespace Forge
 	private:
 		bool OnMouseMoved(MouseMovedEvent& event);
 		bool OnMouseScrolled(MouseScrolledEvent& event);
-		
+		bool OnKeyBoardPressed(KeyPressedEvent& event);
+		bool OnWindowResized(WindowResizeEvent& event);
+
 	private:
 		Camera& m_Camera;
 
 		float m_Yaw = -90.0f;
 		float m_Pitch = 0.0f;
 
-		float m_LastMouseX = 0.0f;
-		float m_LastMouseY = 0.0f;
+		float m_LastMouseX;
+		float m_LastMouseY;
 		bool  m_FirstMouse = true;
 		
 		float m_MouseSensitivity = 1.0f;
@@ -45,5 +48,7 @@ namespace Forge
 		bool m_InvertedPitch = false;
 
 		float m_Constain = 89.0f;
+
+		bool m_isCursorEnabled = false;
 	};
 }

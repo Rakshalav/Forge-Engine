@@ -133,6 +133,4 @@ namespace Forge {
 
 		EVENT_CLASS_TYPE(MouseButtonReleased)
 	};
-
-
 }

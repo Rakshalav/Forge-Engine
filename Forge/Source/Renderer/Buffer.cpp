@@ -35,14 +35,14 @@ namespace Forge
 	{
 		switch (Renderer::GetAPI())
 		{
-		case RendererAPI::None:
+		case Renderer::API::None:
 			//TODO: add assertion
 			return nullptr;
 			
-		case RendererAPI::OpenGL:
+		case Renderer::API::OpenGL:
 			return CreateRef<OpenGLVertexBuffer>(vertices, size);
 
-		case RendererAPI::Vulkan:
+		case Renderer::API::Vulkan:
 			//TODO: add assertion vulkan api not supported!
 			return nullptr;
 		}
@@ -52,14 +52,14 @@ namespace Forge
 	{
 		switch (Renderer::GetAPI())
 		{
-		case RendererAPI::None:
+		case Renderer::API::None:
 			//TODO: add assertion
 			return nullptr;
 
-		case RendererAPI::OpenGL:
+		case Renderer::API::OpenGL:
 			return CreateRef<OpenGLIndexBuffer>(indices, size);
 
-		case RendererAPI::Vulkan:
+		case Renderer::API::Vulkan:
 			//TODO: add assertion vulkan api not supported!
 			return nullptr;
 		}

@@ -23,6 +23,8 @@ namespace Forge
         void SetPerspective(float Fov, float AspectRatio, float NearClip, float FarClip);
         void SetOrthoGraphic(float Size, float AspectRatio, float NearClip, float FarClip);
 
+        void SetViewPortSize(uint32_t width, uint32_t height);
+
         const glm::mat4& GetProjectionMatrix() const;
         const glm::mat4& GetViewMatrix() const ;
         const glm::mat4& GetViewProjectionMatrix() const;

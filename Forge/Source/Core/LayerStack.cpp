@@ -5,7 +5,11 @@ namespace Forge
 	LayerStack::~LayerStack()
 	{
 		for (auto layer : m_LayerStack)
+		{
+			layer->OnDetach();
 			delete layer;
+		}
+
 		m_LayerStack.clear();
 	}
 

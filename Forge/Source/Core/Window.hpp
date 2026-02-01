@@ -37,10 +37,13 @@ namespace Forge
 
 		glm::vec2 GetFrameBufferSize() const;
 		glm::vec2 GetMousePos() const;
+		glm::vec2 GetSize() const;
 
 		bool ShouldClose() const;
 
 		inline GLFWwindow* GetHandle() const { return m_Handle; }
+
+		void ToggleCursor(bool value);
 
 	private:
 		WindowSpecification m_Specification;

@@ -4,10 +4,10 @@
 
 namespace Forge
 {
-    class CameraController
+    class Controller
     {
     public:
-        virtual ~CameraController() = default;
+        virtual ~Controller() = default;
 
         virtual void OnUpdate(float ts) = 0;
         virtual void OnEvent(Event& e) = 0;

@@ -5,7 +5,7 @@
 #include "../Event/InputEvent.hpp"
 #include "../Renderer/Renderer.hpp"
 
-#include <print>
+#include "../Debug/Log.hpp"
 
 namespace Forge
 {
@@ -22,7 +22,7 @@ namespace Forge
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-#ifdef DEBUG
+#ifdef _DEBUG
 		glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 #endif
 		 
@@ -31,7 +31,7 @@ namespace Forge
 
 		if (!m_Handle)
 		{
-			//TODO: ADD LOGGER, FAILED TO CREATE WINDOW
+			FG_CORE_CRITICAL("Failed to create window!");
 			glfwTerminate();
 			return false;
 		}
@@ -40,28 +40,25 @@ namespace Forge
 
 		switch (Renderer::GetAPI())
 		{
-		case RendererAPI::None:
+		case Renderer::API::None:
 			static_assert("No API!");
 			return false;
-		case RendererAPI::OpenGL:
+		case Renderer::API::OpenGL:
 		{
 			if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 			{
-				std::println("CRITICAL ERROR: GLAD could not load functions!");
+				FG_CORE_CRITICAL("Failed to initialize GLAD!");
 				return false;
-			}
-			glEnable(GL_DEPTH_TEST); 
-			glEnable(GL_CULL_FACE); 
-			glCullFace(GL_BACK);     
-			glFrontFace(GL_CCW);     
+			}   
+			#ifdef _DEBUG
+				Log::InitGlDebugger();
+			#endif
 			break;
 		}
-		case RendererAPI::Vulkan:
+		case Renderer::API::Vulkan:
 			static_assert("Vulkan not supported!");
 			return false;
 		}
-
-
 
 		glfwSwapInterval(m_Specification.Vsync ? 1 : 0);
 
@@ -89,11 +86,13 @@ namespace Forge
 			{
 			case GLFW_PRESS:
 			{
+				KeyPressedEvent event(key, false);
+				window.RaiseEvent(event);
 				break;
 			}
 			case GLFW_REPEAT:
 			{
-				KeyPressedEvent event(key, action == GLFW_REPEAT);
+				KeyPressedEvent event(key, true);
 				window.RaiseEvent(event);
 				break;
 			}
@@ -141,8 +140,6 @@ namespace Forge
 			window.RaiseEvent(event);
 		});
 
-		glfwSetInputMode(m_Handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
 		return true;
 	}
 
@@ -182,8 +179,20 @@ namespace Forge
 		return { static_cast<float>(x), static_cast<float>(y) };
 	}
 
+	glm::vec2 Window::GetSize() const
+	{
+		int width, height;
+		glfwGetWindowSize(m_Handle, &width, &height);
+		return { static_cast<float>(width), static_cast<float>(height) };
+	}
+
 	bool Window::ShouldClose() const
 	{
 		return glfwWindowShouldClose(m_Handle) != 0;
+	}
+
+	void Window::ToggleCursor(bool value)
+	{
+		glfwSetInputMode(m_Handle, GLFW_CURSOR, value ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
 	}
 }

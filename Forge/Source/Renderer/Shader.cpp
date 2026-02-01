@@ -9,11 +9,11 @@ namespace Forge
 	{
 		switch (Renderer::GetAPI())
 		{
-		case RendererAPI::None:
+		case Renderer::API::None:
 			return nullptr;
-		case RendererAPI::OpenGL:
+		case Renderer::API::OpenGL:
 			return CreateRef<OpenGLShader>(vertexpath, fragmentpath);
-		case RendererAPI::Vulkan:
+		case Renderer::API::Vulkan:
 			return nullptr;
 		}
 		return nullptr;

@@ -25,4 +25,7 @@ private:
 
 	Forge::Ref<Forge::VertexArray> m_VertexArrayCube;
 	Forge::Ref<Forge::VertexArray> m_VertexArrayLight;
+
+
+	glm::vec3 m_lightPos = { 1.2f, 1.0f, 2.0f };
 };

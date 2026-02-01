@@ -5,7 +5,7 @@
 #include <fstream>
 #include <sstream>
 
-#include <print>
+#include "../Source/Debug/Log.hpp"
 
 namespace Forge
 {
@@ -36,8 +36,7 @@ namespace Forge
 		}
 		catch (std::ifstream::failure e)
 		{
-			//TODO: log error: File not succesfully read.
-			std::println("log error: File not succesfully read");
+			FG_ERROR("File not succesfully read | Vertex Path: {} | Fragment Path: {}", vertexpath, fragmentpath);
 		}
 
 		const char* vShaderCode = vertexCode.c_str();
@@ -55,7 +54,7 @@ namespace Forge
 		if (!success)
 		{
 			glGetShaderInfoLog(vertex, 512, NULL, infoLog);
-			//TODO: log error: Vertex shader compilation failed.
+			FG_ERROR("Vertex shader compilation failed.");
 		};
 
 		// fragment shader
@@ -67,7 +66,7 @@ namespace Forge
 		if (!success)
 		{
 			glGetShaderInfoLog(fragment, 512, NULL, infoLog);
-			//TODO: Fragment shader compilation failed.
+			FG_ERROR("Fragment shader compilation failed.");
 		};
 
 		m_RendererID = glCreateProgram();
@@ -79,7 +78,7 @@ namespace Forge
 		if (!success)
 		{
 			glGetProgramInfoLog(m_RendererID, 512, NULL, infoLog);
-			//TODO: Shader program linking failed.
+			FG_ERROR("Shader program linking failed.");
 		}
 
 		glDeleteShader(vertex);
