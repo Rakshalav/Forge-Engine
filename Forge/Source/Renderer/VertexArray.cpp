@@ -10,12 +10,9 @@ namespace Forge
 	{
 		switch (Renderer::GetAPI())
 		{
-		case Renderer::API::None:
-			return nullptr;
-		case Renderer::API::OpenGL:
-			return CreateRef<OpenGLVertexArray>();
-		case Renderer::API::Vulkan:
-			return nullptr;
+		case Renderer::API::None: return nullptr;
+		case Renderer::API::OpenGL: return CreateRef<OpenGLVertexArray>();
+		case Renderer::API::Vulkan: return nullptr;
 		}
 
 		return nullptr;

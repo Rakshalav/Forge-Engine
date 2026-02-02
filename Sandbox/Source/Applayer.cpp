@@ -2,7 +2,6 @@
 #include <print>
 
 #include <Platform/OpenGL/OpenGLShader.hpp>
-#include <Source/Debug/Log.hpp>
 
 float vertices[] = {
     // Positions          // Normals
@@ -84,7 +83,7 @@ void GameLayer::OnAttach()
     m_VertexArrayLight->AddVertexBuffer(vertexbuffer);
     m_VertexArrayLight->SetIndexBuffer(indexbuffer);
 
-    FG_CORE_TRACE("Attcahed succesfully!");
+    auto testTex = Forge::Texture2D::Create("C:/Dev/Forge/Sandbox/Textures//container2.png");
 }
 
 void GameLayer::OnEvent(Forge::Event& event)

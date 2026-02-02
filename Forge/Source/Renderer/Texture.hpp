@@ -1,13 +1,20 @@
 #pragma once
 
-#include <stb-image/stb_image.h>
+#include "../Core/Base.hpp"
+#include <string>
 
 namespace Forge
 {
 	class Texture
 	{
 	public:
-		unsigned int ID;
-		Texture(const char* filename);
+		virtual ~Texture() = default;
+	};
+
+	class Texture2D : public Texture
+	{
+	public:
+		static Ref<Texture2D> Create(const std::string& path);
 	};
 }
+
