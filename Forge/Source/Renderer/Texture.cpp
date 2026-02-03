@@ -3,7 +3,7 @@
 
 #include "../Platform/OpenGL/OpenGLTexture.hpp"
 
-namespace Forge
+namespace fg
 {
     Ref<Texture2D> Texture2D::Create(const std::string& path)
     {

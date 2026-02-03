@@ -3,7 +3,7 @@
 #include <string>
 #include <functional>
 
-namespace Forge 
+namespace fg 
 {
 	enum class EventType
 	{

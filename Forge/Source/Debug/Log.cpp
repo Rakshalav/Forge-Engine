@@ -13,7 +13,7 @@ static void APIENTRY OpenGLDebugCallback(
     const void* userParam
 )
 {
-    Forge::Log::glDebugOutput(
+    fg::Log::glDebugOutput(
         (uint32_t)source,
         (uint32_t)type,
         id,
@@ -24,7 +24,7 @@ static void APIENTRY OpenGLDebugCallback(
     );
 }
 
-namespace Forge
+namespace fg
 {
     static Log* s_instance = nullptr;
 

@@ -1,14 +1,14 @@
 #pragma once
 
 #include "Window.hpp"
-#include "../Event/Event.hpp"
+#include "../Event/TestEvent.hpp"
 #include "Layer.hpp"
 #include "LayerStack.hpp"
 #include "Base.hpp"
 
 #include <tuple>
 
-namespace Forge
+namespace fg
 {
 	struct ApplicationSpecification
 	{
@@ -72,7 +72,7 @@ namespace Forge
 			return nullptr;
 		}
 
-		glm::vec2 GetFrameBufferSize() const;
+		Vec2f GetFrameBufferSize() const;
 
 		inline Ref<Window> GetWindow() const { return m_Window; }
 

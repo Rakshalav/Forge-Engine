@@ -1,10 +1,9 @@
 #pragma once
 
 #include "../Source/Renderer/Shader.hpp"
-
 #include <unordered_map>
 
-namespace Forge
+namespace fg
 {
 	class OpenGLShader : public Shader
 	{
@@ -22,9 +21,9 @@ namespace Forge
 		void SetFloat(const std::string& name, float value) override;
 		void SetBool(const std::string& name, bool value) override;
 
-		void SetVec2(const std::string& name, const glm::vec2& value) override;
-		void SetVec3(const std::string& name, const glm::vec3& value) override;
-		void SetVec4(const std::string& name, const glm::vec4& value) override;
+		void SetVec2(const std::string& name, const Vec2f& value) override;
+		void SetVec3(const std::string& name, const Vec3f& value) override;
+		void SetVec4(const std::string& name, const Vec4f& value) override;
 
 		void SetMat2(const std::string& name, const glm::mat2& value) override;
 		void SetMat3(const std::string& name, const glm::mat3& value) override;
@@ -37,9 +36,9 @@ namespace Forge
 		void UploadUniformInt(const std::string& name, int value);
 		void UploadUniformFloat(const std::string& name, float value);
 
-		void UploadUniformVec2(const std::string& name, const glm::vec2& value);
-		void UploadUniformVec3(const std::string& name, const glm::vec3& value);
-		void UploadUniformVec4(const std::string& name, const glm::vec4& value);
+		void UploadUniformVec2(const std::string& name, const Vec2f& value);
+		void UploadUniformVec3(const std::string& name, const Vec3f& value);
+		void UploadUniformVec4(const std::string& name, const Vec4f& value);
 
 		void UploadUniformMat2(const std::string& name, const glm::mat2& value);
 		void UploadUniformMat3(const std::string& name, const glm::mat3& value);
@@ -59,7 +58,7 @@ namespace Forge
 	{
 		static_assert(
 			std::is_same_v<T, bool> || std::is_same_v<T, int> || std::is_same_v<T, float> ||
-			std::is_same_v<T, glm::vec2> || std::is_same_v<T, glm::vec3> || std::is_same_v<T, glm::vec4> ||
+			std::is_same_v<T, Vec2f> || std::is_same_v<T, Vec3f> || std::is_same_v<T, Vec4f> ||
 			std::is_same_v<T, glm::mat2> || std::is_same_v<T, glm::mat3> || std::is_same_v<T, glm::mat4>,
 			"Unsupported uniform type used in Shader::UploadUniform()"
 			);
@@ -70,11 +69,11 @@ namespace Forge
 			SetInt(name, value);
 		else if constexpr (std::is_same_v< T, float>)
 			SetFloat(name, value);
-		else if constexpr (std::is_same_v< T, glm::vec2>)
+		else if constexpr (std::is_same_v< T, Vec2f>)
 			SetVec2(name, value);
-		else if constexpr (std::is_same_v< T, glm::vec3>)
+		else if constexpr (std::is_same_v< T, Vec3f>)
 			SetVec3(name, value);
-		else if constexpr (std::is_same_v< T, glm::vec4>)
+		else if constexpr (std::is_same_v< T, Vec4f>)
 			SetVec4(name, value);
 		else if constexpr (std::is_same_v< T, glm::mat2>)
 			SetMat2(name, value);
@@ -89,7 +88,7 @@ namespace Forge
 	{
 		static_assert(
 			std::is_same_v<T, bool> || std::is_same_v<T, int> || std::is_same_v<T, float> ||
-			std::is_same_v<T, glm::vec2> || std::is_same_v<T, glm::vec3> || std::is_same_v<T, glm::vec4> ||
+			std::is_same_v<T, Vec2f> || std::is_same_v<T, Vec3f> || std::is_same_v<T, Vec4f> ||
 			std::is_same_v<T, glm::mat2> || std::is_same_v<T, glm::mat3> || std::is_same_v<T, glm::mat4>,
 			"Unsupported uniform type used in Shader::UploadUniform()"
 			);
@@ -100,11 +99,11 @@ namespace Forge
 			UploadUniformInt(name, value);
 		else if constexpr (std::is_same_v< T, float>)
 			UploadUniformFloat(name, value);
-		else if constexpr (std::is_same_v< T, glm::vec2>)
+		else if constexpr (std::is_same_v< T, Vec2f>)
 			UploadUniformVec2(name, value);
-		else if constexpr (std::is_same_v< T, glm::vec3>)
+		else if constexpr (std::is_same_v< T, Vec3f>)
 			UploadUniformVec3(name, value);
-		else if constexpr (std::is_same_v< T, glm::vec4>)
+		else if constexpr (std::is_same_v< T, Vec4f>)
 			UploadUniformVec4(name, value);
 		else if constexpr (std::is_same_v< T, glm::mat2>)
 			UploadUniformMat2(name, value);

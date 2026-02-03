@@ -1,13 +1,13 @@
 #include "Camera.hpp"
 
-namespace Forge
+namespace fg
 {
 	Camera::Camera(CameraProjection projectionType) : m_Projection(projectionType)
 	{
 
 	}
 
-	void Camera::SetPosition(const glm::vec3& position)
+	void Camera::SetPosition(const Vec3f& position)
 	{
 		m_Position = position;
 		m_ViewDirty = true;
@@ -43,19 +43,19 @@ namespace Forge
 		m_ProjectionDirty = true;
 	}
 
-	const glm::vec3 Camera::GetFront() const
+	const Vec3f Camera::GetFront() const
 	{
-		return m_Orientation * glm::vec3(0.0f, 0.0f, -1.0f);
+		return m_Orientation * Vec3f(0.0f, 0.0f, -1.0f);
 	}
 
-	const glm::vec3 Camera::GetRight() const
+	const Vec3f Camera::GetRight() const
 	{
-		return m_Orientation * glm::vec3(1.0f, 0.0f, 0.0f);
+		return m_Orientation * Vec3f(1.0f, 0.0f, 0.0f);
 	}
 
-	const glm::vec3 Camera::GetUp() const
+	const Vec3f Camera::GetUp() const
 	{
-		return m_Orientation * glm::vec3(0.0f, 1.0f, 0.0f);
+		return m_Orientation * Vec3f(0.0f, 1.0f, 0.0f);
 	}
 
 	const glm::mat4& Camera::GetProjectionMatrix() const
@@ -64,13 +64,13 @@ namespace Forge
 		{
 			switch (m_Projection)
 			{
-				case Forge::CameraProjection::Perspective:
+				case fg::CameraProjection::Perspective:
 				{
 					m_ProjectionMatrix = glm::perspective(glm::radians(m_Fov), m_AspectRatio, m_NearClip, m_FarClip);
 					break;
 				}
 
-				case Forge::CameraProjection::OrthoGraphic:
+				case fg::CameraProjection::OrthoGraphic:
 				{
 					float left = -m_OrthographicSize * m_AspectRatio * 0.5f;
 					float right = m_OrthographicSize * m_AspectRatio * 0.5f;

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../Event/Event.hpp"
+#include "../Event/TestEvent.hpp"
 
-namespace Forge
+namespace fg
 {
 	class Layer
 	{

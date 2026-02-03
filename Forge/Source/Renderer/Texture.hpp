@@ -3,7 +3,7 @@
 #include "../Core/Base.hpp"
 #include <string>
 
-namespace Forge
+namespace fg
 {
 	class Texture
 	{

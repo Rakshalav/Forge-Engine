@@ -2,7 +2,7 @@
 
 #include "../Source/Renderer/Buffer.hpp"
 
-namespace Forge
+namespace fg
 {
 	class OpenGLVertexBuffer : public VertexBuffer
 	{

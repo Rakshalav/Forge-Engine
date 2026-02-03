@@ -1,7 +1,7 @@
 #include <glad/glad.h>
 #include "OpenGLVertexArray.hpp"
 
-namespace Forge
+namespace fg
 {
 	OpenGLVertexArray::OpenGLVertexArray()
 	{

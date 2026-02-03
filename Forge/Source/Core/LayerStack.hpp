@@ -3,7 +3,7 @@
 #include <vector>
 #include "Layer.hpp"
 
-namespace Forge
+namespace fg
 {
 	class LayerStack
 	{

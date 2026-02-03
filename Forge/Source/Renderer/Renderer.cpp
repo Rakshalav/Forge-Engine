@@ -1,7 +1,7 @@
 #include <glad/glad.h>
 #include "Renderer.hpp"
 
-namespace Forge
+namespace fg
 {
 	static Renderer* s_Instance = nullptr;
 
@@ -25,9 +25,9 @@ namespace Forge
 	{
 		switch (s_RendererAPI)
 		{
-			case Forge::Renderer::API::None: break;
+			case fg::Renderer::API::None: break;
 
-			case Forge::Renderer::API::OpenGL:
+			case fg::Renderer::API::OpenGL:
 			{
 				if (value)
 				{
@@ -41,7 +41,7 @@ namespace Forge
 				break;
 			}
 
-			case Forge::Renderer::API::Vulkan: break;
+			case fg::Renderer::API::Vulkan: break;
 		}
 	}
 
@@ -106,12 +106,12 @@ namespace Forge
 	{
 		switch (s_RendererAPI)
 		{
-		case Forge::Renderer::API::None:
+		case fg::Renderer::API::None:
 			return;
-		case Forge::Renderer::API::OpenGL:
+		case fg::Renderer::API::OpenGL:
 			glViewport(0, 0, width, height);
 			return;
-		case Forge::Renderer::API::Vulkan:
+		case fg::Renderer::API::Vulkan:
 			return;
 		}
 	}

@@ -4,7 +4,7 @@
 #include "../Core/Base.hpp"
 #include "Buffer.hpp"
 
-namespace Forge 
+namespace fg 
 {
 	class VertexArray
 	{

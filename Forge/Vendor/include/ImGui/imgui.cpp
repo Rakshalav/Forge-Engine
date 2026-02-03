@@ -1789,7 +1789,7 @@ void ImGuiIO::AddKeyEvent(ImGuiKey key, bool down)
 }
 
 // [Optional] Call after AddKeyEvent().
-// Specify native keycode, scancode + Specify index for legacy <1.87 IsKeyXXX() functions with native indices.
+// Specify native KeyCode, scancode + Specify index for legacy <1.87 IsKeyXXX() functions with native indices.
 // If you are writing a backend in 2022 or don't use IsKeyXXX() with native values that are not ImGuiKey values, you can avoid calling this.
 void ImGuiIO::SetKeyEventNativeData(ImGuiKey key, int native_keycode, int native_scancode, int native_legacy_index)
 {

@@ -4,7 +4,7 @@
 
 #include <format>
 
-namespace Forge {
+namespace fg {
 
 	class KeyEvent : public Event
 	{

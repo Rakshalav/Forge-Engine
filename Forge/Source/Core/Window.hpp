@@ -1,14 +1,14 @@
 #pragma once
 
-#include <glm/glm.hpp>
 #include <GLFW/glfw3.h>
+#include "../Maths/Math.hpp"
 
 #include <string>
 #include <functional>
 
-#include "../Event/Event.hpp"
+#include "../Event/TestEvent.hpp"
 
-namespace Forge
+namespace fg
 {
 	struct WindowSpecification
 	{
@@ -35,9 +35,9 @@ namespace Forge
 
 		void RaiseEvent(Event& event);
 
-		glm::vec2 GetFrameBufferSize() const;
-		glm::vec2 GetMousePos() const;
-		glm::vec2 GetSize() const;
+		Vec2f GetFrameBufferSize() const;
+		Vec2f GetMousePos() const;
+		Vec2f GetSize() const;
 
 		bool ShouldClose() const;
 

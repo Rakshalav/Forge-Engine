@@ -2,7 +2,7 @@
 
 #include "Application.hpp"
 
-namespace Forge
+namespace fg
 {
     void Layer::QueueTransition(Layer* toLayer, bool type)
     {

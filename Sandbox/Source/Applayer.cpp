@@ -53,45 +53,45 @@ unsigned int indices[] = {
 
 GameLayer::GameLayer() 
 {
-    m_Camera = Forge::CreateRef<Forge::Camera>(Forge::CameraProjection::Perspective);
+    m_Camera = fg::CreateRef<fg::Camera>(fg::CameraProjection::Perspective);
     m_Camera->SetPosition({ 0.0f, 0.0f, 3.0f });
 
-    m_Controller = Forge::CreateRef<Forge::PerspectiveCameraController>(m_Camera.get());
+    m_Controller = fg::CreateRef<fg::PerspectiveCameraController>(m_Camera.get());
     m_Controller->SetMouseSensitivity(0.08f);
 
-    Forge::Application::Get().GetWindow()->ToggleCursor(false);
+    fg::Application::Get().GetWindow()->ToggleCursor(false);
 }
 
 void GameLayer::OnAttach()
 {
-    m_lightingShader = Forge::Shader::Create("C:/Dev/Forge/Sandbox/Shaders/vertex_cube.glsl", "C:/Dev/Forge/Sandbox/Shaders/fragment_cube.glsl");
-    m_ligtCubeShader = Forge::Shader::Create("C:/Dev/Forge/Sandbox/Shaders/vertex_light.glsl", "C:/Dev/Forge/Sandbox/Shaders/fragment_light.glsl");
+    m_lightingShader = fg::Shader::Create("C:/Dev/Forge/Sandbox/Shaders/vertex_cube.glsl", "C:/Dev/Forge/Sandbox/Shaders/fragment_cube.glsl");
+    m_ligtCubeShader = fg::Shader::Create("C:/Dev/Forge/Sandbox/Shaders/vertex_light.glsl", "C:/Dev/Forge/Sandbox/Shaders/fragment_light.glsl");
 
-    Forge::BufferLayout bufferlayout;
-    bufferlayout.Push<Forge::LayoutType::PosNorm>(Forge::ElementType::FLOAT);
+    fg::BufferLayout bufferlayout;
+    bufferlayout.Push<fg::LayoutType::PosNorm>(fg::ElementType::FLOAT);
 
-    Forge::Ref<Forge::VertexBuffer> vertexbuffer = Forge::VertexBuffer::Create(vertices, sizeof(vertices));
+    fg::Ref<fg::VertexBuffer> vertexbuffer = fg::VertexBuffer::Create(vertices, sizeof(vertices));
     vertexbuffer->SetLayout(bufferlayout);
 
-    Forge::Ref<Forge::IndexBuffer> indexbuffer = Forge::IndexBuffer::Create(indices, sizeof(indices));
+    fg::Ref<fg::IndexBuffer> indexbuffer = fg::IndexBuffer::Create(indices, sizeof(indices));
 
-    m_VertexArrayCube = Forge::VertexArray::Create();
+    m_VertexArrayCube = fg::VertexArray::Create();
     m_VertexArrayCube->AddVertexBuffer(vertexbuffer);
     m_VertexArrayCube->SetIndexBuffer(indexbuffer);
 
-    m_VertexArrayLight = Forge::VertexArray::Create();
+    m_VertexArrayLight = fg::VertexArray::Create();
     m_VertexArrayLight->AddVertexBuffer(vertexbuffer);
     m_VertexArrayLight->SetIndexBuffer(indexbuffer);
-
-    auto testTex = Forge::Texture2D::Create("C:/Dev/Forge/Sandbox/Textures//container2.png");
 }
 
-void GameLayer::OnEvent(Forge::Event& event)
+void GameLayer::OnEvent(fg::Event& event)
 {
     m_Controller->OnEvent(event);
 
-    Forge::EventDispatcher dispatcher(event);
-    dispatcher.Dispatch<Forge::KeyPressedEvent>([this](Forge::KeyPressedEvent& e) {return OnKeyBoardPressed(e); });
+    FG_TRACE(event.ToString());
+
+    fg::EventDispatcher dispatcher(event);
+    dispatcher.Dispatch<fg::Event::KeyPressed>([this](fg::Event::KeyPressed& e) { return OnKeyBoardPressed(e); });
 }
 
 void GameLayer::OnUpdate(float ts)
@@ -103,40 +103,40 @@ void GameLayer::OnRender()
 {
     glm::mat4 view_projection = m_Camera->GetViewProjectionMatrix();
 
-    float time = Forge::Application::Get().GetTime();
+    float time = fg::Application::Get().GetTime();
 
     m_lightPos.x = cos(time);
     m_lightPos.z = sin(time);
     
-    auto& gl_lightingShader = *std::dynamic_pointer_cast<Forge::OpenGLShader>(m_lightingShader);
+    auto& gl_lightingShader = *std::dynamic_pointer_cast<fg::OpenGLShader>(m_lightingShader);
     gl_lightingShader.Bind();
 
     gl_lightingShader.Set("light.position", m_lightPos);
-    gl_lightingShader.Set("light.ambient", glm::vec3(0.2f));
-    gl_lightingShader.Set("light.diffuse", glm::vec3(0.5f));
-    gl_lightingShader.Set("light.specular", glm::vec3(1.0f));
+    gl_lightingShader.Set("light.ambient", fg::Vec3f(0.2f));
+    gl_lightingShader.Set("light.diffuse", fg::Vec3f(0.5f));
+    gl_lightingShader.Set("light.specular", fg::Vec3f(1.0f));
 
-    gl_lightingShader.Set("material.ambient", glm::vec3(1.0f, 0.5f, 0.31f));
-    gl_lightingShader.Set("material.diffuse", glm::vec3(1.0f, 0.5f, 0.31f));
-    gl_lightingShader.Set("material.specular", glm::vec3(0.5f, 0.5f, 0.5f));
+    gl_lightingShader.Set("material.ambient", fg::Vec3f(1.0f, 0.5f, 0.31f));
+    gl_lightingShader.Set("material.diffuse", fg::Vec3f(1.0f, 0.5f, 0.31f));
+    gl_lightingShader.Set("material.specular", fg::Vec3f(0.5f, 0.5f, 0.5f));
     gl_lightingShader.Set("material.shininess", 64.0f);
 
     gl_lightingShader.Set("viewPos", m_Camera->GetPosition());
     gl_lightingShader.Set("u_view_projection", view_projection);
     gl_lightingShader.Set("u_model", glm::mat4(1.0f));
 
-    Forge::Renderer::Draw(m_VertexArrayCube, m_lightingShader);
+    fg::Renderer::Draw(m_VertexArrayCube, m_lightingShader);
 
-    auto& gl_lightCubeShader = *std::dynamic_pointer_cast<Forge::OpenGLShader>(m_ligtCubeShader);
+    auto& gl_lightCubeShader = *std::dynamic_pointer_cast<fg::OpenGLShader>(m_ligtCubeShader);
     gl_lightCubeShader.Bind();
 
     gl_lightCubeShader.Set("u_view_projection", view_projection);
 
     glm::mat4 lightModel = glm::translate(glm::mat4(1.0f), m_lightPos);
-    lightModel = glm::scale(lightModel, glm::vec3(0.2f));
+    lightModel = glm::scale(lightModel, fg::Vec3f(0.2f));
     gl_lightCubeShader.Set("u_model", lightModel);
 
-    Forge::Renderer::Draw(m_VertexArrayLight, m_ligtCubeShader);
+    fg::Renderer::Draw(m_VertexArrayLight, m_ligtCubeShader);
 }
 
 void GameLayer::OnDetach()
@@ -144,11 +144,13 @@ void GameLayer::OnDetach()
 
 }
 
-bool GameLayer::OnKeyBoardPressed(Forge::KeyPressedEvent& event)
+bool GameLayer::OnKeyBoardPressed(fg::Event::KeyPressed& event)
 {
-    if (event.GetKeyCode() == GLFW_KEY_Q && !event.IsRepeat())
+    if (event.KeyCode == fg::KeyBoard::Q && !event.IsRepeated)
     {
-        Forge::Application::Get().Close();
+        fg::Application::Get().Close();
         return true;
     }
+
+    return false;
 }

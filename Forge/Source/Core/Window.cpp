@@ -1,13 +1,13 @@
 #include <glad/glad.h>
 
 #include "Window.hpp"
-#include "../Event/WindowEvents.hpp"
-#include "../Event/InputEvent.hpp"
 #include "../Renderer/Renderer.hpp"
+
+#include "../Event/TestEvent.hpp"
 
 #include "../Debug/Log.hpp"
 
-namespace Forge
+namespace fg
 {
 	Window::Window(const WindowSpecification& specification) : m_Specification(specification) {}
 
@@ -67,14 +67,14 @@ namespace Forge
 		glfwSetWindowCloseCallback(m_Handle, [](GLFWwindow* handle)
 		{
 			Window& window = *((Window*)glfwGetWindowUserPointer(handle));
-			WindowClosedEvent event;
+			auto event = Event::_WindowClosed();
 			window.RaiseEvent(event);
 		});
 
 		glfwSetWindowSizeCallback(m_Handle, [](GLFWwindow* handle, int width, int height)
 		{
 			Window& window = *((Window*)glfwGetWindowUserPointer(handle));
-			WindowResizeEvent event((uint32_t)width, (uint32_t)height);
+			auto event = Event::_WindowResized(width, height);
 			window.RaiseEvent(event);
 		});
 
@@ -86,19 +86,19 @@ namespace Forge
 			{
 			case GLFW_PRESS:
 			{
-				KeyPressedEvent event(key, false);
+				auto event = Event::_KeyPressed(key, scancode, mods, false);
 				window.RaiseEvent(event);
 				break;
 			}
 			case GLFW_REPEAT:
 			{
-				KeyPressedEvent event(key, true);
+				auto event = Event::_KeyPressed(key, scancode, mods, true);
 				window.RaiseEvent(event);
 				break;
 			}
 			case GLFW_RELEASE:
 			{
-				KeyReleasedEvent event(key);
+				auto event = Event::_KeyReleased(key, scancode);
 				window.RaiseEvent(event);
 				break;
 			}
@@ -113,13 +113,13 @@ namespace Forge
 			{
 			case GLFW_PRESS:
 			{
-				MouseButtonPressedEvent event(button);
+				auto event = Event::_MouseButtonPressed(button);
 				window.RaiseEvent(event);
 				break;
 			}
 			case GLFW_RELEASE:
 			{
-				MouseButtonReleasedEvent event(button);
+				auto event = Event::_MouseButtonReleased(button);
 				window.RaiseEvent(event);
 				break;
 			}
@@ -129,14 +129,14 @@ namespace Forge
 		glfwSetScrollCallback(m_Handle, [](GLFWwindow* handle, double xOffset, double yOffset)
 		{
 			Window& window = *((Window*)glfwGetWindowUserPointer(handle));
-			MouseScrolledEvent event(xOffset, yOffset);
+			auto event = Event::_MouseScrolled(xOffset, yOffset);
 			window.RaiseEvent(event);
 		});
 
 		glfwSetCursorPosCallback(m_Handle, [](GLFWwindow* handle, double x, double y)
 		{
 			Window& window = *((Window*)glfwGetWindowUserPointer(handle));
-			MouseMovedEvent event(x, y);
+			auto event = Event::_MouseMoved(x, y);
 			window.RaiseEvent(event);
 		});
 
@@ -165,21 +165,21 @@ namespace Forge
 			m_Specification.EventCallback(event);
 	}
 
-	glm::vec2 Window::GetFrameBufferSize() const
+	Vec2f Window::GetFrameBufferSize() const
 	{
 		int width, height;
 		glfwGetFramebufferSize(m_Handle, &width, &height);
 		return { width, height };
 	}
 
-	glm::vec2 Window::GetMousePos() const
+	Vec2f Window::GetMousePos() const
 	{
 		double x, y;
 		glfwGetCursorPos(m_Handle, &x, &y);
 		return { static_cast<float>(x), static_cast<float>(y) };
 	}
 
-	glm::vec2 Window::GetSize() const
+	Vec2f Window::GetSize() const
 	{
 		int width, height;
 		glfwGetWindowSize(m_Handle, &width, &height);

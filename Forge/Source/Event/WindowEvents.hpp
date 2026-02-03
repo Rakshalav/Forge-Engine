@@ -1,9 +1,10 @@
 #pragma once
 
+#include "Maths/Math.hpp"
 #include "Event.hpp"
 #include <format>
 
-namespace Forge
+namespace fg
 {
 	class WindowClosedEvent : public Event
 	{
@@ -16,19 +17,20 @@ namespace Forge
 	class WindowResizeEvent : public Event
 	{
 	public:
-		WindowResizeEvent(uint32_t width, uint32_t height) : m_Width(width), m_Height(height) {}
+		WindowResizeEvent(uint32_t width, uint32_t height) {
+			m_Size.x = width; m_Size.y = height;
+		}
 		
-		inline uint32_t GetWidth() const { return m_Width; }
-		inline uint32_t GetHeight() const { return m_Height; }
+		inline Vec2u GetSize() const { return m_Size; }
 
 		std::string ToString() const override
 		{
-			return std::format("WindowResizeEvent: {}, {}", m_Width, m_Height);
+			return std::format("WindowResizeEvent: {}, {}", m_Size.x, m_Size.y);
 		}
 
 		EVENT_CLASS_TYPE(WindowResize)
 
 	private:
-		uint32_t m_Width, m_Height;
+		Vec2u m_Size;
 	};
 }

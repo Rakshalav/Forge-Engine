@@ -3,7 +3,7 @@
 #include "../Core/Base.hpp"
 #include <vector>
 
-namespace Forge
+namespace fg
 {
 	enum class LayoutType
 	{
