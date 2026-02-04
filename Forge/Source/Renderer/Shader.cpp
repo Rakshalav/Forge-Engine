@@ -3,7 +3,7 @@
 #include "../Platform/OpenGL/OpenGLShader.hpp"
 #include "Renderer.hpp"
 
-namespace Forge
+namespace fg
 {
 	Ref<Shader> Shader::Create(const std::string& vertexpath, const std::string& fragmentpath)
 	{

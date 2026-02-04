@@ -3,12 +3,12 @@
 
 int main()
 {
-	Forge::ApplicationSpecification appSpec;
+	fg::ApplicationSpecification appSpec;
 	appSpec.Name = "Forge Engine";
 	appSpec.WindowSpec.Width = 1280;
 	appSpec.WindowSpec.Height = 720;
 
-	Forge::Application game(appSpec);
+	fg::Application game(appSpec);
 	game.PushLayer<GameLayer>();
 	game.Run();
 }

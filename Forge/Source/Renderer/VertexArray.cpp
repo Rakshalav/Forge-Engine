@@ -4,7 +4,7 @@
 
 #include "../Platform/OpenGL/OpenGLVertexArray.hpp"
 
-namespace Forge
+namespace fg
 {
 	Ref<VertexArray> VertexArray::Create()
 	{

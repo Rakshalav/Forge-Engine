@@ -3,7 +3,7 @@
 #include "VertexArray.hpp"
 #include "Shader.hpp"
 
-namespace Forge
+namespace fg
 {
 	class Renderer
 	{

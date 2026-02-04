@@ -7,7 +7,7 @@
 
 #include "../Source/Debug/Log.hpp"
 
-namespace Forge
+namespace fg
 {
 	OpenGLShader::OpenGLShader(const std::string& vertexpath, const std::string& fragmentpath)
 	{
@@ -117,17 +117,17 @@ namespace Forge
 		UploadUniformBool(name, value);
 	}
 
-	void OpenGLShader::SetVec2(const std::string& name, const glm::vec2& value)
+	void OpenGLShader::SetVec2(const std::string& name, const Vec2f& value)
 	{
 		UploadUniformVec2(name, value);
 	}
 
-	void OpenGLShader::SetVec3(const std::string& name, const glm::vec3& value)
+	void OpenGLShader::SetVec3(const std::string& name, const Vec3f& value)
 	{
 		UploadUniformVec3(name, value);
 	}
 
-	void OpenGLShader::SetVec4(const std::string& name, const glm::vec4& value)
+	void OpenGLShader::SetVec4(const std::string& name, const Vec4f& value)
 	{
 		UploadUniformVec4(name, value);
 	}
@@ -162,17 +162,17 @@ namespace Forge
 		glUniform1f(GetLocation(name), value);
 	}
 
-	void OpenGLShader::UploadUniformVec2(const std::string& name, const glm::vec2& value)
+	void OpenGLShader::UploadUniformVec2(const std::string& name, const Vec2f& value)
 	{
 		glUniform2fv(GetLocation(name), 1, &value[0]);
 	}
 
-	void OpenGLShader::UploadUniformVec3(const std::string& name, const glm::vec3& value)
+	void OpenGLShader::UploadUniformVec3(const std::string& name, const Vec3f& value)
 	{
 		glUniform3fv(GetLocation(name), 1, &value[0]);
 	}
 
-	void OpenGLShader::UploadUniformVec4(const std::string& name, const glm::vec4& value)
+	void OpenGLShader::UploadUniformVec4(const std::string& name, const Vec4f& value)
 	{
 		glUniform4fv(GetLocation(name), 1, &value[0]);
 	}

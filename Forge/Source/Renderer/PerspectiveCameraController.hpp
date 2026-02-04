@@ -2,10 +2,9 @@
 
 #include "Camera.hpp"
 #include "Controller.hpp"
-#include "../Event/InputEvent.hpp"
-#include "../Event/WindowEvents.hpp"
+#include "../Event/Event.hpp"
 
-namespace Forge
+namespace fg
 {
 	class PerspectiveCameraController : public Controller
 	{
@@ -25,10 +24,10 @@ namespace Forge
 		inline const bool PitchInverted() const { return m_InvertedPitch; }
 
 	private:
-		bool OnMouseMoved(MouseMovedEvent& event);
-		bool OnMouseScrolled(MouseScrolledEvent& event);
-		bool OnKeyBoardPressed(KeyPressedEvent& event);
-		bool OnWindowResized(WindowResizeEvent& event);
+		bool OnMouseMoved(Event::MouseMoved& event);
+		bool OnMouseScrolled(Event::MouseScrolled& event);
+		bool OnKeyBoardPressed(Event::KeyPressed& event);
+		bool OnWindowResized(Event::WindowResized& event);
 
 	private:
 		Camera& m_Camera;

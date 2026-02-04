@@ -6,7 +6,7 @@
 
 #include <ranges>
 
-namespace Forge
+namespace fg
 {
 	static Application* s_Application = nullptr;
 
@@ -23,7 +23,7 @@ namespace Forge
 		if (m_Specification.WindowSpec.Title.empty())
 			m_Specification.WindowSpec.Title = m_Specification.Name;
 
-		m_Specification.WindowSpec.EventCallback = [this](Event& event) {RaiseEvent(event); };
+		m_Specification.WindowSpec.EventCallback = [this](Event& event) { RaiseEvent(event); };
 
 		m_Window = CreateRef<Window>(m_Specification.WindowSpec);
 		m_Window->Create();
@@ -101,7 +101,7 @@ namespace Forge
 		}
 	}
 
-	glm::vec2 Application::GetFrameBufferSize() const
+	Vec2f Application::GetFrameBufferSize() const
 	{
 		return m_Window->GetFrameBufferSize();
 	}

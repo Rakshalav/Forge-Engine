@@ -2,7 +2,7 @@
 
 #include "../Event/Event.hpp"
 
-namespace Forge
+namespace fg
 {
 	class Layer
 	{

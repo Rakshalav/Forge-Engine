@@ -6,19 +6,19 @@
 #include "../Platform/OpenGL/OpenGLBuffer.hpp"
 
 
-namespace Forge
+namespace fg
 {
 	uint8_t BufferElement::GetSizeOfType(ElementType type)
 	{
 		switch (type)
 		{
-			case Forge::ElementType::BYTE:				return 1;
-			case Forge::ElementType::UNSIGNED_BYTE:		return 1;
-			case Forge::ElementType::SHORT:				return 2;
-			case Forge::ElementType::UNSIGNED_SHORT:	return 2;
-			case Forge::ElementType::INT:				return 4;
-			case Forge::ElementType::UNSIGNED_INT:		return 4;
-			case Forge::ElementType::FLOAT:				return 4;
+			case fg::ElementType::BYTE:				return 1;
+			case fg::ElementType::UNSIGNED_BYTE:		return 1;
+			case fg::ElementType::SHORT:				return 2;
+			case fg::ElementType::UNSIGNED_SHORT:	return 2;
+			case fg::ElementType::INT:				return 4;
+			case fg::ElementType::UNSIGNED_INT:		return 4;
+			case fg::ElementType::FLOAT:				return 4;
 		}
 	}
 

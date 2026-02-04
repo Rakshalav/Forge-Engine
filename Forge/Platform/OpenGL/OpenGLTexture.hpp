@@ -1,21 +1,21 @@
 #pragma once
 
 #include "../Source/Renderer/Texture.hpp"
+#include "../Source/Maths/Math.hpp"
 
-namespace Forge
+namespace fg
 {
 	class OpenGLTexture2D : public Texture2D
 	{
 	public:
 		OpenGLTexture2D(const std::string& path);
 
-		uint32_t GetWidth() const { return m_Width; }
-		uint32_t GetHeight() const { return m_Height; }
+		inline Vec2u GetSize() const { return m_Size; }
 
 	private:
 		uint32_t m_RendererID;
 
-		uint32_t m_Width, m_Height;
+		Vec2u m_Size;
 		bool m_MipMaps = true;
 
 		uint32_t m_InternalFormat, m_DataFormat;

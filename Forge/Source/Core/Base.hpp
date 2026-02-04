@@ -2,7 +2,7 @@
 
 #include <memory>
 
-namespace Forge
+namespace fg
 {
 	template<class T>
 	using Ref = std::shared_ptr<T>;

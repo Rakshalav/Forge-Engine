@@ -2,7 +2,7 @@
 
 #include "../Source/Renderer/VertexArray.hpp"
 
-namespace Forge 
+namespace fg 
 {
 	class OpenGLVertexArray : public VertexArray
 	{

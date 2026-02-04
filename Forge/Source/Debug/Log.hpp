@@ -3,7 +3,7 @@
 #include <spdlog/spdlog.h>
 #include "Core/Base.hpp"
 
-namespace Forge
+namespace fg
 {
     class Log
     {
@@ -37,16 +37,16 @@ namespace Forge
 }
 
 // Core log macros
-#define FG_CORE_TRACE(...)    Forge::Log::GetCoreLogger()->trace(__VA_ARGS__)
-#define FG_CORE_INFO(...)     Forge::Log::GetCoreLogger()->info(__VA_ARGS__)
-#define FG_CORE_WARN(...)     Forge::Log::GetCoreLogger()->warn(__VA_ARGS__)
-#define FG_CORE_ERROR(...)    Forge::Log::GetCoreLogger()->error(__VA_ARGS__)
-#define FG_CORE_CRITICAL(...) Forge::Log::GetCoreLogger()->critical(__VA_ARGS__)
+#define FG_CORE_TRACE(...)    fg::Log::GetCoreLogger()->trace(__VA_ARGS__)
+#define FG_CORE_INFO(...)     fg::Log::GetCoreLogger()->info(__VA_ARGS__)
+#define FG_CORE_WARN(...)     fg::Log::GetCoreLogger()->warn(__VA_ARGS__)
+#define FG_CORE_ERROR(...)    fg::Log::GetCoreLogger()->error(__VA_ARGS__)
+#define FG_CORE_CRITICAL(...) fg::Log::GetCoreLogger()->critical(__VA_ARGS__)
 
 // Client log macros
-#define FG_TRACE(...)         Forge::Log::GetClientLogger()->trace(__VA_ARGS__)
-#define FG_INFO(...)          Forge::Log::GetClientLogger()->info(__VA_ARGS__)
-#define FG_WARN(...)          Forge::Log::GetClientLogger()->warn(__VA_ARGS__)
-#define FG_ERROR(...)         Forge::Log::GetClientLogger()->error(__VA_ARGS__)
-#define FG_CRITICAL(...)      Forge::Log::GetClientLogger()->critical(__VA_ARGS__)
+#define FG_TRACE(...)         fg::Log::GetClientLogger()->trace(__VA_ARGS__)
+#define FG_INFO(...)          fg::Log::GetClientLogger()->info(__VA_ARGS__)
+#define FG_WARN(...)          fg::Log::GetClientLogger()->warn(__VA_ARGS__)
+#define FG_ERROR(...)         fg::Log::GetClientLogger()->error(__VA_ARGS__)
+#define FG_CRITICAL(...)      fg::Log::GetClientLogger()->critical(__VA_ARGS__)
 

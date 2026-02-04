@@ -1,6 +1,6 @@
 #include "LayerStack.hpp"
 
-namespace Forge 
+namespace fg 
 {
 	LayerStack::~LayerStack()
 	{

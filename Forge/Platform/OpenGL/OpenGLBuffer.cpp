@@ -1,7 +1,7 @@
 #include <glad/glad.h>
 #include "OpenGLBuffer.hpp"
 
-namespace Forge
+namespace fg
 {
 	//Vertex Buffer
 	OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertices, uint32_t size)

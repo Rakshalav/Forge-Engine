@@ -5,7 +5,7 @@
 
 #include "../Source/Debug/Log.hpp"
 
-namespace Forge
+namespace fg
 {
 	OpenGLTexture2D::OpenGLTexture2D(const std::string& path)
 	{
@@ -14,8 +14,8 @@ namespace Forge
 
 		if (data)
 		{
-			m_Width = (uint32_t)width;
-			m_Height = (uint32_t)height;
+			m_Size.x = (uint32_t)width;
+			m_Size.y = (uint32_t)height;
 
 			GLenum internalFormat = 0, dataFormat = 0;
 			if (nrChannels == 4) //is png

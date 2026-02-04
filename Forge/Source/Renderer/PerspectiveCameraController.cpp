@@ -1,16 +1,12 @@
 #include "PerspectiveCameraController.hpp"
+#include "../Renderer/Renderer.hpp"
+#include "../Event/Input.hpp"
 #include "../Core/Application.hpp"
 
-#include "../Renderer/Renderer.hpp"
-
-namespace Forge
+namespace fg
 {
 	PerspectiveCameraController::PerspectiveCameraController(Camera* camera) : m_Camera(*camera)
 	{
-		auto& window = *Application::Get().GetWindow();
-
-		m_LastMouseX = window.GetSize().x / 2;
-		m_LastMouseY = window.GetSize().y / 2;
 	}
 
 	void PerspectiveCameraController::OnUpdate(float ts)
@@ -23,23 +19,22 @@ namespace Forge
 		glm::vec3 right = m_Camera.GetRight();
 		glm::vec3 front = m_Camera.GetFront();
 
-		auto window = Application::Get().GetWindow()->GetHandle();
-		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) 
+		if (Input::IsKeyPressed(KeyBoard::W)) 
 		{
 			position += velocity * front;
 			m_Camera.SetPosition(position);
 		}
-		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		if (Input::IsKeyPressed(KeyBoard::S))
 		{
 			position -= velocity * front;
 			m_Camera.SetPosition(position);
 		}
-		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		if (Input::IsKeyPressed(KeyBoard::A))
 		{
 			position -= right * velocity;
 			m_Camera.SetPosition(position);
 		}
-		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		if (Input::IsKeyPressed(KeyBoard::D))
 		{
 			position += right * velocity;
 			m_Camera.SetPosition(position);
@@ -49,18 +44,17 @@ namespace Forge
 	void PerspectiveCameraController::OnEvent(Event& event)
 	{
 		EventDispatcher dispatcher(event);
-		dispatcher.Dispatch<MouseMovedEvent>([this](MouseMovedEvent& e) { return OnMouseMoved(e); });
-		dispatcher.Dispatch<MouseScrolledEvent>([this](MouseScrolledEvent& e) { return OnMouseScrolled(e); });
-		dispatcher.Dispatch<KeyPressedEvent>([this](KeyPressedEvent& e) { return OnKeyBoardPressed(e); });
-		dispatcher.Dispatch<WindowResizeEvent>([this](WindowResizeEvent& e) { return OnWindowResized(e); });
+		dispatcher.Dispatch<Event::MouseMoved>([this](Event::MouseMoved& e) { return OnMouseMoved(e); });
+		dispatcher.Dispatch<Event::MouseScrolled>([this](Event::MouseScrolled& e) { return OnMouseScrolled(e); });
+		dispatcher.Dispatch<Event::KeyPressed>([this](Event::KeyPressed& e) { return OnKeyBoardPressed(e); });
+		dispatcher.Dispatch<Event::WindowResized>([this](Event::WindowResized& e) { return OnWindowResized(e); });
 	}
 
-	bool PerspectiveCameraController::OnKeyBoardPressed(KeyPressedEvent& event)
+	bool PerspectiveCameraController::OnKeyBoardPressed(Event::KeyPressed& event)
 	{
-		if (event.GetKeyCode() == GLFW_KEY_ESCAPE && !event.IsRepeat())
+		if (event.KeyCode == KeyBoard::Escape && !event.IsRepeated)
 		{
-			auto& window = *Forge::Application::Get().GetWindow().get();
-
+			auto& window = *Application::Get().GetWindow().get();
 			if (!m_isCursorEnabled)
 			{
 				m_isCursorEnabled = true;
@@ -79,17 +73,17 @@ namespace Forge
 		return false;
 	}
 
-	bool PerspectiveCameraController::OnWindowResized(WindowResizeEvent& event)
+	bool PerspectiveCameraController::OnWindowResized(Event::WindowResized& event)
 	{
-		m_Camera.SetViewPortSize(event.GetWidth(), event.GetHeight());
-		Renderer::SetViewPortSize(event.GetWidth(), event.GetHeight());
+		m_Camera.SetViewPortSize(event.Size.x, event.Size.y);
+		Renderer::SetViewPortSize(event.Size.x, event.Size.y);
 		return false;
 	}
 
-	bool PerspectiveCameraController::OnMouseMoved(MouseMovedEvent& event)
+	bool PerspectiveCameraController::OnMouseMoved(Event::MouseMoved& event)
 	{
-		auto posX = (float)event.GetX();
-		auto posY = (float)event.GetY();
+		auto posX = (float)event.Offset.x;
+		auto posY = (float)event.Offset.y;
 
 		if (m_FirstMouse)
 		{
@@ -123,7 +117,7 @@ namespace Forge
 		return true;
 	}
 
-	bool PerspectiveCameraController::OnMouseScrolled(MouseScrolledEvent& event)
+	bool PerspectiveCameraController::OnMouseScrolled(Event::MouseScrolled& event)
 	{		
 		return false;
 	}

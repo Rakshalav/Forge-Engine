@@ -6,8 +6,8 @@
 #include "Source/Core/Application.hpp"
 
 // Engine Event
+#include "Source/Event/Input.hpp"
 #include "Source/Event/Event.hpp"
-#include "Source/Event/InputEvent.hpp"
 
 // Engine Renderer
 #include "Source/Renderer/Shader.hpp"
@@ -21,3 +21,6 @@
 
 // Engine Debugger
 #include "Source/Debug/Log.hpp"
+
+// Engine Maths
+#include "Source/Maths/Math.hpp"

@@ -1,9 +1,9 @@
 #pragma once
 
-#include <glm/glm.hpp>
+#include "Maths/Math.hpp"
 #include <glm/gtc/quaternion.hpp>
 
-namespace Forge 
+namespace fg 
 {
     enum class CameraProjection
     {
@@ -17,7 +17,7 @@ namespace Forge
         Camera() = default;
         Camera(CameraProjection projectionType);
 
-        void SetPosition(const glm::vec3& position);
+        void SetPosition(const Vec3f& position);
         void SetOrientation(const glm::quat& orientation);
 
         void SetPerspective(float Fov, float AspectRatio, float NearClip, float FarClip);
@@ -29,16 +29,16 @@ namespace Forge
         const glm::mat4& GetViewMatrix() const ;
         const glm::mat4& GetViewProjectionMatrix() const;
 
-        const glm::vec3 GetFront() const;
-        const glm::vec3 GetRight() const;
-        const glm::vec3 GetUp() const;
+        const Vec3f GetFront() const;
+        const Vec3f GetRight() const;
+        const Vec3f GetUp() const;
 
-        const glm::vec3& GetPosition() const { return m_Position; }
+        const Vec3f& GetPosition() const { return m_Position; }
 
     private:
         CameraProjection m_Projection;
 
-        glm::vec3 m_Position{ 0.0f, 0.0f, 0.0f };
+        Vec3f m_Position{ 0.0f, 0.0f, 0.0f };
         glm::quat m_Orientation{ 1.0f, 0.0f, 0.0f, 0.0f };
 
         float m_Fov = 45.0f;
@@ -46,7 +46,7 @@ namespace Forge
         float m_NearClip = 0.1f;
         float m_FarClip = 1000.0f;
         float m_OrthographicSize = 10.0f; 
-
+    
         mutable glm::mat4 m_ProjectionMatrix{ 1.0f };
         mutable glm::mat4 m_ViewMatrix{ 1.0f };
         mutable glm::mat4 m_ViewProjectionMatrix{ 1.0f };
