@@ -6,7 +6,7 @@
 #include <string>
 #include <functional>
 
-#include "../Event/TestEvent.hpp"
+#include "../Event/Event.hpp"
 
 namespace fg
 {

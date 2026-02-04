@@ -2,7 +2,7 @@
 
 #include "Camera.hpp"
 #include "Controller.hpp"
-#include "../Event/TestEvent.hpp"
+#include "../Event/Event.hpp"
 
 namespace fg
 {

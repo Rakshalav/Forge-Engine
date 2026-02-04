@@ -3,8 +3,6 @@
 #include "Window.hpp"
 #include "../Renderer/Renderer.hpp"
 
-#include "../Event/TestEvent.hpp"
-
 #include "../Debug/Log.hpp"
 
 namespace fg
