@@ -24,10 +24,10 @@ namespace fg
 		inline const bool PitchInverted() const { return m_InvertedPitch; }
 
 	private:
-		bool OnMouseMoved(Event::MouseMoved& event);
-		bool OnMouseScrolled(Event::MouseScrolled& event);
-		bool OnKeyBoardPressed(Event::KeyPressed& event);
-		bool OnWindowResized(Event::WindowResized& event);
+		bool OnMouseMoved(Event::MouseMove& event);
+		bool OnMouseScrolled(Event::MouseScroll& event);
+		bool OnKeyBoardPressed(Event::KeyPress& event);
+		bool OnWindowResized(Event::WindowResize& event);
 
 	private:
 		Camera& m_Camera;

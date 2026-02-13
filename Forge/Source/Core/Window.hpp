@@ -1,12 +1,13 @@
 #pragma once
 
-#include <GLFW/glfw3.h>
 #include "../Maths/Math.hpp"
 
 #include <string>
 #include <functional>
 
 #include "../Event/Event.hpp"
+
+struct GLFWwindow;
 
 namespace fg
 {
@@ -41,13 +42,14 @@ namespace fg
 
 		bool ShouldClose() const;
 
-		inline GLFWwindow* GetHandle() const { return m_Handle; }
-
 		void ToggleCursor(bool value);
 
 	private:
 		WindowSpecification m_Specification;
 
 		GLFWwindow* m_Handle = nullptr;
+
+		friend struct Keyboard;
+		friend struct Mouse;
 	};
 }	

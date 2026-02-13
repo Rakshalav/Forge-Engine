@@ -8,49 +8,48 @@ namespace fg
 	Event Event::_KeyPressed(int code, int scancode, int mods, bool isRepeated)
 	{
 		Event event;
-		event.Type = Event::Type::KeyPressed;
-		event.m_Data = Event::KeyPressed(static_cast<Input::KeyBoard>(code), scancode, static_cast<Input::KeyMod>(mods), isRepeated);
-		FG_CORE_INFO("Mods: {}", mods);
+		event.Type = Event::Type::KeyPress;
+		event.m_Data = Event::KeyPress(static_cast<Keyboard::Key>(code), scancode, static_cast<Keyboard::Mod>(mods), isRepeated);
 		return event;
 	}
 
 	Event Event::_KeyReleased(int code, int scancode)
 	{
 		Event event;
-		event.Type = Event::Type::KeyReleased;
-		event.m_Data = Event::KeyReleased(static_cast<Input::KeyBoard>(code), scancode);
+		event.Type = Event::Type::KeyRelease;
+		event.m_Data = Event::KeyRelease(static_cast<Keyboard::Key>(code), scancode);
 		return event;
 	}
 
 	Event Event::_MouseMoved(double x, double y)
 	{
 		Event event;
-		event.Type = Event::Type::MouseMoved;
-		event.m_Data = Event::MouseMoved({ (float)x, (float)y });
+		event.Type = Event::Type::MouseMove;
+		event.m_Data = Event::MouseMove({ (float)x, (float)y });
 		return event;
 	}
 
 	Event Event::_MouseScrolled(double x, double y)
 	{
 		Event event;
-		event.Type = Event::Type::MouseScrolled;
-		event.m_Data = Event::MouseScrolled({ (int)x, (int)y });
+		event.Type = Event::Type::MouseScroll;
+		event.m_Data = Event::MouseScroll({ (int)x, (int)y });
 		return event;
 	}
 
 	Event Event::_MouseButtonPressed(int code)
 	{
 		Event event;
-		event.Type = Event::Type::MouseButtonPressed;
-		event.m_Data = Event::MouseButtonPressed(static_cast<Mouse::Button>(code));
+		event.Type = Event::Type::MouseButtonPress;
+		event.m_Data = Event::MouseButtonPress(static_cast<Mouse::Button>(code));
 		return event;
 	}
 
 	Event Event::_MouseButtonReleased(int code)
 	{
 		Event event;
-		event.Type = Event::Type::MouseButtonReleased;
-		event.m_Data = Event::MouseButtonReleased(static_cast<Mouse::Button>(code));
+		event.Type = Event::Type::MouseButtonRelease;
+		event.m_Data = Event::MouseButtonRelease(static_cast<Mouse::Button>(code));
 		return event;
 	}
 
@@ -58,7 +57,7 @@ namespace fg
 	{
 		Event event;
 		event.Type = Event::Type::WindowResize;
-		event.m_Data = Event::WindowResized({ x, y });
+		event.m_Data = Event::WindowResize({ x, y });
 		return event;
 	}
 
@@ -81,38 +80,38 @@ namespace fg
 		}
 		case fg::Event::Type::WindowResize:
 		{
-			const auto& data = std::get<WindowResized>(m_Data);
+			const auto& data = std::get<WindowResize>(m_Data);
 			return std::format("WindowResizeEvent: {}, {}", data.Size.x, data.Size.y);
 		}
-		case fg::Event::Type::KeyPressed:
+		case fg::Event::Type::KeyPress:
 		{
-			const auto& data = std::get<KeyPressed>(m_Data);
-			return std::format("KeyPressedEvent: {} (repeat = {}) mods: {}", Input::GetName(data.KeyCode), data.IsRepeated, (int)data.Mods);
+			const auto& data = std::get<KeyPress>(m_Data);
+			return std::format("KeyPressedEvent: {} (repeat = {})", Keyboard::GetName(data.KeyCode), data.IsRepeated);
 		}
-		case fg::Event::Type::KeyReleased:
+		case fg::Event::Type::KeyRelease:
 		{
-			const auto& data = std::get<KeyReleased>(m_Data);
-			return std::format("KeyReleasedEvent: {}", Input::GetName(data.KeyCode));
+			const auto& data = std::get<KeyRelease>(m_Data);
+			return std::format("KeyReleasedEvent: {}", Keyboard::GetName(data.KeyCode));
 		}
 
-		case fg::Event::Type::MouseButtonPressed:
+		case fg::Event::Type::MouseButtonPress:
 		{
-			const auto& data = std::get<MouseButtonPressed>(m_Data);
+			const auto& data = std::get<MouseButtonPress>(m_Data);
 			return std::format("MouseButtonEvent: {}", (int)data.Button);
 		}
-		case fg::Event::Type::MouseButtonReleased:
+		case fg::Event::Type::MouseButtonRelease:
 		{
-			const auto& data = std::get<MouseButtonReleased>(m_Data);
+			const auto& data = std::get<MouseButtonRelease>(m_Data);
 			return std::format("MouseButtonEvent: {}", (int)data.Button);
 		}
-		case fg::Event::Type::MouseMoved:
+		case fg::Event::Type::MouseMove:
 		{
-			const auto& data = std::get<MouseMoved>(m_Data);
+			const auto& data = std::get<MouseMove>(m_Data);
 			return std::format("MouseMovedEvent: ({}, {})", data.Offset.x, data.Offset.y);
 		}
-		case fg::Event::Type::MouseScrolled:
+		case fg::Event::Type::MouseScroll:
 		{
-			const auto& data = std::get<MouseScrolled>(m_Data);
+			const auto& data = std::get<MouseScroll>(m_Data);
 			return std::format("MouseScrolledEvent: {}, {}", data.Offset.x, data.Offset.y);
 		}
 		default:

@@ -8,6 +8,8 @@
 
 namespace fg
 {
+	class Window;
+
 	class Event
 	{
 	public:
@@ -15,49 +17,49 @@ namespace fg
 		{
 			WindowClose,
 			WindowResize,
-			KeyPressed,
-			KeyReleased,
-			MouseButtonPressed,
-			MouseButtonReleased,
-			MouseMoved,
-			MouseScrolled,
+			KeyPress,
+			KeyRelease,
+			MouseButtonPress,
+			MouseButtonRelease,
+			MouseMove,
+			MouseScroll,
 
 			Count
 		};
 
 	public:
 		//--- KeyBoard ---
-		struct KeyPressed
+		struct KeyPress
 		{
-			Input::KeyBoard KeyCode;
+			Keyboard::Key KeyCode;
 			int ScanCode;
-			Input::KeyMod Mods;
+			Keyboard::Mod Mods;
 			bool IsRepeated;
 		};
 
-		struct KeyReleased
+		struct KeyRelease
 		{
-			Input::KeyBoard KeyCode;
+			Keyboard::Key KeyCode;
 			int ScanCode;
 		};
 
 		//--- Mouse ---
-		struct MouseMoved
+		struct MouseMove
 		{
 			Vec2f Offset;
 		};
 
-		struct MouseScrolled
+		struct MouseScroll
 		{
 			Vec2i Offset;
 		};
 
-		struct MouseButtonPressed
+		struct MouseButtonPress
 		{
 			Mouse::Button Button;
 		};
 
-		struct MouseButtonReleased
+		struct MouseButtonRelease
 		{
 			Mouse::Button Button;
 		};
@@ -65,12 +67,18 @@ namespace fg
 		//--- Window ---
 		struct WindowClosed {};
 
-		struct WindowResized
+		struct WindowResize
 		{
 			Vec2u Size;
 		};
 
 	public:
+		template<typename T>
+		inline static T& GetData() { return std::get<T>(m_Data); }
+
+		std::string ToString() const;
+
+	private:
 		static Event _KeyPressed(int code, int scancode, int mods, bool isRepeated);
 		static Event _KeyReleased(int code, int scancode);
 
@@ -82,10 +90,7 @@ namespace fg
 		static Event _WindowResized(uint32_t x, uint32_t y);
 		static Event _WindowClosed();
 
-		template<typename T>
-		inline static T& GetData() { return std::get<T>(m_Data); }
-
-		std::string ToString() const;
+		friend class Window;
 
 	public:
 		Type Type;
@@ -93,21 +98,20 @@ namespace fg
 
 	private:
 		std::variant<
-			KeyPressed,
-			KeyReleased,
-			MouseMoved,
-			MouseScrolled,
-			MouseButtonPressed,
-			MouseButtonReleased,
+			KeyPress,
+			KeyRelease,
+			MouseMove,
+			MouseScroll,
+			MouseButtonPress,
+			MouseButtonRelease,
 			WindowClosed,
-			WindowResized> m_Data;
+			WindowResize> m_Data;
 
 		friend class EventDispatcher;
 	};
 
 	class EventDispatcher
 	{
-
 	public:
 		EventDispatcher(Event& event) : m_Event(event) {}
 

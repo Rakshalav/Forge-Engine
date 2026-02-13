@@ -12,6 +12,8 @@ namespace fg
 
 		inline Vec2u GetSize() const { return m_Size; }
 
+		void Bind(uint32_t slot = 0) const override;
+
 	private:
 		uint32_t m_RendererID;
 
@@ -21,4 +23,3 @@ namespace fg
 		uint32_t m_InternalFormat, m_DataFormat;
 	};
 }
-

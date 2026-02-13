@@ -5,7 +5,7 @@
 
 namespace fg 
 {
-    enum class CameraProjection
+    enum class CameraProjection : uint8_t
     {
         Perspective = 0,
         OrthoGraphic

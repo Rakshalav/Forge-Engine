@@ -14,7 +14,7 @@ private:
 	void OnDetach() override;
 
 private:
-	bool OnKeyBoardPressed(fg::Event::KeyPressed& event);
+	bool OnKeyBoardPressed(fg::Event::KeyPress& event);
 
 private:
 	fg::Ref<fg::Camera> m_Camera;
@@ -26,6 +26,10 @@ private:
 	fg::Ref<fg::VertexArray> m_VertexArrayCube;
 	fg::Ref<fg::VertexArray> m_VertexArrayLight;
 
-
 	glm::vec3 m_lightPos = { 1.2f, 1.0f, 2.0f };
+	glm::vec3 lightColor = { 1.0f, 1.0f, 1.0f };
+	glm::mat4 trans = glm::mat4(1.0f);
+
+	fg::Ref<fg::Texture2D> m_DiffuseMap;
+	fg::Ref<fg::Texture2D> m_SpecularMap;
 };

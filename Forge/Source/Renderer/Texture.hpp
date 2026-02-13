@@ -15,6 +15,8 @@ namespace fg
 	{
 	public:
 		static Ref<Texture2D> Create(const std::string& path);
+
+		virtual void Bind(uint32_t slot = 0) const = 0;
 	};
 }
 

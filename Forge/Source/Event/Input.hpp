@@ -2,10 +2,9 @@
 
 namespace fg
 {
-    class Input
+    struct Keyboard
     {
-    public:
-        enum class KeyBoard
+        enum class Key
         {
             /* Printable keys */
             Space = 32,
@@ -134,7 +133,7 @@ namespace fg
             Last = Menu
         };
 
-        enum class KeyMod
+        enum class Mod
         {
             Shift = 1,
             Control = 2,
@@ -144,33 +143,26 @@ namespace fg
             NumLock = 32
         };
 
-        struct Mouse
-        {
-            enum class Button
-            {
-                Left = 0,
-                Right = 1,
-                Middle = 2
-            };
+        static int GetScanCode(Key key);
+        static const char* GetName(Key key);
 
-            enum class Wheel
-            {
-                Vertical,
-                Horizontal
-            };
-        };
-
-        static int GetScanCode(KeyBoard key);
-        static const char* GetName(KeyBoard key);
-
-        static bool IsKeyPressed(KeyBoard key);
-        static bool IsKeyRepeated(KeyBoard key);
-        static bool IsKeyReleased(KeyBoard key);
-
-        static bool IsMouseButtonPressed(Mouse::Button button);
-        static bool IsMouseButtonReleased(Mouse::Button button);
+        static bool IsPressed(Key key);
+        static bool IsRepeated(Key key);
+        static bool IsReleased(Key key);
     };
 
-    typedef Input::KeyBoard KeyBoard;
-    typedef Input::Mouse Mouse;
+    typedef Keyboard::Key Key;
+
+    struct Mouse
+    {
+        enum class Button
+        {
+            Left = 0,
+            Right = 1,
+            Middle = 2
+        };
+
+        static bool IsButtonPressed(Button button);
+        static bool IsButtonReleased(Button button);
+    };
 }
