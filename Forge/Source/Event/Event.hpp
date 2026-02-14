@@ -79,16 +79,16 @@ namespace fg
 		std::string ToString() const;
 
 	private:
-		static Event _KeyPressed(int code, int scancode, int mods, bool isRepeated);
-		static Event _KeyReleased(int code, int scancode);
+		static Event KeyPressCallback(int code, int scancode, int mods, bool isRepeated);
+		static Event KeyReleaseCallback(int code, int scancode);
 
-		static Event _MouseMoved(double x, double y);
-		static Event _MouseScrolled(double x, double y);
-		static Event _MouseButtonPressed(int code);
-		static Event _MouseButtonReleased(int code);
+		static Event MouseMoveCallback(double x, double y);
+		static Event MouseScrollCallback(double x, double y);
+		static Event MouseButtonPressCallback(int code);
+		static Event MouseButtonReleaseCallback(int code);
 
-		static Event _WindowResized(uint32_t x, uint32_t y);
-		static Event _WindowClosed();
+		static Event WindowResizeCallback(uint32_t x, uint32_t y);
+		static Event WindowCloseCallback();
 
 		friend class Window;
 

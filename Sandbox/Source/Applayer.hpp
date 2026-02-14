@@ -28,7 +28,6 @@ private:
 
 	glm::vec3 m_lightPos = { 1.2f, 1.0f, 2.0f };
 	glm::vec3 lightColor = { 1.0f, 1.0f, 1.0f };
-	glm::mat4 trans = glm::mat4(1.0f);
 
 	fg::Ref<fg::Texture2D> m_DiffuseMap;
 	fg::Ref<fg::Texture2D> m_SpecularMap;

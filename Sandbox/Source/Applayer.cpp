@@ -49,6 +49,19 @@ unsigned int indices[] = {
     20, 21, 22, 22, 23, 20  // Top
 };
 
+glm::vec3 cubePositions[] = {
+    glm::vec3(0.0f,  0.0f,  0.0f),
+    glm::vec3(2.0f,  5.0f, -15.0f),
+    glm::vec3(-1.5f, -2.2f, -2.5f),
+    glm::vec3(-3.8f, -2.0f, -12.3f),
+    glm::vec3(2.4f, -0.4f, -3.5f),
+    glm::vec3(-1.7f,  3.0f, -7.5f),
+    glm::vec3(1.3f, -2.0f, -2.5f),
+    glm::vec3(1.5f,  2.0f, -2.5f),
+    glm::vec3(1.5f,  0.2f, -1.5f),
+    glm::vec3(-1.3f,  1.0f, -1.5f)
+};
+
 GameLayer::GameLayer() 
 {
     m_Camera = fg::CreateRef<fg::Camera>(fg::CameraProjection::Perspective);
@@ -96,12 +109,6 @@ void GameLayer::OnEvent(fg::Event& event)
 void GameLayer::OnUpdate(float ts)
 {
     m_Controller->OnUpdate(ts);
-
-    auto time = fg::Application::Get().GetTime();
-    //lightColor.r = sin(time * 2.0f) * 0.5f + 0.5f;
-    //lightColor.g = sin(time * 0.7f) * 0.5f + 0.5f;
-    //lightColor.b = sin(time * 1.3f) * 0.5f + 0.5f;
-    //trans = glm::rotate(trans, glm::radians(100.0f * ts), fg::Vec3f(0.0f, 1.0f, 0.0f));
 }
 
 void GameLayer::OnRender()
@@ -110,11 +117,19 @@ void GameLayer::OnRender()
     
     auto& gl_lightingShader = *std::dynamic_pointer_cast<fg::OpenGLShader>(m_lightingShader);
     gl_lightingShader.Bind();
+        
+    gl_lightingShader.Set("light.position", m_Camera->GetPosition());
+    gl_lightingShader.Set("light.direction", m_Camera->GetFront());
+    gl_lightingShader.Set("light.cutOff", glm::cos(glm::radians(12.5f)));
+    gl_lightingShader.Set("light.outerCutOff", glm::cos(glm::radians(17.5f)));
 
-    gl_lightingShader.Set("light.position", m_lightPos);
     gl_lightingShader.Set("light.ambient", lightColor * 0.2f);
     gl_lightingShader.Set("light.diffuse", lightColor * 0.5f);
     gl_lightingShader.Set("light.specular", fg::Vec3f(1.0f));
+
+    gl_lightingShader.Set("light.constant", 1.0f);
+    gl_lightingShader.Set("light.linear", 0.09f);
+    gl_lightingShader.Set("light.quadratic", 0.032f);
 
     gl_lightingShader.Set("material.ambient", fg::Vec3f(1.0f, 0.5f, 0.31f));
 
@@ -129,13 +144,20 @@ void GameLayer::OnRender()
     gl_lightingShader.Set("viewPos", m_Camera->GetPosition());
 
     gl_lightingShader.Set("u_view_projection", view_projection);
-    glm::mat4 model = trans * glm::mat4(1.0f);
-    gl_lightingShader.Set("u_model", model);
 
-    auto normal = glm::mat3(glm::transpose(glm::inverse(model)));
-    gl_lightingShader.Set("u_normal", normal);
-   
-    fg::Renderer::Draw(m_VertexArrayCube, m_lightingShader);
+    for (uint32_t i = 0; i < 10; i++)
+    {
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, cubePositions[i]);
+        float angle = 20.0f * i;
+        model = glm::rotate(model, glm::radians(angle), fg::Vec3f(1.0f, 0.3f, 0.5f));
+        gl_lightingShader.Set("u_model", model);
+
+        auto normal = glm::mat3(glm::transpose(glm::inverse(model)));
+        gl_lightingShader.Set("u_normal", normal);
+
+        fg::Renderer::Draw(m_VertexArrayCube, m_lightingShader);
+    }
 
     auto& gl_lightCubeShader = *std::dynamic_pointer_cast<fg::OpenGLShader>(m_ligtCubeShader);
     gl_lightCubeShader.Bind();

@@ -5,7 +5,7 @@
 
 namespace fg
 {
-	Event Event::_KeyPressed(int code, int scancode, int mods, bool isRepeated)
+	Event Event::KeyPressCallback(int code, int scancode, int mods, bool isRepeated)
 	{
 		Event event;
 		event.Type = Event::Type::KeyPress;
@@ -13,7 +13,7 @@ namespace fg
 		return event;
 	}
 
-	Event Event::_KeyReleased(int code, int scancode)
+	Event Event::KeyReleaseCallback(int code, int scancode)
 	{
 		Event event;
 		event.Type = Event::Type::KeyRelease;
@@ -21,7 +21,7 @@ namespace fg
 		return event;
 	}
 
-	Event Event::_MouseMoved(double x, double y)
+	Event Event::MouseMoveCallback(double x, double y)
 	{
 		Event event;
 		event.Type = Event::Type::MouseMove;
@@ -29,7 +29,7 @@ namespace fg
 		return event;
 	}
 
-	Event Event::_MouseScrolled(double x, double y)
+	Event Event::MouseScrollCallback(double x, double y)
 	{
 		Event event;
 		event.Type = Event::Type::MouseScroll;
@@ -37,7 +37,7 @@ namespace fg
 		return event;
 	}
 
-	Event Event::_MouseButtonPressed(int code)
+	Event Event::MouseButtonPressCallback(int code)
 	{
 		Event event;
 		event.Type = Event::Type::MouseButtonPress;
@@ -45,7 +45,7 @@ namespace fg
 		return event;
 	}
 
-	Event Event::_MouseButtonReleased(int code)
+	Event Event::MouseButtonReleaseCallback(int code)
 	{
 		Event event;
 		event.Type = Event::Type::MouseButtonRelease;
@@ -53,7 +53,7 @@ namespace fg
 		return event;
 	}
 
-	Event Event::_WindowResized(uint32_t x, uint32_t y)
+	Event Event::WindowResizeCallback(uint32_t x, uint32_t y)
 	{
 		Event event;
 		event.Type = Event::Type::WindowResize;
@@ -61,7 +61,7 @@ namespace fg
 		return event;
 	}
 
-	Event Event::_WindowClosed()
+	Event Event::WindowCloseCallback()
 	{
 		Event event;
 		event.Type = Event::Type::WindowClose;

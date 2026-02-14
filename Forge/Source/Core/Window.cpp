@@ -25,7 +25,6 @@ namespace fg
 		glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 #endif
 		 
-
 		m_Handle = glfwCreateWindow(m_Specification.Width, m_Specification.Height, m_Specification.Title.c_str(), nullptr, nullptr);
 
 		if (!m_Handle)
@@ -66,14 +65,14 @@ namespace fg
 		glfwSetWindowCloseCallback(m_Handle, [](GLFWwindow* handle)
 		{
 			Window& window = *((Window*)glfwGetWindowUserPointer(handle));
-			auto event = Event::_WindowClosed();
+			auto event = Event::WindowCloseCallback();
 			window.RaiseEvent(event);
 		});
 
 		glfwSetWindowSizeCallback(m_Handle, [](GLFWwindow* handle, int width, int height)
 		{
 			Window& window = *((Window*)glfwGetWindowUserPointer(handle));
-			auto event = Event::_WindowResized(width, height);
+			auto event = Event::WindowResizeCallback(width, height);
 			window.RaiseEvent(event);
 		});
 
@@ -85,19 +84,19 @@ namespace fg
 			{
 			case GLFW_PRESS:
 			{
-				auto event = Event::_KeyPressed(key, scancode, mods, false);
+				auto event = Event::KeyPressCallback(key, scancode, mods, false);
 				window.RaiseEvent(event);
 				break;
 			}
 			case GLFW_REPEAT:
 			{
-				auto event = Event::_KeyPressed(key, scancode, mods, true);
+				auto event = Event::KeyPressCallback(key, scancode, mods, true);
 				window.RaiseEvent(event);
 				break;
 			}
 			case GLFW_RELEASE:
 			{
-				auto event = Event::_KeyReleased(key, scancode);
+				auto event = Event::KeyReleaseCallback(key, scancode);
 				window.RaiseEvent(event);
 				break;
 			}
@@ -112,13 +111,13 @@ namespace fg
 			{
 			case GLFW_PRESS:
 			{
-				auto event = Event::_MouseButtonPressed(button);
+				auto event = Event::MouseButtonPressCallback(button);
 				window.RaiseEvent(event);
 				break;
 			}
 			case GLFW_RELEASE:
 			{
-				auto event = Event::_MouseButtonReleased(button);
+				auto event = Event::MouseButtonReleaseCallback(button);
 				window.RaiseEvent(event);
 				break;
 			}
@@ -128,14 +127,14 @@ namespace fg
 		glfwSetScrollCallback(m_Handle, [](GLFWwindow* handle, double xOffset, double yOffset)
 		{
 			Window& window = *((Window*)glfwGetWindowUserPointer(handle));
-			auto event = Event::_MouseScrolled(xOffset, yOffset);
+			auto event = Event::MouseScrollCallback(xOffset, yOffset);
 			window.RaiseEvent(event);
 		});
 
 		glfwSetCursorPosCallback(m_Handle, [](GLFWwindow* handle, double x, double y)
 		{
 			Window& window = *((Window*)glfwGetWindowUserPointer(handle));
-			auto event = Event::_MouseMoved(x, y);
+			auto event = Event::MouseMoveCallback(x, y);
 			window.RaiseEvent(event);
 		});
 
