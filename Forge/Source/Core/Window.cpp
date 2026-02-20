@@ -189,6 +189,11 @@ namespace fg
 		return glfwWindowShouldClose(m_Handle) != 0;
 	}
 
+	void Window::SetShouldClose(bool value)
+	{
+		glfwSetWindowShouldClose(m_Handle, value);
+	}
+
 	void Window::ToggleCursor(bool value)
 	{
 		glfwSetInputMode(m_Handle, GLFW_CURSOR, value ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);

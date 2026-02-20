@@ -1,10 +1,9 @@
 #include "Layer.hpp"
-
 #include "Application.hpp"
 
 namespace fg
 {
-    void Layer::QueueTransition(Layer* toLayer, bool type)
+    void Layer::QueueTransition(Layer* toLayer, uint8_t type)
     {
         auto& app = Application::Get();
         auto& layerStack = app.m_LayerStack.GetLayerStack();

@@ -94,7 +94,7 @@ namespace fg
 
 	void Renderer::ClearColor(glm::vec4& color)
 	{
-		glClearColor(color.x, color.y, color.z, color.w);
+		glClearColor(color.r, color.g, color.b, color.a);
 	}
 
 	void Renderer::ClearColor(float x, float y, float z, float w)

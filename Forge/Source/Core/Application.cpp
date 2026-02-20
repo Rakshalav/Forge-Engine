@@ -43,11 +43,6 @@ namespace fg
 		s_Application = nullptr;
 	}
 
-	void Application::Close()
-	{
-		this->~Application();
-	}
-
 	void Application::Run()
 	{
 		m_Running = true;
@@ -123,7 +118,7 @@ namespace fg
 
 		for (auto& command : m_Commands)
 		{
-			if (command.type == true) //transition
+			if (command.type == 1) //transition
 			{
 				auto it = std::find(stack.begin(), stack.end(), command.current);
 				if (it != stack.end())
@@ -133,7 +128,7 @@ namespace fg
 				}
 			}
 
-			else //suspend
+			else if (command.type == 2) //suspend
 			{
 				
 			}

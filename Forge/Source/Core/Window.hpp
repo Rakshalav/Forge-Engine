@@ -41,6 +41,7 @@ namespace fg
 		Vec2f GetSize() const;
 
 		bool ShouldClose() const;
+		void SetShouldClose(bool value);
 
 		void ToggleCursor(bool value);
 

@@ -31,4 +31,6 @@ private:
 
 	fg::Ref<fg::Texture2D> m_DiffuseMap;
 	fg::Ref<fg::Texture2D> m_SpecularMap;
+
+	bool m_ToggleFlashLight = false;
 };

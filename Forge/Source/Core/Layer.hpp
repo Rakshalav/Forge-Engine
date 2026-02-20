@@ -21,17 +21,17 @@ namespace fg
 		inline void TransitionTo(Args&&... args)
 		{
 			TLayer* newLayer = new TLayer(std::forward<Args>(args)...);
-			QueueTransition(newLayer, true);
+			QueueTransition(newLayer, 1);
 		}
 
 		template <std::derived_from<Layer> TLayer, typename... Args>
 		inline void SuspendTo(Args&&... args)
 		{
 			TLayer* newLayer = new TLayer(std::forward<Args>(args)...);
-			QueueTransition(newLayer, false);
+			QueueTransition(newLayer, 2);
 		}
 
 	private:
-		void QueueTransition(Layer* toLayer, bool type);
+		void QueueTransition(Layer* toLayer, uint8_t type);
 	};
 }

@@ -65,7 +65,7 @@ namespace fg
 	{
 		Event event;
 		event.Type = Event::Type::WindowClose;
-		event.m_Data = Event::WindowClosed();
+		event.m_Data = Event::WindowClose();
 		return event;
 	}
 
@@ -75,7 +75,7 @@ namespace fg
 		{
 		case fg::Event::Type::WindowClose:
 		{
-			const auto& data = std::get<WindowClosed>(m_Data);
+			const auto& data = std::get<WindowClose>(m_Data);
 			return "WindowCloseEvent";
 		}
 		case fg::Event::Type::WindowResize:

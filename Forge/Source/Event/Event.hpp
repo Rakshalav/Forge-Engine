@@ -65,7 +65,7 @@ namespace fg
 		};
 
 		//--- Window ---
-		struct WindowClosed {};
+		struct WindowClose {};
 
 		struct WindowResize
 		{
@@ -104,7 +104,7 @@ namespace fg
 			MouseScroll,
 			MouseButtonPress,
 			MouseButtonRelease,
-			WindowClosed,
+			WindowClose,
 			WindowResize> m_Data;
 
 		friend class EventDispatcher;

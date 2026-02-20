@@ -5,8 +5,6 @@
 #include "LayerStack.hpp"
 #include "Base.hpp"
 
-#include <tuple>
-
 namespace fg
 {
 	struct ApplicationSpecification
@@ -23,7 +21,6 @@ namespace fg
 
 		void Run();
 		void Stop();
-		void Close();
 
 		void RaiseEvent(Event& event);
 
@@ -89,7 +86,7 @@ namespace fg
 		{
 			Layer* current = nullptr;
 			Layer* next = nullptr;
-			bool type; 
+			uint8_t type = 0;
 		};
 
 		std::vector<LayerCommand> m_Commands;
