@@ -55,6 +55,18 @@ project "Sandbox"
             "shell32" 
         }
 
+    filter "configurations:Debug"
+       links { "assimp-vc143-mtd" } 
+
+    filter "configurations:Release or Dist"
+       links { "assimp-vc143-mt" } 
+
+    filter {}
+
+    postbuildcommands {
+        ("{COPY} ../Forge/Vendor/lib/*.dll \"%{cfg.targetdir}\"")
+    }
+
    filter "configurations:Debug"
         defines { "DEBUG" }
         runtime "Debug"

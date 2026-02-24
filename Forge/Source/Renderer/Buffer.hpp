@@ -31,7 +31,8 @@ namespace fg
 		uint32_t Count;
 		uint32_t Type;
 		uint8_t Normalized;
-		uint8_t Size;
+		uint32_t Size;
+		uint32_t Offset;
 
 		static uint8_t GetSizeOfType(ElementType type);
 	};

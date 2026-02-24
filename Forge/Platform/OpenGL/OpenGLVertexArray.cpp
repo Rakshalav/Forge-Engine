@@ -28,15 +28,20 @@ namespace fg
 		glBindVertexArray(m_RendererID);
 		vertexBuffer->Bind();
 
-		const auto& elements = vertexBuffer->GetLayout().GetElements();
-		size_t offset = 0;
+		const auto& layout = vertexBuffer->GetLayout();
 
-		for (uint32_t i = 0; i < elements.size(); i++)
+		uint32_t index = 0;
+		for (const auto& element : layout.GetElements())
 		{
-			const auto& element = elements[i];
-			glEnableVertexAttribArray(i);
-			glVertexAttribPointer(i, element.Count, element.Type, element.Normalized, vertexBuffer->GetLayout().GetStride(), (const void*)offset);
-			offset += element.Size;
+			glEnableVertexAttribArray(index);
+			glVertexAttribPointer(
+				index,
+				element.Count,
+				element.Type,
+				element.Normalized ? GL_TRUE : GL_FALSE,
+				static_cast<GLsizei>(layout.GetStride()),
+				(const void*)(uintptr_t)element.Offset);
+			index++;
 		}
 
 		m_VertexBuffers.push_back(vertexBuffer);
@@ -44,6 +49,7 @@ namespace fg
 
 	void OpenGLVertexArray::SetIndexBuffer(const Ref<IndexBuffer>& indexBuffer)
 	{
+		glBindVertexArray(m_RendererID);
 		indexBuffer->Bind();
 		m_IndexBuffer = indexBuffer;
 	}

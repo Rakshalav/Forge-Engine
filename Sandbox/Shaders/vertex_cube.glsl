@@ -13,7 +13,6 @@ uniform mat3 u_normal;
 
 void main()
 {
-
     Normal = u_normal * aNormal;
 
     vec4 worldPos = u_model * vec4(aPos, 1.0);

@@ -113,4 +113,3 @@ namespace fg
 			UploadUniformMat4(name, value);
 	}
 }
-

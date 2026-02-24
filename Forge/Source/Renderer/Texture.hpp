@@ -5,13 +5,13 @@
 
 namespace fg
 {
-	class Texture
+	class TextureT
 	{
 	public:
-		virtual ~Texture() = default;
+		virtual ~TextureT() = default;
 	};
 
-	class Texture2D : public Texture
+	class Texture2D : public TextureT
 	{
 	public:
 		static Ref<Texture2D> Create(const std::string& path);

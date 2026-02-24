@@ -22,10 +22,10 @@ namespace fg
 
 	void BufferLayout::Push(uint32_t count, ElementType Etype, uint8_t normalized)
 	{
-		auto type = static_cast<uint32_t>(Etype);
-		auto size = (uint8_t)(count * BufferElement::GetSizeOfType(Etype));
+		uint32_t type = static_cast<uint32_t>(Etype);
+		uint32_t size = (count * BufferElement::GetSizeOfType(Etype));
 
-		m_Elements.emplace_back(count, type, normalized, size);
+		m_Elements.emplace_back(count, type, normalized, size, m_Stride);
 		m_Stride += size;
 	}
 
