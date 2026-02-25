@@ -5,16 +5,6 @@
 
 namespace fg
 {
-	enum class LayoutType
-	{
-		Pos,
-		PosColTex,
-		PosCol,
-		PosTex,
-		PosNorm,
-		PosNormTex
-	};
-
 	enum class ElementType
 	{
 		BYTE			= 0x1400,
@@ -41,9 +31,6 @@ namespace fg
 	{
 	public:
 		BufferLayout() : m_Stride(0) {}
-
-		template<LayoutType lt>
-		void Push(ElementType Etype);
 
 		void Push(uint32_t count, ElementType Etype, uint8_t normalized = false);
 
@@ -81,37 +68,4 @@ namespace fg
 
 		static Ref<IndexBuffer> Create(uint32_t* indices, uint32_t size);
 	};
-
-	template<LayoutType lt>
-	inline void BufferLayout::Push(ElementType Etype)
-	{
-		switch (lt)
-		{
-		case LayoutType::Pos:
-			Push(3, Etype);
-			return;
-		case LayoutType::PosCol:
-			Push(3, Etype);
-			Push(3, Etype);
-			return;
-		case LayoutType::PosTex:
-			Push(3, Etype);
-			Push(2, Etype);
-			return;
-		case LayoutType::PosColTex:
-			Push(3, Etype);
-			Push(3, Etype);
-			Push(2, Etype);
-			return;
-		case LayoutType::PosNorm:
-			Push(3, Etype);
-			Push(3, Etype);
-			return;
-		case LayoutType::PosNormTex:
-			Push(3, Etype);
-			Push(3, Etype);
-			Push(2, Etype);
-			return;
-		}
-	}
 }

@@ -19,9 +19,9 @@ private:
 
 private:
 	fg::Ref<fg::Camera> m_Camera;
-	fg::Ref<fg::PerspectiveCameraController> m_Controller;
+	fg::Scope<fg::PerspectiveCameraController> m_Controller;
 
 	fg::Ref<fg::Shader> m_Shader;
 
-	fg::Model m_Model;
+	fg::Scope<fg::Model> m_Model;
 };

@@ -9,20 +9,18 @@ namespace fg
 	class Model
 	{
 	public:
-		Model(std::string path) { LoadModel(path); }
+		Model(std::string path);
 		
 		void Draw(Ref<Shader>& shader);
 
 	private:
-		void LoadModel(const std::string& path);
 		void ProcessNode(aiNode* node, const aiScene* scene);
 		Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene);
-		std::vector<Texture> LoadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName);
-		uint32_t TextureFromFile(const char* path, const std::string& directory);
+		std::vector<Ref<Texture2D>> LoadMaterialTextures(aiMaterial * mat, aiTextureType type, TextureType FG_type);
 
 	private:
 		std::vector<Mesh> m_Meshes;
-		std::vector<Texture> m_TextureCache;
+		std::vector<Ref<Texture2D>> m_TextureCache;
 		std::string m_Directory;
 	};
 }

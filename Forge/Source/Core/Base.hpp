@@ -13,7 +13,7 @@ namespace fg
 	}
 
 	template<class T>
-	using Scope = std::shared_ptr<T>;
+	using Scope = std::unique_ptr<T>;
 	template<class T, typename... Args>
 	constexpr Scope<T> CreateScope(Args&&... args)
 	{
