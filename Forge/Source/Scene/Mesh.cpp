@@ -6,12 +6,12 @@
 
 namespace fg
 {
-	Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<uint32_t>& indices, std::vector<Ref<Texture2D>>& textures)
+	Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, const std::vector<Ref<Texture2D>>& textures)
 		: m_Vertices(vertices), m_Indices(indices), m_Textures(textures)
 	{
 		m_VertexArray = VertexArray::Create();
-		m_VertexBuffer = VertexBuffer::Create((float*)vertices.data(), static_cast<uint32_t>(vertices.size() * sizeof(Vertex)));
-		m_IndexBuffer = IndexBuffer::Create(indices.data(), static_cast<uint32_t>(indices.size() * sizeof(uint32_t)));
+		m_VertexBuffer = VertexBuffer::Create((float*)m_Vertices.data(), static_cast<uint32_t>(m_Vertices.size() * sizeof(Vertex)));
+		m_IndexBuffer = IndexBuffer::Create(m_Indices.data(), static_cast<uint32_t>(m_Indices.size() * sizeof(uint32_t)));
 
 		BufferLayout layout;
 		layout.Push(3, ElementType::FLOAT);
@@ -27,13 +27,13 @@ namespace fg
 
 	void Mesh::Draw(Ref<Shader>& shader)
 	{		
-		uint32_t diffuseNr = 1, specularNr = 1, ambientNr = 1;
+		uint32_t diffuseNr = 1, specularNr = 1, ambientNr = 1, normalNr = 1, emmisiveNr = 1;
 
 		for (uint32_t i = 0; i < m_Textures.size(); i++)
 		{
 			const Texture2D& texture = *m_Textures[i].get();
 
-			texture.Bind(i);
+			texture.Activate(i);
 
 			std::string number;
 			std::string name;
@@ -53,14 +53,25 @@ namespace fg
 			case TextureType::AMBIENT:
 				name = "texture_ambient";
 				number = std::to_string(ambientNr++);
+				break;
 
+			case TextureType::EMMISIVE:
+				name = "texture_emmisive";
+				number = std::to_string(emmisiveNr++);
+				break;
+
+			case TextureType::NORMAL:
+				name = "texture_normal";
+				number = std::to_string(normalNr++);
+				break;
+		
 			default:
 				FG_CORE_ERROR("Texture type ({}) not supported.", static_cast<uint8_t>(texture.GetType()));
 				continue;
 			}
 
 			shader->SetInt(("material." + name + number).c_str(), i);
-			texture.Bind(i);
+			texture.Bind();
 		}
 
 		Renderer::Draw(m_VertexArray, shader);

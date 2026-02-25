@@ -23,7 +23,7 @@ namespace fg
 	class Mesh
 	{
 	public:
-		Mesh(std::vector<Vertex>& vertices, std::vector<uint32_t>& indices, std::vector<Ref<Texture2D>>& textures);
+		Mesh(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, const std::vector<Ref<Texture2D>>& textures);
 
 		void Draw(Ref<Shader>& shader);
 

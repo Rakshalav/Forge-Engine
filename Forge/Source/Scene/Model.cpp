@@ -8,7 +8,7 @@ namespace fg
 	Model::Model(std::string path)
 	{
 		Assimp::Importer import;
-		const aiScene* scene = import.ReadFile(path.c_str(), aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+		const aiScene* scene = import.ReadFile(path.c_str(), aiProcess_Triangulate | aiProcess_CalcTangentSpace);
 
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{
@@ -101,16 +101,23 @@ namespace fg
 			auto* material = scene->mMaterials[mesh->mMaterialIndex];
 
 			auto diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE, TextureType::DIFFUSE);
+			if (diffuseMaps.empty())
+			{
+				diffuseMaps = LoadMaterialTextures(material, aiTextureType_BASE_COLOR, TextureType::DIFFUSE);
+			}
 			textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 
 			auto specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR, TextureType::SPECULAR);
 			textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 
-			auto normalMaps = LoadMaterialTextures(material, aiTextureType_HEIGHT, TextureType::NORMAL);
-			textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
-
 			auto ambientMaps = LoadMaterialTextures(material, aiTextureType_AMBIENT, TextureType::AMBIENT);
 			textures.insert(textures.end(), ambientMaps.begin(), ambientMaps.end());
+
+			auto emmisiveMaps = LoadMaterialTextures(material, aiTextureType_EMISSIVE, TextureType::EMMISIVE);
+			textures.insert(textures.end(), emmisiveMaps.begin(), emmisiveMaps.end());
+
+			auto normalMaps = LoadMaterialTextures(material, aiTextureType_HEIGHT, TextureType::NORMAL);
+			textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
 		}
 
 		return Mesh(vertices, indices, textures);
@@ -123,7 +130,7 @@ namespace fg
 		{
 			aiString str;
 			mat->GetTexture(type, i, &str);
-			bool skip = false;
+			bool skip = false;	
 
 			for (unsigned int j = 0; j < m_TextureCache.size(); j++)
 			{

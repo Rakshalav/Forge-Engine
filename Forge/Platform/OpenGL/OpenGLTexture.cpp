@@ -43,11 +43,12 @@ namespace fg
 			}
 			else if (nrChannels == 4) //png
 			{
-				m_InternalFormat = GL_RGB8;
+				m_InternalFormat = GL_RGBA8;
 				m_DataFormat = GL_RGBA;
 			}
 
 			glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
+			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 			glTextureStorage2D(m_RendererID, 1, static_cast<GLenum>(m_InternalFormat), width, height);
 
 			glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -62,10 +63,14 @@ namespace fg
 			FG_ERROR("Failed to load texture from file {}", path);
 	}
 
-	void OpenGLTexture2D::Bind(uint32_t slot) const
+	void OpenGLTexture2D::Bind() const
+	{
+		glBindTexture(GL_TEXTURE_2D, m_RendererID);
+	}
+
+	void OpenGLTexture2D::Activate(uint32_t slot) const
 	{
 		glActiveTexture(GL_TEXTURE0 + slot);	
-		glBindTexture(GL_TEXTURE_2D, m_RendererID);
 	}
 
 	void OpenGLTexture2D::SetData(void* data, uint32_t size)

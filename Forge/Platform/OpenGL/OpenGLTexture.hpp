@@ -12,7 +12,8 @@ namespace fg
 		OpenGLTexture2D(uint32_t width, uint32_t height);
 		OpenGLTexture2D(const std::string& path);
 
-		void Bind(uint32_t slot = 0) const override;
+		void Bind() const override;
+		void Activate(uint32_t slot = 0) const override;
 
 		void SetData(void* data, uint32_t size) override;
 
