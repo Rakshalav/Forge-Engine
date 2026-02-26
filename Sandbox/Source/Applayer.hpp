@@ -1,5 +1,4 @@
 #include <Forge.hpp>
-#include <Source/Scene/Model.hpp>
 
 class GameLayer : public fg::Layer
 {

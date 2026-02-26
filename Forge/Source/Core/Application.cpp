@@ -18,7 +18,7 @@ namespace fg
 		glfwInit();
 
 		Log::Init();
-		Renderer::Init(Renderer::API::OpenGL);
+		Renderer::Init();
 
 		if (m_Specification.WindowSpec.Title.empty())
 			m_Specification.WindowSpec.Title = m_Specification.Name;
@@ -28,8 +28,8 @@ namespace fg
 		m_Window = CreateRef<Window>(m_Specification.WindowSpec);
 		m_Window->Create();
 
-		Renderer::DepthTesting(true);
-		Renderer::FaceCulling(true);
+		RenderCommand::ToggleDepthTesting(true);
+		RenderCommand::ToggleFaceCulling(true);
 	}
 
 	Application::~Application()
@@ -62,7 +62,7 @@ namespace fg
 				break;
 			}
 
-			Renderer::Clear();
+			RenderCommand::Clear();
 
 			float currentTime = GetTime();
 			float timeStep = glm::clamp(currentTime - lastTime, 0.001f, 0.1f);

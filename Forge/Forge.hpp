@@ -18,9 +18,15 @@
 #include "Source/Renderer/Camera.hpp"
 #include "Source/Renderer/Controller.hpp"
 #include "Source/Renderer/PerspectiveCameraController.hpp"
+#include "Source/Renderer/RendererAPI.hpp"
+#include "Source/Renderer/RenderCommand.hpp"
 
 // Engine Debugger
 #include "Source/Debug/Log.hpp"
 
 // Engine Maths
 #include "Source/Maths/Math.hpp"
+
+// Engine Scene
+#include "Source/Scene/Mesh.hpp"
+#include "Source/Scene/Model.hpp"

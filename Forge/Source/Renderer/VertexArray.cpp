@@ -1,5 +1,5 @@
 #include "VertexArray.hpp"
-#include "Renderer.hpp"
+#include "RendererAPI.hpp"
 #include "../Core/Base.hpp"
 
 #include "../Platform/OpenGL/OpenGLVertexArray.hpp"
@@ -8,13 +8,10 @@ namespace fg
 {
 	Ref<VertexArray> VertexArray::Create()
 	{
-		switch (Renderer::GetAPI())
+		switch (RendererAPI::GetAPI())
 		{
-		case Renderer::API::None: return nullptr;
-		case Renderer::API::OpenGL: return CreateRef<OpenGLVertexArray>();
-		case Renderer::API::Vulkan: return nullptr;
+		case RendererAPI::None: return nullptr;
+		case RendererAPI::OpenGL: return CreateRef<OpenGLVertexArray>();
 		}
-
-		return nullptr;
 	}
 }

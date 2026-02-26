@@ -2,7 +2,7 @@
 #include <GLFW/glfw3.h>
 
 #include "Window.hpp"
-#include "../Renderer/Renderer.hpp"
+#include "../Renderer/RendererAPI.hpp"
 
 #include "../Debug/Log.hpp"
 
@@ -36,26 +36,20 @@ namespace fg
 
 		glfwMakeContextCurrent(m_Handle);
 
-		switch (Renderer::GetAPI())
+		switch (RendererAPI::GetAPI())
 		{
-		case Renderer::API::None:
+		case RendererAPI::None:
 			static_assert("No API!");
 			return false;
-		case Renderer::API::OpenGL:
+		case RendererAPI::OpenGL:
 		{
 			if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 			{
 				FG_CORE_CRITICAL("Failed to initialize GLAD!");
 				return false;
-			}   
-			#ifdef _DEBUG
-				Log::InitGlDebugger();
-			#endif
+			}
 			break;
 		}
-		case Renderer::API::Vulkan:
-			static_assert("Vulkan not supported!");
-			return false;
 		}
 
 		glfwSwapInterval(m_Specification.Vsync ? 1 : 0);

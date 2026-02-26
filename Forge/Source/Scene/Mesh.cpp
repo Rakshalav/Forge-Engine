@@ -74,6 +74,6 @@ namespace fg
 			texture.Bind();
 		}
 
-		Renderer::Draw(m_VertexArray, shader);
+		Renderer::Submit(m_VertexArray, shader);
 	}
 }

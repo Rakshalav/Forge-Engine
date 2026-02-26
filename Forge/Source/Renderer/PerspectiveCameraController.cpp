@@ -75,7 +75,7 @@ namespace fg
 	bool PerspectiveCameraController::OnWindowResized(Event::WindowResize& event)
 	{
 		m_Camera.SetViewPortSize(event.Size.x, event.Size.y);
-		Renderer::SetViewPortSize(event.Size.x, event.Size.y);
+		Renderer::OnWindowResize({ 0, 0 }, event.Size);
 		return false;
 	}
 

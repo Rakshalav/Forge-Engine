@@ -1,4 +1,4 @@
-#include "Renderer.hpp"
+#include "RendererAPI.hpp"
 #include "Buffer.hpp"
 
 #include "../Platform/OpenGL/OpenGLBuffer.hpp"
@@ -31,35 +31,27 @@ namespace fg
 
 	Ref<VertexBuffer> VertexBuffer::Create(float* vertices, uint32_t size)
 	{
-		switch (Renderer::GetAPI())
+		switch (RendererAPI::GetAPI())
 		{
-		case Renderer::API::None:
+		case RendererAPI::None:
 			//TODO: add assertion
 			return nullptr;
 			
-		case Renderer::API::OpenGL:
+		case RendererAPI::OpenGL:
 			return CreateRef<OpenGLVertexBuffer>(vertices, size);
-
-		case Renderer::API::Vulkan:
-			//TODO: add assertion vulkan api not supported!
-			return nullptr;
 		}
 	}
 
 	Ref<IndexBuffer> IndexBuffer::Create(uint32_t* indices, uint32_t size)
 	{
-		switch (Renderer::GetAPI())
+		switch (RendererAPI::GetAPI())
 		{
-		case Renderer::API::None:
+		case RendererAPI::None:
 			//TODO: add assertion
 			return nullptr;
 
-		case Renderer::API::OpenGL:
+		case RendererAPI::OpenGL:
 			return CreateRef<OpenGLIndexBuffer>(indices, size);
-
-		case Renderer::API::Vulkan:
-			//TODO: add assertion vulkan api not supported!
-			return nullptr;
 		}
 	}
 }

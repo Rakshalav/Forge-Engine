@@ -19,17 +19,6 @@ namespace fg
         static inline Ref<spdlog::logger>& GetCoreLogger() { return s_CoreLogger; }
         static inline Ref<spdlog::logger>& GetClientLogger() { return s_ClientLogger; }
 
-        static bool InitGlDebugger();
-
-        static void glDebugOutput(
-            uint32_t source, 
-            uint32_t type, 
-            uint32_t id, 
-            uint32_t severety,
-            uint32_t legnth,
-            const char* message, 
-            const void* userParam);
-
     private:
         static inline Ref<spdlog::logger> s_CoreLogger;
         static inline Ref<spdlog::logger> s_ClientLogger;
