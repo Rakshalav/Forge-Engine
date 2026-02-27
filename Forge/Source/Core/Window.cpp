@@ -15,6 +15,7 @@ namespace fg
 
 	bool Window::Create()
 	{
+		glfwInit();
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -179,5 +180,15 @@ namespace fg
 	void Window::ToggleCursor(bool value)
 	{
 		glfwSetInputMode(m_Handle, GLFW_CURSOR, value ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
+	}
+
+	void Window::PollEvents()
+	{
+		glfwPollEvents();
+	}
+
+	float Window::GetTime()
+	{
+		return (float)glfwGetTime();
 	}
 }

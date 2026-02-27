@@ -23,6 +23,8 @@ namespace fg
 		EventCallbackfn EventCallback;
 	};
 
+	class Application;
+
 	class Window
 	{
 	public:
@@ -44,6 +46,12 @@ namespace fg
 		void SetShouldClose(bool value);
 
 		void ToggleCursor(bool value);
+
+		float GetTime();
+
+	private:
+		void PollEvents();
+		friend class Application;
 
 	private:
 		WindowSpecification m_Specification;

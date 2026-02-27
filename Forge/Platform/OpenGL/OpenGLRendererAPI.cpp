@@ -69,7 +69,8 @@ namespace fg
         }
         #endif
 
-        glEnable(GL_DEPTH_TEST);
+        ToggleDepthTesting(true);
+        ToggleFaceCulling(true);
 	}
 
 	void OpenGLRendererAPI::SetViewPort(const Vec2u& lowerLeft, const Vec2u& size)
@@ -80,7 +81,7 @@ namespace fg
 	void OpenGLRendererAPI::ToggleDepthTesting(bool value)
 	{
 		value ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
-		value = m_isDepthTesting;
+		m_isDepthTesting = value;
 	}
 
     void OpenGLRendererAPI::ToggleFaceCulling(bool value)

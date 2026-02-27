@@ -73,7 +73,7 @@ namespace fg
 		inline Ref<Window> GetWindow() const { return m_Window; }
 
 		static Application& Get();
-		static float GetTime();
+		float GetTime();
 
 	private:
 		ApplicationSpecification m_Specification;

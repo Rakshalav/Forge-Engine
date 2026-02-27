@@ -5,7 +5,6 @@ GameLayer::GameLayer()
 {
     m_Camera = fg::CreateRef<fg::Camera>(fg::CameraProjection::Perspective);
     m_Camera->SetPosition({ 0.0f, 0.0f, 3.0f });
-    m_Camera->SetPerspective(45.0f, 1.778f, 0.1f, 100.0f);
 
     m_Controller = fg::CreateScope<fg::PerspectiveCameraController>(m_Camera.get());
     m_Controller->SetMouseSensitivity(0.08f);
@@ -37,6 +36,7 @@ void GameLayer::OnRender()
     fg::RenderCommand::ClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
     m_Shader->Bind();
     fg::Renderer::BeginScene(*m_Camera.get());
+
     glm::mat4 model(1.0f);
     model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); 
     model = glm::scale(model, glm::vec3(1.f, 1.f, 1.f));

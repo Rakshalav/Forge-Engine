@@ -1,5 +1,3 @@
-#include <GLFW/glfw3.h>
-
 #include "Application.hpp"
 #include "../Renderer/Renderer.hpp"
 #include "../Debug/Log.hpp"
@@ -15,8 +13,6 @@ namespace fg
 	{
 		s_Application = this;
 
-		glfwInit();
-
 		Log::Init();
 
 		if (m_Specification.WindowSpec.Title.empty())
@@ -28,8 +24,6 @@ namespace fg
 		m_Window->Create();
 
 		Renderer::Init();
-		RenderCommand::ToggleDepthTesting(true);
-		RenderCommand::ToggleFaceCulling(true);
 	}
 
 	Application::~Application()
@@ -38,8 +32,6 @@ namespace fg
 		Log::UnInit();
 
 		m_Window->Destroy();
-		glfwTerminate();
-
 		s_Application = nullptr;
 	}
 
@@ -54,7 +46,7 @@ namespace fg
 
 		while (m_Running)
 		{
-			glfwPollEvents();
+			m_Window->PollEvents();
 
 			if (m_Window->ShouldClose())
 			{
@@ -109,7 +101,7 @@ namespace fg
 
 	float Application::GetTime()
 	{
-		return (float)glfwGetTime();
+		return m_Window->GetTime();
 	}
 
 	void Application::ExecuteTransitions()

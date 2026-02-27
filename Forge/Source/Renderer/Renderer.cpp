@@ -41,5 +41,6 @@ namespace fg
 	void Renderer::ShutDown()
 	{
 		s_Instance = nullptr;
+		delete s_SceneData;
 	}
 }

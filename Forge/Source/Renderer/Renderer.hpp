@@ -26,6 +26,6 @@ namespace fg
 			glm::mat4 ViewProjectionMatrix;
 		};
 
-		static inline Scope<SceneData> s_SceneData = CreateScope<SceneData>();
+		static inline SceneData* s_SceneData = new SceneData();
 	};
 }
