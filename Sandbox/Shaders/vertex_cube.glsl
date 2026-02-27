@@ -8,7 +8,7 @@ out vec3 Normal;
 out vec2 TexCoords;
 
 uniform mat4 u_model;
-uniform mat4 u_view_projection;
+uniform mat4 u_ViewProjection;
 uniform mat3 u_normal;
 
 void main()
@@ -20,5 +20,5 @@ void main()
     
     TexCoords = aTexCoords;
     
-    gl_Position = u_view_projection * worldPos;
+    gl_Position = u_ViewProjection * worldPos;
 }

@@ -6,7 +6,7 @@
 
 namespace fg
 {
-	class Application;
+	class RenderCommand;
 
 	class RendererAPI
 	{

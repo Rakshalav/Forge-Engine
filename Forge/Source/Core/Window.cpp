@@ -2,8 +2,6 @@
 #include <GLFW/glfw3.h>
 
 #include "Window.hpp"
-#include "../Renderer/RendererAPI.hpp"
-
 #include "../Debug/Log.hpp"
 
 namespace fg
@@ -36,20 +34,10 @@ namespace fg
 
 		glfwMakeContextCurrent(m_Handle);
 
-		switch (RendererAPI::GetAPI())
+		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 		{
-		case RendererAPI::None:
-			static_assert("No API!");
+			FG_CORE_CRITICAL("Failed to initialize GLAD!");
 			return false;
-		case RendererAPI::OpenGL:
-		{
-			if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-			{
-				FG_CORE_CRITICAL("Failed to initialize GLAD!");
-				return false;
-			}
-			break;
-		}
 		}
 
 		glfwSwapInterval(m_Specification.Vsync ? 1 : 0);

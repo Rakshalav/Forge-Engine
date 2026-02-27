@@ -18,7 +18,6 @@ namespace fg
 		glfwInit();
 
 		Log::Init();
-		Renderer::Init();
 
 		if (m_Specification.WindowSpec.Title.empty())
 			m_Specification.WindowSpec.Title = m_Specification.Name;
@@ -28,6 +27,7 @@ namespace fg
 		m_Window = CreateRef<Window>(m_Specification.WindowSpec);
 		m_Window->Create();
 
+		Renderer::Init();
 		RenderCommand::ToggleDepthTesting(true);
 		RenderCommand::ToggleFaceCulling(true);
 	}

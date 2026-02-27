@@ -35,9 +35,8 @@ void GameLayer::OnUpdate(float ts)
 void GameLayer::OnRender()
 {
     fg::RenderCommand::ClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
-
     m_Shader->Bind();
-
+    fg::Renderer::BeginScene(*m_Camera.get());
     glm::mat4 model(1.0f);
     model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); 
     model = glm::scale(model, glm::vec3(1.f, 1.f, 1.f));

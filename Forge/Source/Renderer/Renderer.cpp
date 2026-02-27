@@ -1,4 +1,5 @@
 #include "Renderer.hpp"
+#include "Debug/Log.hpp"
 
 namespace fg
 {
