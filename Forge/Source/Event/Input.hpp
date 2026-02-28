@@ -1,10 +1,12 @@
 #pragma once
 
+#include <stdint.h>
+
 namespace fg
 {
     struct Keyboard
     {
-        enum class Key
+        enum class Key : uint32_t
         {
             /* Printable keys */
             Space = 32,
@@ -133,7 +135,7 @@ namespace fg
             Last = Menu
         };
 
-        enum class Mod
+        enum class Mod : uint8_t
         {
             Shift = 1,
             Control = 2,
@@ -155,7 +157,7 @@ namespace fg
 
     struct Mouse
     {
-        enum class Button
+        enum class Button : uint8_t
         {
             Left = 0,
             Right = 1,

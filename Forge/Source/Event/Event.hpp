@@ -10,6 +10,16 @@ namespace fg
 {
 	class Window;
 
+	enum EventCategory
+	{
+		None = 0,
+		EventCategory_Application	= 1 << 0,
+		EventCategory_Input			= 1 << 1,
+		EventCategory_Keyboard		= 1 << 2,
+		EventCategory_Mouse			= 1 << 3,
+		EventCategory_MouseButton	= 1 << 4
+	};
+
 	class Event
 	{
 	public:
@@ -74,9 +84,11 @@ namespace fg
 
 	public:
 		template<typename T>
-		inline static T& GetData() { return std::get<T>(m_Data); }
+		inline T& GetData() { return std::get<T>(m_Data); }
 
 		std::string ToString() const;
+
+		inline bool IsInCategory(EventCategory category) const { return (CategoryFlags & (int)category) != 0; }
 
 	private:
 		static Event KeyPressCallback(int code, int scancode, int mods, bool isRepeated);
@@ -95,6 +107,7 @@ namespace fg
 	public:
 		Type Type;
 		bool Handled = false;
+		int CategoryFlags;
 
 	private:
 		std::variant<

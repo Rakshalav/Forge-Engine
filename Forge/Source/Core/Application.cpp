@@ -1,7 +1,6 @@
 #include "Application.hpp"
-#include "../Renderer/Renderer.hpp"
-#include "../Debug/Log.hpp"
-
+#include "Renderer/Renderer.hpp"
+#include "Debug/Log.hpp"
 #include <ranges>
 
 namespace fg
@@ -24,10 +23,14 @@ namespace fg
 		m_Window->Create();
 
 		Renderer::Init();
+		m_OverlayLayer = new ImGuiLayer(*m_Window);
+		m_LayerStack.PushLayer(m_OverlayLayer);
 	}
 
 	Application::~Application()
 	{
+		m_LayerStack.Clear();
+
 		Renderer::ShutDown();
 		Log::UnInit();
 
@@ -40,9 +43,6 @@ namespace fg
 		m_Running = true;
 
 		float lastTime = GetTime();
-
-		for (const auto& layer : m_LayerStack.GetLayerStack())
-			layer->OnAttach();
 
 		while (m_Running)
 		{
@@ -66,6 +66,13 @@ namespace fg
 			//TODO: add render thread
 			for (const auto& layer : m_LayerStack.GetLayerStack())
 				layer->OnRender();
+
+			m_OverlayLayer->Begin();
+			{
+				for (const auto& layer : m_LayerStack.GetLayerStack())
+					layer->OnImGuiRender();
+			}
+			m_OverlayLayer->End();
 
 			ExecuteTransitions();
 

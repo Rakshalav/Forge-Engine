@@ -1,5 +1,5 @@
-project "Sandbox"
-    kind "WindowedApp"
+project "Editor"
+    kind "ConsoleApp"
     language "C++"
     cppdialect "C++23"
     staticruntime "off"
@@ -81,6 +81,7 @@ project "Sandbox"
 
    filter "configurations:Dist"
         defines { "DIST" }
+        kind "WindowedApp"
         runtime "Release"
         optimize "On"
         symbols "Off"

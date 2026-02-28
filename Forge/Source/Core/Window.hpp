@@ -1,10 +1,8 @@
 #pragma once
 
 #include "../Maths/Math.hpp"
-
 #include <string>
 #include <functional>
-
 #include "../Event/Event.hpp"
 
 struct GLFWwindow;
@@ -60,5 +58,6 @@ namespace fg
 
 		friend struct Keyboard;
 		friend struct Mouse;
+		friend class ImGuiLayer;
 	};
 }	

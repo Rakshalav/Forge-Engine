@@ -112,4 +112,11 @@ namespace fg
 	{
 		m_isDepthTesting ? glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT) : glClear(GL_COLOR_BUFFER_BIT);
 	}
+
+    OpenGLRendererAPI::~OpenGLRendererAPI()
+    {
+        #ifdef _DEBUG
+            glDebugMessageCallback(nullptr, nullptr);
+        #endif
+    }
 }

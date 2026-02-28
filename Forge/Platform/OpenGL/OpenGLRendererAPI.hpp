@@ -15,6 +15,7 @@ namespace fg
 		void ClearColor(const Vec4f& color) override;
 		void Clear() override;
 
+		~OpenGLRendererAPI();
 	private:
 		bool m_isDepthTesting;
 	};

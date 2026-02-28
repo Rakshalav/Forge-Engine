@@ -1,7 +1,7 @@
 workspace "Forge Engine"
    architecture "x64"
    configurations { "Debug", "Release", "Dist" }
-   startproject "Sandbox"
+   startproject "Sandbox" 
 
    filter "system:windows"
       buildoptions { "/EHsc", "/Zc:preprocessor", "/Zc:__cplusplus", "/utf-8" }
@@ -9,7 +9,8 @@ workspace "Forge Engine"
 OutputDir = "%{cfg.system}-%{cfg.architecture}/%{cfg.buildcfg}"
 
 group "Forge"
-	include "Forge/Build-Core.lua"
+   include "Forge/Build-Core.lua"
 group ""
 
 include "Sandbox/Build-App.lua"
+include "Forge Editor/Build-Editor.lua" 

@@ -18,6 +18,8 @@ namespace fg
 
 		inline std::vector<Layer*>& GetLayerStack()  { return m_LayerStack; }
 
+		void Clear();
+
 	private:
 		std::vector<Layer*> m_LayerStack;
 		uint32_t m_LayerInsertIndex = 0;

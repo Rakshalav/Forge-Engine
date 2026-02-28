@@ -9,7 +9,8 @@ namespace fg
 	{
 		Event event;
 		event.Type = Event::Type::KeyPress;
-		event.m_Data = Event::KeyPress(static_cast<Keyboard::Key>(code), scancode, static_cast<Keyboard::Mod>(mods), isRepeated);
+		event.m_Data = Event::KeyPress(static_cast<Key>(code), scancode, static_cast<Keyboard::Mod>(mods), isRepeated);
+		event.CategoryFlags = EventCategory_Keyboard | EventCategory_Input;
 		return event;
 	}
 
@@ -17,7 +18,8 @@ namespace fg
 	{
 		Event event;
 		event.Type = Event::Type::KeyRelease;
-		event.m_Data = Event::KeyRelease(static_cast<Keyboard::Key>(code), scancode);
+		event.m_Data = Event::KeyRelease(static_cast<Key>(code), scancode);
+		event.CategoryFlags = EventCategory_Keyboard | EventCategory_Input;
 		return event;
 	}
 
@@ -26,6 +28,7 @@ namespace fg
 		Event event;
 		event.Type = Event::Type::MouseMove;
 		event.m_Data = Event::MouseMove({ (float)x, (float)y });
+		event.CategoryFlags = EventCategory_Mouse | EventCategory_Input;
 		return event;
 	}
 
@@ -34,6 +37,7 @@ namespace fg
 		Event event;
 		event.Type = Event::Type::MouseScroll;
 		event.m_Data = Event::MouseScroll({ (int)x, (int)y });
+		event.CategoryFlags = EventCategory_Mouse | EventCategory_Input;
 		return event;
 	}
 
@@ -42,6 +46,7 @@ namespace fg
 		Event event;
 		event.Type = Event::Type::MouseButtonPress;
 		event.m_Data = Event::MouseButtonPress(static_cast<Mouse::Button>(code));
+		event.CategoryFlags = EventCategory_Mouse | EventCategory_MouseButton | EventCategory_Input;
 		return event;
 	}
 
@@ -50,6 +55,7 @@ namespace fg
 		Event event;
 		event.Type = Event::Type::MouseButtonRelease;
 		event.m_Data = Event::MouseButtonRelease(static_cast<Mouse::Button>(code));
+		event.CategoryFlags = EventCategory_Mouse | EventCategory_MouseButton | EventCategory_Input;
 		return event;
 	}
 
@@ -58,6 +64,7 @@ namespace fg
 		Event event;
 		event.Type = Event::Type::WindowResize;
 		event.m_Data = Event::WindowResize({ x, y });
+		event.CategoryFlags = EventCategory_Application;
 		return event;
 	}
 
@@ -66,6 +73,7 @@ namespace fg
 		Event event;
 		event.Type = Event::Type::WindowClose;
 		event.m_Data = Event::WindowClose();
+		event.CategoryFlags = EventCategory_Application;
 		return event;
 	}
 
