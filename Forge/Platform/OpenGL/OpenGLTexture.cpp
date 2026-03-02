@@ -7,13 +7,25 @@
 
 namespace fg
 {
-	OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height) : m_Size({width, height})
+	static GLenum TextureFormatToGL(TextureFormat format)
 	{
-		m_InternalFormat = GL_RGBA8;
-		m_DataFormat = GL_RGBA;
+		switch (format)
+		{
+		case TextureFormat::None:				return 0;
+		case TextureFormat::R8:					return GL_R8;
+		case TextureFormat::RGB8:				return GL_RGB8;
+		case TextureFormat::RGBA8:				return GL_RGBA8;
+		case TextureFormat::RGBA32F:			return GL_RGBA32F;
+		default:								return 0;
+		}
+	}
+
+	OpenGLTexture2D::OpenGLTexture2D(const TextureSpecification& specification) : m_Specification(specification)
+	{
+		GLenum internalFormat = TextureFormatToGL(specification.InternalFormat);
 
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
-		glTextureStorage2D(m_RendererID, 1, m_InternalFormat, width, height);
+		glTextureStorage2D(m_RendererID, 1, internalFormat, specification.Width, specification.Height);
 
 		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -29,32 +41,35 @@ namespace fg
 
 		if (data)
 		{
-			m_Size = { (uint32_t)width, (uint32_t)height };
+			m_Specification.Width = width;
+			m_Specification.Height = height;
 
 			if (nrChannels == 1) 
 			{
-				m_InternalFormat = GL_R8;
-				m_DataFormat = GL_RED;
+				m_Specification.InternalFormat = TextureFormat::R8;
+				m_Specification.DataFormat = GL_RED;
 			}
 			else if (nrChannels == 3) //jpeg
 			{
-				m_InternalFormat = GL_RGB8;
-				m_DataFormat = GL_RGB;
+				m_Specification.InternalFormat = TextureFormat::RGB8;
+				m_Specification.DataFormat = GL_RGB;
 			}
 			else if (nrChannels == 4) //png
 			{
-				m_InternalFormat = GL_RGBA8;
-				m_DataFormat = GL_RGBA;
+				m_Specification.InternalFormat = TextureFormat::RGBA8;
+				m_Specification.DataFormat = GL_RGBA;
 			}
+
+			GLenum internalFormat = TextureFormatToGL(m_Specification.InternalFormat);
 
 			glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
 			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-			glTextureStorage2D(m_RendererID, 1, static_cast<GLenum>(m_InternalFormat), width, height);
+			glTextureStorage2D(m_RendererID, 1, internalFormat, width, height);
 
 			glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 			glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-			glTextureSubImage2D(m_RendererID, 0, 0, 0, width, height, static_cast<GLenum>(m_DataFormat), GL_UNSIGNED_BYTE, data);
+			glTextureSubImage2D(m_RendererID, 0, 0, 0, width, height, m_Specification.DataFormat, GL_UNSIGNED_BYTE, data);
 			glGenerateTextureMipmap(m_RendererID);
 
 			stbi_image_free(data);
@@ -75,14 +90,14 @@ namespace fg
 
 	void OpenGLTexture2D::SetData(void* data, uint32_t size)
 	{
-		uint32_t bpp = m_DataFormat == GL_RGBA ? 4 : 3;
-		if (size != m_Size.x * m_Size.y * bpp)
+		uint32_t bpp = m_Specification.DataFormat == GL_RGBA ? 4 : 3;
+		if (size != m_Specification.Width * m_Specification.Height * bpp)
 		{
 			//TODO: add custom assertion
 			FG_CORE_CRITICAL("Data must be intire texture!");
 			return;
 		}
 
-		glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Size.x, m_Size.y, m_DataFormat, GL_UNSIGNED_BYTE, data);
+		glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Specification.Width, m_Specification.Height, m_Specification.DataFormat, GL_UNSIGNED_BYTE, data);
 	}
 }

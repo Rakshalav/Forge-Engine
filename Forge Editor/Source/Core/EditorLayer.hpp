@@ -19,6 +19,12 @@ namespace fg::Editor
 		void OnDetach() override;
 
 	private:
+		Ref<fg::Camera> m_Camera;
+		Scope<fg::PerspectiveCameraController> m_Controller;
 
+		Ref<fg::Shader> m_Shader;
+		Scope<fg::Model> m_Model;
+		
+		Ref<Framebuffer> m_FrameBuffer;
 	};
 }

@@ -9,7 +9,7 @@ namespace fg
 	class OpenGLTexture2D : public Texture2D
 	{
 	public:
-		OpenGLTexture2D(uint32_t width, uint32_t height);
+		OpenGLTexture2D(const TextureSpecification& specification);
 		OpenGLTexture2D(const std::string& path);
 
 		void Bind() const override;
@@ -17,11 +17,11 @@ namespace fg
 
 		void SetData(void* data, uint32_t size) override;
 
-		inline Vec2u GetSize() const override { return m_Size; }
+		inline Vec2u GetSize() const override { return { m_Specification.Width, m_Specification.Height }; }
 		inline uint32_t GetRendererID() const override { return m_RendererID; }
 
-		inline void SetType(TextureType type) override { m_Type = type; }
-		inline TextureType GetType() const override { return m_Type; }
+		inline void SetType(TextureType type) override { m_Specification.Type = type; }
+		inline TextureType GetType() const override { return m_Specification.Type; }
 		inline std::string GetPath() const override { return m_Path; }
 
 		bool operator== (const Texture2D& other) const override
@@ -31,10 +31,7 @@ namespace fg
 
 	private:
 		uint32_t m_RendererID;
-		TextureType m_Type;
 		std::string m_Path;
-
-		Vec2u m_Size;
-		uint32_t m_InternalFormat, m_DataFormat;
+		TextureSpecification m_Specification;
 	};
 }

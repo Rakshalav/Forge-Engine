@@ -29,6 +29,7 @@
 #include "Source/Renderer/PerspectiveCameraController.hpp"
 #include "Source/Renderer/RendererAPI.hpp"
 #include "Source/Renderer/RenderCommand.hpp"
+#include "Source/Renderer/FrameBuffer.hpp"
 
 // Engine Scene
 #include "Source/Scene/Mesh.hpp"
