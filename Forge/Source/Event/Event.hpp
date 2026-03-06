@@ -56,7 +56,7 @@ namespace fg
 		//--- Mouse ---
 		struct MouseMove
 		{
-			Vec2f Offset;
+			Vec2f Position;
 		};
 
 		struct MouseScroll

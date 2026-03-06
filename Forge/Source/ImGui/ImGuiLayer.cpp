@@ -4,7 +4,7 @@
 #include <ImGui/imgui_impl_opengl3.h>
 #include <GLFW/glfw3.h>
 #include "ImGuiLayer.hpp"
-#include "Debug/Log.hpp"
+
 namespace fg
 {
 	void ImGuiLayer::OnEvent(Event& event)
@@ -40,7 +40,7 @@ namespace fg
 			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 		}
 
-		ImGui_ImplGlfw_InitForOpenGL(m_Window.m_Handle, true);
+		ImGui_ImplGlfw_InitForOpenGL(m_Window.GetHandle(), true);
 		ImGui_ImplOpenGL3_Init("#version 460");
 	}
 
@@ -69,7 +69,7 @@ namespace fg
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+		if (m_ViewportEnabled)
 		{
 			GLFWwindow* backup_current_context = glfwGetCurrentContext();
 			ImGui::UpdatePlatformWindows();

@@ -115,7 +115,7 @@ namespace fg
 		case fg::Event::Type::MouseMove:
 		{
 			const auto& data = std::get<MouseMove>(m_Data);
-			return std::format("MouseMovedEvent: ({}, {})", data.Offset.x, data.Offset.y);
+			return std::format("MouseMovedEvent: ({}, {})", data.Position.x, data.Position.y);
 		}
 		case fg::Event::Type::MouseScroll:
 		{

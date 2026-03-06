@@ -11,7 +11,7 @@ namespace fg
 
 	bool Keyboard::IsPressed(Key key)
 	{
-        auto window = Application::Get().GetWindow()->m_Handle;
+        auto window = Application::Get().GetWindow()->GetHandle();
 		if (glfwGetKey(window, static_cast<int>(key)) == GLFW_PRESS)
 			return true;
 		return false;
@@ -19,7 +19,7 @@ namespace fg
 
 	bool Keyboard::IsRepeated(Key key)
 	{
-		auto window = Application::Get().GetWindow()->m_Handle;
+        auto window = Application::Get().GetWindow()->GetHandle();
 		if (glfwGetKey(window, static_cast<int>(key)) == GLFW_REPEAT)
 			return true;
 		return false;
@@ -28,7 +28,7 @@ namespace fg
 
 	bool Keyboard::IsReleased(Key key)
 	{
-		auto window = Application::Get().GetWindow()->m_Handle;
+        auto window = Application::Get().GetWindow()->GetHandle();
 		if (glfwGetKey(window, static_cast<int>(key)) == GLFW_RELEASE)
 			return true;
 		return false;
@@ -36,19 +36,47 @@ namespace fg
 
 	bool Mouse::IsButtonPressed(Mouse::Button button)
 	{
-		auto window = Application::Get().GetWindow()->m_Handle;
+        auto window = Application::Get().GetWindow()->GetHandle();
 		if (glfwGetMouseButton(window, static_cast<int>(button)) == GLFW_PRESS)
 			return true;
 		return false;
 	}
 
+    bool Mouse::IsButtonRepeated(Mouse::Button button)
+    {
+        auto window = Application::Get().GetWindow()->GetHandle();
+        if (glfwGetMouseButton(window, static_cast<int>(button)) == GLFW_REPEAT)
+            return true;
+        return false;
+    }
+
 	bool Mouse::IsButtonReleased(Mouse::Button button)
 	{
-		auto window = Application::Get().GetWindow()->m_Handle;
+        auto window = Application::Get().GetWindow()->GetHandle();
 		if (glfwGetMouseButton(window, static_cast<int>(button)) == GLFW_RELEASE)
 			return true;
 		return false;
 	}
+
+    Vec2f Mouse::GetPosition()
+    {
+        auto window = Application::Get().GetWindow()->GetHandle();
+        double x, y;
+        glfwGetCursorPos(window, &x, &y);
+        return { static_cast<float>(x), static_cast<float>(y) };
+    }
+
+    void Mouse::SetPosition(float x, float y)
+    {
+        auto window = Application::Get().GetWindow()->GetHandle();
+        glfwSetCursorPos(window, x, y);
+    }
+
+    void Mouse::ToggleCursor(bool value)
+    {
+        auto window = Application::Get().GetWindow()->GetHandle();
+        glfwSetInputMode(window, GLFW_CURSOR, value ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
+    }
 
     const char* Keyboard::GetName(Key key)
     {

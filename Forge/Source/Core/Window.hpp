@@ -37,15 +37,14 @@ namespace fg
 		void RaiseEvent(Event& event);
 
 		Vec2f GetFrameBufferSize() const;
-		Vec2f GetMousePos() const;
 		Vec2f GetSize() const;
 
 		bool ShouldClose() const;
 		void SetShouldClose(bool value);
 
-		void ToggleCursor(bool value);
-
 		float GetTime();
+
+		GLFWwindow* GetHandle() { return m_Handle; }
 
 	private:
 		void PollEvents();
@@ -55,9 +54,5 @@ namespace fg
 		WindowSpecification m_Specification;
 
 		GLFWwindow* m_Handle = nullptr;
-
-		friend struct Keyboard;
-		friend struct Mouse;
-		friend class ImGuiLayer;
 	};
 }	

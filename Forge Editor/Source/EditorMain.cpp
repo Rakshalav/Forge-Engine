@@ -8,6 +8,6 @@ int main()
 	EditorSpecifications.WindowSpec.Height = 1080;
 
 	fg::Application Editor(EditorSpecifications);
-	Editor.PushLayer<fg::Editor::EditorLayer>();
+	Editor.PushLayer<Editor::EditorLayer>();
 	Editor.Run();
 }

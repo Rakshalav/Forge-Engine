@@ -153,13 +153,6 @@ namespace fg
 		return { width, height };
 	}
 
-	Vec2f Window::GetMousePos() const
-	{
-		double x, y;
-		glfwGetCursorPos(m_Handle, &x, &y);
-		return { static_cast<float>(x), static_cast<float>(y) };
-	}
-
 	Vec2f Window::GetSize() const
 	{
 		int width, height;
@@ -175,11 +168,6 @@ namespace fg
 	void Window::SetShouldClose(bool value)
 	{
 		glfwSetWindowShouldClose(m_Handle, value);
-	}
-
-	void Window::ToggleCursor(bool value)
-	{
-		glfwSetInputMode(m_Handle, GLFW_CURSOR, value ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
 	}
 
 	void Window::PollEvents()

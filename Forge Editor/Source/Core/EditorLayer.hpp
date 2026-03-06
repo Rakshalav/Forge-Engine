@@ -2,10 +2,12 @@
 
 #include <Forge.hpp>
 #include <ImGui/imgui.h>
+#include "Rendering/EditorCamera.hpp"
+#include "Rendering/EditorCameraController.hpp"
 
-namespace fg::Editor
+namespace Editor
 {
-	class EditorLayer : public Layer
+	class EditorLayer : public fg::Layer
 	{
 	public:
 		EditorLayer();
@@ -19,12 +21,16 @@ namespace fg::Editor
 		void OnDetach() override;
 
 	private:
-		Ref<fg::Camera> m_Camera;
-		Scope<fg::PerspectiveCameraController> m_Controller;
+		EditorCamera m_Camera;
+		EditorCameraController m_CamController;
+		fg::Vec2f m_ViewportSize = { 0.0f, 0.0f };
+		fg::Vec4f m_ViewportBounds;
 
-		Ref<fg::Shader> m_Shader;
-		Scope<fg::Model> m_Model;
+		bool m_BlockUpdates;
+
+		fg::Ref<fg::Shader> m_Shader;
+		fg::Scope<fg::Model> m_Model;
 		
-		Ref<Framebuffer> m_FrameBuffer;
+		fg::Ref<fg::Framebuffer> m_FrameBuffer;
 	};
 }

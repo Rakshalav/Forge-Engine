@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdint.h>
+#include "Maths/Math.hpp"
 
 namespace fg
 {
@@ -157,7 +158,7 @@ namespace fg
 
     struct Mouse
     {
-        enum class Button : uint8_t
+        enum Button : uint8_t
         {
             Left = 0,
             Right = 1,
@@ -165,6 +166,12 @@ namespace fg
         };
 
         static bool IsButtonPressed(Button button);
+        static bool IsButtonRepeated(Button button);
         static bool IsButtonReleased(Button button);
+
+        static Vec2f GetPosition();
+        static void SetPosition(float x, float y);
+
+        static void ToggleCursor(bool value);
     };
 }
