@@ -21,6 +21,10 @@ namespace Editor
 		void OnDetach() override;
 
 	private:
+		void Game_Panel();
+		void UI_Console();
+
+	private:
 		EditorCamera m_Camera;
 		EditorCameraController m_CamController;
 		fg::Vec2f m_ViewportSize = { 0.0f, 0.0f };

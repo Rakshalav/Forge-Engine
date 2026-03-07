@@ -4,13 +4,16 @@ namespace Editor
 {
 	EditorCameraController::EditorCameraController(EditorCamera& camera) : m_Camera(camera)
 	{
-		m_MousePos = { m_Camera.GetViewportSize().x / 2, m_Camera.GetViewportSize().y / 2 };
+		glm::vec3 euler = glm::degrees(glm::eulerAngles(m_Camera.GetOrientation()));
+		m_Pitch = euler.x;
+		m_Yaw = euler.y;
+
+		m_MousePos = fg::Mouse::GetPosition();
 	}
 
 	void EditorCameraController::OnEvent(fg::Event& event)
 	{
 		fg::EventDispatcher dispatcher(event);
-		dispatcher.Dispatch<fg::Event::MouseButtonPress>([this](fg::Event::MouseButtonPress& e) {return OnMouseButtonPressed(e); });
 		dispatcher.Dispatch<fg::Event::MouseMove>([this](fg::Event::MouseMove& e) {return OnMouseMoved(e); });
 	}
 
@@ -20,16 +23,24 @@ namespace Editor
 		auto right = m_Camera.GetRight();
 		auto front = m_Camera.GetFront();
 
-		float velocity = m_CameraSpeed * ts;
+		auto IsAnyKeyPressed = []()->bool { return fg::Keyboard::IsPressed(fg::Key::W) || fg::Keyboard::IsPressed(fg::Key::A) || fg::Keyboard::IsPressed(fg::Key::S) || fg::Keyboard::IsPressed(fg::Key::D); };
+
+		float target = IsAnyKeyPressed() ? m_MaxSpeed : 0.0f;
+
 		if (fg::Keyboard::IsPressed(fg::Key::LeftShift))
-			velocity *= 2.0f;
+			target *= 2.0f;
+
+		m_CurrentSpeed = std::lerp((double)m_CurrentSpeed, (double)target, (double)ts);
+		float velocity = m_CurrentSpeed * ts;
 
 		if (fg::Keyboard::IsPressed(fg::Key::W))
 			position += velocity * front;
+
 		if (fg::Keyboard::IsPressed(fg::Key::S))
 			position -= velocity * front;
 		if (fg::Keyboard::IsPressed(fg::Key::A))
 			position -= velocity * right;
+
 		if (fg::Keyboard::IsPressed(fg::Key::D))
 			position += velocity * right;
 
@@ -44,25 +55,20 @@ namespace Editor
 			m_CamCanMove = false;
 	}
 
-	bool EditorCameraController::OnMouseButtonPressed(fg::Event::MouseButtonPress& event)
-	{
-		return false;
-	}
-
 	bool EditorCameraController::OnMouseMoved(fg::Event::MouseMove& event)
 	{
 		auto current_pos = event.Position;
+
+		float x_offset = current_pos.x - m_MousePos.x;
+		float y_offset = m_MousePos.y - current_pos.y;
+
+		m_MousePos = current_pos;
 
 		if (m_FirstMouse)
 		{
 			m_MousePos = current_pos;
 			m_FirstMouse = false;
 		}
-
-		float x_offset = current_pos.x - m_MousePos.x;
-		float y_offset = m_MousePos.y - current_pos.y;
-
-		m_MousePos = current_pos;
 
 		if (m_CamCanMove)
 		{

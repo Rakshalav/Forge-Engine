@@ -2,6 +2,7 @@
 
 #include <spdlog/spdlog.h>
 #include "Core/Base.hpp"
+#include "ImGuiLogSink.hpp"
 
 namespace fg
 {
@@ -18,10 +19,12 @@ namespace fg
 
         static inline Ref<spdlog::logger>& GetCoreLogger() { return s_CoreLogger; }
         static inline Ref<spdlog::logger>& GetClientLogger() { return s_ClientLogger; }
+        static inline Ref<ImGuiLogSink>& GetClientSink() { return s_ClientSink; }
 
     private:
         static inline Ref<spdlog::logger> s_CoreLogger;
         static inline Ref<spdlog::logger> s_ClientLogger;
+        static inline Ref<ImGuiLogSink> s_ClientSink;
     };
 }
 
@@ -38,4 +41,3 @@ namespace fg
 #define FG_WARN(...)          fg::Log::GetClientLogger()->warn(__VA_ARGS__)
 #define FG_ERROR(...)         fg::Log::GetClientLogger()->error(__VA_ARGS__)
 #define FG_CRITICAL(...)      fg::Log::GetClientLogger()->critical(__VA_ARGS__)
-

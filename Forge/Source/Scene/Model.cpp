@@ -12,7 +12,7 @@ namespace fg
 
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{
-			FG_CORE_ERROR("ASSIMP: {}", import.GetErrorString());
+			FG_ERROR("ASSIMP: {}", import.GetErrorString());
 			return;
 		}
 		m_Directory = path.substr(0, path.find_last_of('/'));

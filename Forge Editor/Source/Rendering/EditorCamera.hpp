@@ -35,6 +35,9 @@
 			EditorCameraSpecification& GetSpecification() { return m_Specification; }
 			const fg::Vec2f GetViewportSize() const { return m_ViewportSize; }
 
+
+			const glm::quat& GetOrientation() const { return m_Orientation; }
+
 			const fg::Vec3f GetFront() const;
 			const fg::Vec3f GetRight() const;
 			const fg::Vec3f GetUp() const;

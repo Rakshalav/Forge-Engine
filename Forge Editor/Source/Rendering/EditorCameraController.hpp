@@ -14,9 +14,7 @@ namespace Editor
 		void OnUpdate(float ts, const fg::Vec4f& size);
 
 	private:
-		bool OnMouseButtonPressed(fg::Event::MouseButtonPress& event);
 		bool OnMouseMoved(fg::Event::MouseMove& event);
-
 		void HandleMouseWrap(const fg::Vec4f& size);
 
 	private:
@@ -26,7 +24,8 @@ namespace Editor
 		float m_Yaw = -90.0f;
 		float m_Pitch = 0.0f;
 
-		float m_CameraSpeed = 5.0f;
+		float m_MaxSpeed = 20.0f;
+		float m_CurrentSpeed = 0.0f;
 
 		bool m_CamCanMove;
 		bool m_FirstMouse = true;
