@@ -4,9 +4,8 @@ namespace Editor
 {
 	EditorCameraController::EditorCameraController(EditorCamera& camera) : m_Camera(camera)
 	{
-		glm::vec3 euler = glm::degrees(glm::eulerAngles(m_Camera.GetOrientation()));
-		m_Pitch = euler.x;
-		m_Yaw = euler.y;
+		m_Pitch = m_Camera.GetRotation().x;
+		m_Yaw = m_Camera.GetRotation().y;
 
 		m_MousePos = fg::Mouse::GetPosition();
 	}
