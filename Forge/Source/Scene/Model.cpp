@@ -120,6 +120,7 @@ namespace fg
 			textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
 		}
 
+		FG_TRACE("Mesh finalized and uploaded to GPU.");
 		return Mesh(vertices, indices, textures);
 	}
 
