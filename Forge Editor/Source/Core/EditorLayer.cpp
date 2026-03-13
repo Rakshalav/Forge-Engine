@@ -96,7 +96,7 @@ namespace Editor
 		ImGui::DockSpaceOverViewport(dockspaceID, viewport, ImGuiDockNodeFlags_None);
 		ImGui::PopStyleColor();
 
-		Game_Panel();
+		Viewport();
 
 		ImGui::Begin("Properties");
 		ImGui::Text("Model properties");
@@ -106,7 +106,7 @@ namespace Editor
 		ImGui::Text("Scene Hierarchy");
 		ImGui::End();
 
-		UI_Console();
+		Console();
 	}
 
 	void EditorLayer::OnDetach()
@@ -114,7 +114,7 @@ namespace Editor
 
 	}
 
-	void EditorLayer::Game_Panel()
+	void EditorLayer::Viewport()
 	{
 		ImGui::Begin("Game", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 		{
@@ -137,7 +137,7 @@ namespace Editor
 		ImGui::End();
 	}
 
-	void EditorLayer::UI_Console()
+	void EditorLayer::Console()
 	{
 		ImGui::Begin("Console");
 		if (ImGui::Button("Clear")) fg::Log::GetClientSink()->Clear();

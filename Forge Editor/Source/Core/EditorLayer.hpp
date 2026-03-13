@@ -21,8 +21,8 @@ namespace Editor
 		void OnDetach() override;
 
 	private:
-		void Game_Panel();
-		void UI_Console();
+		void Viewport();
+		void Console();
 
 	private:
 		EditorCamera m_Camera;

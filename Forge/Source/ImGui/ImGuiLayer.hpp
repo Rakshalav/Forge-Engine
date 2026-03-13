@@ -2,6 +2,7 @@
 
 #include "Core/Layer.hpp"
 #include "Core/Window.hpp"
+#include <string>
 
 namespace fg
 {
@@ -15,7 +16,7 @@ namespace fg
 
 		void OnAttach() override;
 		void OnDetach() override;
-		
+
 		void Begin();
 		void End();
 
@@ -26,5 +27,6 @@ namespace fg
 		Window m_Window;
 		bool m_BlockEvents;
 		bool m_ViewportEnabled;
+		std::string m_IniFilePath;
 	};
 }

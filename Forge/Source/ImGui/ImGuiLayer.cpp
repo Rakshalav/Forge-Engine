@@ -3,6 +3,10 @@
 #include <ImGui/imgui_impl_glfw.h>
 #include <ImGui/imgui_impl_opengl3.h>
 #include <GLFW/glfw3.h>
+#include <filesystem>
+#ifdef _WIN32
+#include <Windows.h>
+#endif
 #include "ImGuiLayer.hpp"
 
 namespace fg
@@ -11,7 +15,7 @@ namespace fg
 	{
 		if (m_BlockEvents)
 		{
-			auto& io = ImGui::GetIO();	
+			auto& io = ImGui::GetIO();
 			bool mouseEvent = event.IsInCategory(EventCategory_Mouse) && io.WantCaptureMouse;
 			bool keyboardEvent = event.IsInCategory(EventCategory_Keyboard) && io.WantCaptureKeyboard;
 
@@ -29,6 +33,19 @@ namespace fg
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+
+#ifdef _WIN32
+		char modulePath[MAX_PATH] = {};
+		DWORD modulePathLength = GetModuleFileNameA(nullptr, modulePath, MAX_PATH);
+		if (modulePathLength > 0)
+			m_IniFilePath = (std::filesystem::path(modulePath).parent_path() / "imgui.ini").string();
+		else
+			m_IniFilePath = (std::filesystem::current_path() / "imgui.ini").string();
+#else
+		m_IniFilePath = (std::filesystem::current_path() / "imgui.ini").string();
+#endif
+
+		io.IniFilename = m_IniFilePath.c_str();
 
 		ImGui::StyleColorsDark();
 
