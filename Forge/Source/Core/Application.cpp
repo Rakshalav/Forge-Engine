@@ -1,11 +1,27 @@
 #include "Application.hpp"
 #include "Renderer/Renderer.hpp"
 #include "Debug/Log.hpp"
+#include "Task.hpp"
 #include <ranges>
 
 namespace fg
 {
 	static Application* s_Application = nullptr;
+
+	class LayerRenderTask final : public Task
+	{
+	public:
+		explicit LayerRenderTask(Layer* layer) : m_Layer(layer) {}
+
+		void Execute() override
+		{
+			if (m_Layer)
+				m_Layer->OnRender();
+		}
+
+	private:
+		Layer* m_Layer = nullptr;
+	};
 
 	Application::Application(const ApplicationSpecification& specification) 
 		:	m_Specification(specification)
@@ -54,8 +70,6 @@ namespace fg
 				break;
 			}
 
-			RenderCommand::Clear();
-
 			float currentTime = GetTime();
 			float timeStep = glm::clamp(currentTime - lastTime, 0.001f, 0.1f);
 			lastTime = currentTime;
@@ -63,9 +77,11 @@ namespace fg
 			for (const auto& layer : m_LayerStack.GetLayerStack())
 				layer->OnUpdate(timeStep);
 
-			//TODO: add render thread
 			for (const auto& layer : m_LayerStack.GetLayerStack())
-				layer->OnRender();
+				Renderer::SubmitRenderTask(new LayerRenderTask(layer));
+			Renderer::WaitForRenderTasks();
+
+			RenderCommand::Execute();
 
 			m_OverlayLayer->Begin();
 			{

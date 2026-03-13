@@ -1,158 +1,110 @@
 #include "Model.hpp"
 #include <assimp/postprocess.h>
-#include "../Debug/Log.hpp"
-#include "../Maths/Math.hpp"
+#include "Debug/Log.hpp"
+#include "Core/TaskManager.hpp"
+#include "Renderer/RenderCommand.hpp"
 
 namespace fg
 {
-	Model::Model(std::string path)
-	{
-		Assimp::Importer import;
-		const aiScene* scene = import.ReadFile(path.c_str(), aiProcess_Triangulate | aiProcess_CalcTangentSpace);
+    Model::Model(std::string path)
+    {
+        TaskManager::Get().Submit(new FunctionTask([this, path]() {
+            auto import = std::make_shared<Assimp::Importer>();
+            const aiScene* scene = import->ReadFile(path.c_str(), aiProcess_Triangulate | aiProcess_CalcTangentSpace);
 
-		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
-		{
-			FG_ERROR("ASSIMP: {}", import.GetErrorString());
-			return;
-		}
-		m_Directory = path.substr(0, path.find_last_of('/'));
+            if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+            {
+                FG_ERROR("ASSIMP: {}", import->GetErrorString());
+                return;
+            }
 
-		ProcessNode(scene->mRootNode, scene);
-	}
+            m_Directory = path.substr(0, path.find_last_of('/'));
 
-	void Model::Draw(Ref<Shader>& shader)
-	{
-		for (auto& mesh : m_Meshes)
-			mesh.Draw(shader);
-	}
+            ProcessNode(scene->mRootNode, scene, import);
+            }));
+    }
 
-	void Model::ProcessNode(aiNode* node, const aiScene* scene)
-	{
-		for (unsigned int i = 0; i < node->mNumMeshes; i++)
-		{
-			aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-			m_Meshes.push_back(ProcessMesh(mesh, scene));
-		}
+    void Model::Draw(Ref<Shader>& shader)
+    {
+        std::lock_guard<std::mutex> lock(m_MeshMutex);
+        for (auto& mesh : m_Meshes)
+            mesh.Draw(shader);
+    }
 
-		for (unsigned int i = 0; i < node->mNumChildren; i++)
-			ProcessNode(node->mChildren[i], scene);
-	}
+    void Model::ProcessNode(aiNode* node, const aiScene* scene, std::shared_ptr<Assimp::Importer> keepAlive)
+    {
+        for (unsigned int i = 0; i < node->mNumMeshes; i++)
+        {
+            aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
+            ProcessMesh(mesh, scene, keepAlive);
+        }
 
-	Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
-	{
-		std::vector<Vertex> vertices;
-		std::vector<uint32_t> indices;
-		std::vector <Ref<Texture2D>> textures;
+        for (unsigned int i = 0; i < node->mNumChildren; i++)
+            ProcessNode(node->mChildren[i], scene, keepAlive);
+    }
 
-		for (unsigned int i = 0; i < mesh->mNumVertices; i++)
-		{
-			Vertex vertex;
+    void Model::ProcessMesh(aiMesh* mesh, const aiScene* scene, std::shared_ptr<Assimp::Importer> keepAlive)
+    {
+        TaskManager::Get().Submit(new FunctionTask([this, mesh, scene, keepAlive]() {
+            MeshData data;
 
-			Vec3f vector;
-			auto& MeshVertices = mesh->mVertices;
-			vector.x = MeshVertices[i].x;
-			vector.y = MeshVertices[i].y;
-			vector.z = MeshVertices[i].z;
-			vertex.Position = vector;
+            data.vertices.reserve(mesh->mNumVertices);
+            for (unsigned int i = 0; i < mesh->mNumVertices; i++)
+            {
+                Vertex vertex;
+                vertex.Position = { mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z };
+                vertex.Normal = { mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z };
 
-			Vec3f normal;
-			auto& MeshNormals = mesh->mNormals;
-			normal.x = MeshNormals[i].x;
-			normal.y = MeshNormals[i].y;
-			normal.z = MeshNormals[i].z;
-			vertex.Normal = normal;
+                if (mesh->mTextureCoords[0])
+                {
+                    vertex.TextureCoords = { mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y };
+                    vertex.Tangent = { mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z };
+                    vertex.Bitangent = { mesh->mBitangents[i].x, mesh->mBitangents[i].y, mesh->mBitangents[i].z };
+                }
+                data.vertices.push_back(vertex);
+            }
 
-			if (mesh->mTextureCoords[0])
-			{
-				Vec2f texCoords;
-				texCoords.x = mesh->mTextureCoords[0][i].x;
-				texCoords.y = mesh->mTextureCoords[0][i].y;
-				vertex.TextureCoords = texCoords;
+            for (unsigned int i = 0; i < mesh->mNumFaces; i++)
+            {
+                aiFace face = mesh->mFaces[i];
+                for (unsigned int j = 0; j < face.mNumIndices; j++)
+                    data.indices.push_back(face.mIndices[j]);
+            }
 
-				vector.x = mesh->mTangents[i].x;
-				vector.y = mesh->mTangents[i].y;
-				vector.z = mesh->mTangents[i].z;
-				vertex.Tangent = vector;
+            if (mesh->mMaterialIndex >= 0)
+            {
+                auto* material = scene->mMaterials[mesh->mMaterialIndex];
+                FillTextureSpecs(data.textureSpecs, material, aiTextureType_DIFFUSE, TextureType::DIFFUSE);
+                FillTextureSpecs(data.textureSpecs, material, aiTextureType_SPECULAR, TextureType::SPECULAR);
+                FillTextureSpecs(data.textureSpecs, material, aiTextureType_HEIGHT, TextureType::NORMAL);
+            }
 
-				vector.x = mesh->mBitangents[i].x;
-				vector.y = mesh->mBitangents[i].y;
-				vector.z = mesh->mBitangents[i].z;
-				vertex.Bitangent = vector;
-			}
-			else
-			{
-				vertex.TextureCoords = { 0.0f, 0.0f };
-				vertex.Tangent = { 0.0f, 0.0f, 0.0f };
-				vertex.Bitangent = { 0.0f, 0.0f, 0.0f };
-			}
+            RenderCommand::Submit([this, meshData = std::move(data)]() mutable {
+                std::vector<Ref<Texture2D>> textures;
+                for (auto& spec : meshData.textureSpecs)
+                {
+                    auto tex = Texture2D::Create(spec.first);
+                    tex->SetType(spec.second);
+                    textures.push_back(tex);
+                }
 
-			vertices.push_back(vertex);
-		}
+                Mesh finalMesh(meshData.vertices, meshData.indices, textures);
 
-		for (unsigned int i = 0; i < mesh->mNumFaces; i++)
-		{
-			aiFace face = mesh->mFaces[i];
-			for (unsigned int j = 0; j < face.mNumIndices; j++)
-				indices.push_back(face.mIndices[j]);
-		}
+                std::lock_guard<std::mutex> lock(m_MeshMutex);
+                m_Meshes.push_back(std::move(finalMesh));
 
-		if (mesh->mMaterialIndex >= 0)
-		{
-			auto* material = scene->mMaterials[mesh->mMaterialIndex];
+                FG_TRACE("Mesh finalized and uploaded to GPU.");
+                });
+            }));
+    }
 
-			auto diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE, TextureType::DIFFUSE);
-			if (diffuseMaps.empty())
-			{
-				diffuseMaps = LoadMaterialTextures(material, aiTextureType_BASE_COLOR, TextureType::DIFFUSE);
-			}
-			textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-
-			auto specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR, TextureType::SPECULAR);
-			textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-
-			auto ambientMaps = LoadMaterialTextures(material, aiTextureType_AMBIENT, TextureType::AMBIENT);
-			textures.insert(textures.end(), ambientMaps.begin(), ambientMaps.end());
-
-			auto emmisiveMaps = LoadMaterialTextures(material, aiTextureType_EMISSIVE, TextureType::EMMISIVE);
-			textures.insert(textures.end(), emmisiveMaps.begin(), emmisiveMaps.end());
-
-			auto normalMaps = LoadMaterialTextures(material, aiTextureType_HEIGHT, TextureType::NORMAL);
-			textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
-		}
-
-		FG_TRACE("Mesh finalized and uploaded to GPU.");
-		return Mesh(vertices, indices, textures);
-	}
-
-	std::vector<Ref<Texture2D>> Model::LoadMaterialTextures(aiMaterial* mat, aiTextureType type, TextureType FG_type)
-	{
-		std::vector <Ref<Texture2D>> textures;
-		for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
-		{
-			aiString str;
-			mat->GetTexture(type, i, &str);
-			bool skip = false;	
-
-			for (unsigned int j = 0; j < m_TextureCache.size(); j++)
-			{
-				if (std::strcmp(m_TextureCache[j]->GetPath().data(), str.C_Str()) == 0)
-				{
-					textures.push_back(m_TextureCache[j]);
-					skip = true;
-					break;
-				}
-			}
-
-			if (!skip)
-			{
-				std::string path = str.C_Str();
-				path = m_Directory + '/' + path;
-				Ref<Texture2D> texture = Texture2D::Create(path);
-				texture->SetType(FG_type);
-				textures.push_back(texture);
-				m_TextureCache.push_back(texture);
-			}
-		}
-		return textures;
-	}
-}
+    void Model::FillTextureSpecs(std::vector<std::pair<std::string, TextureType>>& specs, aiMaterial* mat, aiTextureType type, TextureType FG_type)
+    {
+        for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
+        {
+            aiString str;
+            mat->GetTexture(type, i, &str);
+            std::string fullPath = m_Directory + '/' + str.C_Str();
+            specs.push_back({ fullPath, FG_type });
+        }
+    }

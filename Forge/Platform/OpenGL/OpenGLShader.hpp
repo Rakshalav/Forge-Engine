@@ -14,102 +14,23 @@ namespace fg
 		void Bind() const override;
 		void UnBind() const override;
 
-		template<typename T>
-		void Set(const std::string& name, const T& value);
+		void SetInt(std::string name, int value) override;
+		void SetFloat(std::string name, float value) override;
+		void SetBool(std::string name, bool value) override;
 
-		void SetInt(const std::string& name, int value) override;
-		void SetFloat(const std::string& name, float value) override;
-		void SetBool(const std::string& name, bool value) override;
+		void SetVec2(std::string name, Vec2f value) override;
+		void SetVec3(std::string name, Vec3f value) override;
+		void SetVec4(std::string name, Vec4f value) override;
 
-		void SetVec2(const std::string& name, const Vec2f& value) override;
-		void SetVec3(const std::string& name, const Vec3f& value) override;
-		void SetVec4(const std::string& name, const Vec4f& value) override;
-
-		void SetMat2(const std::string& name, const glm::mat2& value) override;
-		void SetMat3(const std::string& name, const glm::mat3& value) override;
-		void SetMat4(const std::string& name, const glm::mat4& value) override;
-
-		template<typename T>
-		void UploadUniform(const std::string& name, const T& value);
-
-		void UploadUniformBool(const std::string& name, bool value);
-		void UploadUniformInt(const std::string& name, int value);
-		void UploadUniformFloat(const std::string& name, float value);
-
-		void UploadUniformVec2(const std::string& name, const Vec2f& value);
-		void UploadUniformVec3(const std::string& name, const Vec3f& value);
-		void UploadUniformVec4(const std::string& name, const Vec4f& value);
-
-		void UploadUniformMat2(const std::string& name, const glm::mat2& value);
-		void UploadUniformMat3(const std::string& name, const glm::mat3& value);
-		void UploadUniformMat4(const std::string& name, const glm::mat4& value);
+		void SetMat2(std::string name, glm::mat2 value) override;
+		void SetMat3(std::string name, glm::mat3 value) override;
+		void SetMat4(std::string name, glm::mat4 value) override;
 
 	private:
-		int GetLocation(const std::string& name) const;
+		int GetLocation(const std::string& name);
 
 	private:
 		uint32_t m_RendererID;
-
 		mutable std::unordered_map<std::string, int> m_LocationCache;
 	};
-
-	template<typename T>
-	inline void OpenGLShader::Set(const std::string& name, const T& value)
-	{
-		static_assert(
-			std::is_same_v<T, bool> || std::is_same_v<T, int> || std::is_same_v<T, float> ||
-			std::is_same_v<T, Vec2f> || std::is_same_v<T, Vec3f> || std::is_same_v<T, Vec4f> ||
-			std::is_same_v<T, glm::mat2> || std::is_same_v<T, glm::mat3> || std::is_same_v<T, glm::mat4>,
-			"Unsupported uniform type used in Shader::UploadUniform()"
-			);
-
-		if constexpr (std::is_same_v< T, bool>)
-			SetBool(name, value);
-		else if constexpr (std::is_same_v< T, int>)
-			SetInt(name, value);
-		else if constexpr (std::is_same_v< T, float>)
-			SetFloat(name, value);
-		else if constexpr (std::is_same_v< T, Vec2f>)
-			SetVec2(name, value);
-		else if constexpr (std::is_same_v< T, Vec3f>)
-			SetVec3(name, value);
-		else if constexpr (std::is_same_v< T, Vec4f>)
-			SetVec4(name, value);
-		else if constexpr (std::is_same_v< T, glm::mat2>)
-			SetMat2(name, value);
-		else if constexpr (std::is_same_v< T, glm::mat3>)
-			SetMat3(name, value);
-		else if constexpr (std::is_same_v< T, glm::mat4>)
-			SetMat4(name, value);
-	}
-
-	template<typename T>
-	inline void OpenGLShader::UploadUniform(const std::string& name, const T& value)
-	{
-		static_assert(
-			std::is_same_v<T, bool> || std::is_same_v<T, int> || std::is_same_v<T, float> ||
-			std::is_same_v<T, Vec2f> || std::is_same_v<T, Vec3f> || std::is_same_v<T, Vec4f> ||
-			std::is_same_v<T, glm::mat2> || std::is_same_v<T, glm::mat3> || std::is_same_v<T, glm::mat4>,
-			"Unsupported uniform type used in Shader::UploadUniform()"
-			);
-
-		if constexpr (std::is_same_v< T, bool>)
-			UploadUniformBool(name, value);
-		else if constexpr (std::is_same_v< T, int>)
-			UploadUniformInt(name, value);
-		else if constexpr (std::is_same_v< T, float>)
-			UploadUniformFloat(name, value);
-		else if constexpr (std::is_same_v< T, Vec2f>)
-			UploadUniformVec2(name, value);
-		else if constexpr (std::is_same_v< T, Vec3f>)
-			UploadUniformVec3(name, value);
-		else if constexpr (std::is_same_v< T, Vec4f>)
-			UploadUniformVec4(name, value);
-		else if constexpr (std::is_same_v< T, glm::mat2>)
-			UploadUniformMat2(name, value);
-		else if constexpr (std::is_same_v< T, glm::mat3>)
-			UploadUniformMat3(name, value);
-		else if constexpr (std::is_same_v< T, glm::mat4>)
-			UploadUniformMat4(name, value);
-	}
 }

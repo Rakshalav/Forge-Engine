@@ -1,6 +1,7 @@
 #include "OpenGLFrameBuffer.hpp"
 #include <glad/glad.h>
 #include "Debug/Log.hpp"
+#include "Renderer/RenderCommand.hpp"
 
 namespace fg
 {
@@ -75,7 +76,7 @@ namespace fg
 			return false;
 		}
 
-		static GLenum HazelFBTextureFormatToGL(FramebufferTextureFormat format)
+		static GLenum FBTextureFormatToGL(FramebufferTextureFormat format)
 		{
 			switch (format)
 			{
@@ -182,26 +183,32 @@ namespace fg
 
 	void OpenGLFramebuffer::Bind()
 	{
-		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
-		glViewport(0, 0, m_Specification.Width, m_Specification.Height);
+		auto id = m_RendererID;
+		auto width = m_Specification.Width;
+		auto height = m_Specification.Height;
+
+		RenderCommand::Submit([id, width, height]() {
+			glBindFramebuffer(GL_FRAMEBUFFER, id);
+			glViewport(0, 0, width, height);
+		});
 	}
 
 	void OpenGLFramebuffer::Unbind()
 	{
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		RenderCommand::Submit([]() { glBindFramebuffer(GL_FRAMEBUFFER, 0); });
 	}
 
 	void OpenGLFramebuffer::Resize(uint32_t width, uint32_t height)
 	{
 		if (width == 0 || height == 0 || width > s_MaxFramebufferSize || height > s_MaxFramebufferSize)
 		{
-			FG_CORE_WARN("Attempted to rezize framebuffer to {0}, {1}", width, height);
+			FG_CORE_WARN("Attempted to rezize framebuffer to {}, {}", width, height);
 			return;
 		}
 		m_Specification.Width = width;
 		m_Specification.Height = height;
 
-		Invalidate();
+		RenderCommand::Submit([this]() { Invalidate(); });
 	}
 
 	int OpenGLFramebuffer::ReadPixel(uint32_t attachmentIndex, int x, int y)
@@ -212,7 +219,6 @@ namespace fg
 		int pixelData;
 		glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
 		return pixelData;
-
 	}
 
 	void OpenGLFramebuffer::ClearAttachment(uint32_t attachmentIndex, int value)
@@ -220,7 +226,9 @@ namespace fg
 		assert(attachmentIndex < m_ColorAttachments.size());
 
 		auto& spec = m_ColorAttachmentSpecifications[attachmentIndex];
-		glClearTexImage(m_ColorAttachments[attachmentIndex], 0,
-			Utils::HazelFBTextureFormatToGL(spec.TextureFormat), GL_INT, &value);
+		auto format = Utils::FBTextureFormatToGL(spec.TextureFormat);
+		auto index = m_ColorAttachments[attachmentIndex];
+
+		RenderCommand::Submit([this, index, format, value]() { glClearTexImage(index, 0, format, GL_INT, &value); });
 	}
 }

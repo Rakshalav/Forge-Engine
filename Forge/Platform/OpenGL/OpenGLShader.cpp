@@ -1,11 +1,9 @@
 #include <glad/glad.h>
-
 #include "OpenGLShader.hpp"
-
 #include <fstream>
 #include <sstream>
-
-#include "../Source/Debug/Log.hpp"
+#include "Debug/Log.hpp"
+#include "Renderer/RenderCommand.hpp"
 
 namespace fg
 {
@@ -93,106 +91,61 @@ namespace fg
 
 	void OpenGLShader::Bind() const
 	{
-		glUseProgram(m_RendererID);
+		auto id = m_RendererID;
+		RenderCommand::Submit([id]() { glUseProgram(id); });
 	}
 
 	void OpenGLShader::UnBind() const
 	{
-		m_LocationCache.clear();
-		glUseProgram(0);
+		RenderCommand::Submit([]() { glUseProgram(0); });
 	}
 
-	void OpenGLShader::SetInt(const std::string& name, int value)
+	void OpenGLShader::SetInt(std::string name, int value)
 	{
-		UploadUniformInt(name, value);
+		RenderCommand::Submit([this, name = std::move(name), value]() { glUniform1i(GetLocation(name), value); });
 	}
 
-	void OpenGLShader::SetFloat(const std::string& name, float value)
+	void OpenGLShader::SetFloat(std::string name, float value)
 	{
-		UploadUniformFloat(name, value);
+		RenderCommand::Submit([this, name = std::move(name), value]() { glUniform1f(GetLocation(name), value); });
 	}
 
-	void OpenGLShader::SetBool(const std::string& name, bool value)
+	void OpenGLShader::SetBool(std::string name, bool value)
 	{
-		UploadUniformBool(name, value);
+		RenderCommand::Submit([this, name = std::move(name), value]() { glUniform1i(GetLocation(name), (int)value); });
 	}
 
-	void OpenGLShader::SetVec2(const std::string& name, const Vec2f& value)
+	void OpenGLShader::SetVec2(std::string name, Vec2f value)
 	{
-		UploadUniformVec2(name, value);
+		RenderCommand::Submit([this, name = std::move(name), value]() { glUniform2fv(GetLocation(name), 1, &value[0]); });
 	}
 
-	void OpenGLShader::SetVec3(const std::string& name, const Vec3f& value)
+	void OpenGLShader::SetVec3(std::string name, Vec3f value)
 	{
-		UploadUniformVec3(name, value);
+		RenderCommand::Submit([this, name = std::move(name), value]() { glUniform3fv(GetLocation(name), 1, &value[0]); });
 	}
 
-	void OpenGLShader::SetVec4(const std::string& name, const Vec4f& value)
+	void OpenGLShader::SetVec4(std::string name, Vec4f value)
 	{
-		UploadUniformVec4(name, value);
+		RenderCommand::Submit([this, name = std::move(name), value]() { glUniform4fv(GetLocation(name), 1, &value[0]); });
 	}
 
-	void OpenGLShader::SetMat2(const std::string& name, const glm::mat2& value)
+	void OpenGLShader::SetMat2(std::string name, glm::mat2 value)
 	{
-		UploadUniformMat2(name, value);
+		RenderCommand::Submit([this, name = std::move(name), value]() { glUniformMatrix2fv(GetLocation(name), 1, GL_FALSE, &value[0][0]); });
 	}
 
-	void OpenGLShader::SetMat3(const std::string& name, const glm::mat3& value)
+	void OpenGLShader::SetMat3(std::string name, glm::mat3 value)
 	{
-		UploadUniformMat3(name, value);
+		RenderCommand::Submit([this, name = std::move(name), value]() { glUniformMatrix3fv(GetLocation(name), 1, GL_FALSE, &value[0][0]); });
 	}
 
-	void OpenGLShader::SetMat4(const std::string& name, const glm::mat4& value)
+	void OpenGLShader::SetMat4(std::string name, glm::mat4 value)
 	{
-		UploadUniformMat4(name, value);
+		RenderCommand::Submit([this, name = std::move(name), value]() { glUniformMatrix4fv(GetLocation(name), 1, GL_FALSE, &value[0][0]); });
 	}
 
-	void OpenGLShader::UploadUniformBool(const std::string& name, bool value)
-	{
-		glUniform1i(GetLocation(name), (int)value);
-	}
-
-	void OpenGLShader::UploadUniformInt(const std::string& name, int value)
-	{
-		glUniform1i(GetLocation(name), value);
-	}
-
-	void OpenGLShader::UploadUniformFloat(const std::string& name, float value)
-	{
-		glUniform1f(GetLocation(name), value);
-	}
-
-	void OpenGLShader::UploadUniformVec2(const std::string& name, const Vec2f& value)
-	{
-		glUniform2fv(GetLocation(name), 1, &value[0]);
-	}
-
-	void OpenGLShader::UploadUniformVec3(const std::string& name, const Vec3f& value)
-	{
-		glUniform3fv(GetLocation(name), 1, &value[0]);
-	}
-
-	void OpenGLShader::UploadUniformVec4(const std::string& name, const Vec4f& value)
-	{
-		glUniform4fv(GetLocation(name), 1, &value[0]);
-	}
-
-	void OpenGLShader::UploadUniformMat2(const std::string& name, const glm::mat2& value)
-	{
-		glUniformMatrix2fv(GetLocation(name), 1, GL_FALSE, &value[0][0]);
-	}
-
-	void OpenGLShader::UploadUniformMat3(const std::string& name, const glm::mat3& value)
-	{
-		glUniformMatrix3fv(GetLocation(name), 1, GL_FALSE, &value[0][0]);
-	}
-
-	void OpenGLShader::UploadUniformMat4(const std::string& name, const glm::mat4& value)
-	{
-		glUniformMatrix4fv(GetLocation(name), 1, GL_FALSE, &value[0][0]);
-	}
-
-	int OpenGLShader::GetLocation(const std::string& name) const
+	int OpenGLShader::GetLocation(const std::string& name) 
 	{
 		if (m_LocationCache.contains(name))
 			return m_LocationCache[name];
