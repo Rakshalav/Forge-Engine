@@ -1,9 +1,8 @@
 #include <glad/glad.h>
 #include "OpenGLTexture.hpp"
-
 #include <stb-image/stb_image.h>
-
-#include "../Source/Debug/Log.hpp"
+#include "Debug/Log.hpp"
+#include "Renderer/RenderCommand.hpp"
 
 namespace fg
 {
@@ -80,12 +79,13 @@ namespace fg
 
 	void OpenGLTexture2D::Bind() const
 	{
-		glBindTexture(GL_TEXTURE_2D, m_RendererID);
+		auto id = m_RendererID;
+		RenderCommand::Submit([id]() { glBindTexture(GL_TEXTURE_2D, id); });
 	}
 
 	void OpenGLTexture2D::Activate(uint32_t slot) const
 	{
-		glActiveTexture(GL_TEXTURE0 + slot);	
+		RenderCommand::Submit([slot]() { glActiveTexture(GL_TEXTURE0 + slot); });
 	}
 
 	void OpenGLTexture2D::SetData(void* data, uint32_t size)
@@ -94,10 +94,10 @@ namespace fg
 		if (size != m_Specification.Width * m_Specification.Height * bpp)
 		{
 			//TODO: add custom assertion
-			FG_CORE_CRITICAL("Data must be intire texture!");
+			FG_CRITICAL("Data must be intire texture!");
 			return;
 		}
 
-		glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Specification.Width, m_Specification.Height, m_Specification.DataFormat, GL_UNSIGNED_BYTE, data);
+		RenderCommand::Submit([this, data]() { glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Specification.Width, m_Specification.Height, m_Specification.DataFormat, GL_UNSIGNED_BYTE, data); });
 	}
 }

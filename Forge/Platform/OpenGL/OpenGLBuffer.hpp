@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Source/Renderer/Buffer.hpp"
+#include "Renderer/Buffer.hpp"
 
 namespace fg
 {

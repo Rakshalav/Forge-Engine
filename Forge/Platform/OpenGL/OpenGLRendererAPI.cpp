@@ -1,6 +1,6 @@
 #include <glad/glad.h>
 #include "OpenGLRendererAPI.hpp"
-#include "../Source/Debug/Log.hpp"
+#include "Debug/Log.hpp"
 
 namespace fg
 {

@@ -67,6 +67,8 @@ namespace fg
 			for (const auto& layer : m_LayerStack.GetLayerStack())
 				layer->OnRender();
 
+			RenderCommand::Execute();
+
 			m_OverlayLayer->Begin();
 			{
 				for (const auto& layer : m_LayerStack.GetLayerStack())
