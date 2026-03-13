@@ -77,7 +77,6 @@ namespace fg
 			for (const auto& layer : m_LayerStack.GetLayerStack())
 				layer->OnUpdate(timeStep);
 
-			//TODO: add render thread
 			for (const auto& layer : m_LayerStack.GetLayerStack())
 				Renderer::SubmitRenderTask(new LayerRenderTask(layer));
 			Renderer::WaitForRenderTasks();

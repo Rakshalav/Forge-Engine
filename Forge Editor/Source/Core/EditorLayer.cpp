@@ -70,6 +70,10 @@ namespace Editor
 		static ImGuiID dockspaceID = ImGui::GetID("ForgeEditorDockspace");
 		static auto viewport = ImGui::GetMainViewport();
 
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
+		ImGui::DockSpaceOverViewport(dockspaceID, viewport, ImGuiDockNodeFlags_None);
+		ImGui::PopStyleColor();
+
 		if (!ImGui::DockBuilderGetNode(dockspaceID))
 		{
 			ImGui::DockBuilderAddNode(dockspaceID, ImGuiDockNodeFlags_DockSpace);
@@ -92,10 +96,6 @@ namespace Editor
 			ImGui::DockBuilderDockWindow("Console", console_id);
 			ImGui::DockBuilderFinish(dockspaceID);
 		}
-
-		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
-		ImGui::DockSpaceOverViewport(dockspaceID, viewport, ImGuiDockNodeFlags_None);
-		ImGui::PopStyleColor();
 
 		Viewport();
 
