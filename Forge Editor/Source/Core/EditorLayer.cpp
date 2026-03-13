@@ -13,6 +13,7 @@ namespace Editor
 		m_Shader = fg::Shader::Create("C:/Dev/Forge/Sandbox/Shaders/vertex_cube.glsl", "C:/Dev/Forge/Sandbox/Shaders/Model_fragment.glsl"
 		);
 
+		FG_TRACE("Creating model");
 		m_Model = fg::CreateScope<fg::Model>("C:/Dev/Forge/Sandbox/Textures/Guitar/Guitar.obj");
 
 		fg::FramebufferSpecification spec;

@@ -70,8 +70,6 @@ namespace fg
 				break;
 			}
 
-			RenderCommand::Clear();
-
 			float currentTime = GetTime();
 			float timeStep = glm::clamp(currentTime - lastTime, 0.001f, 0.1f);
 			lastTime = currentTime;

@@ -20,7 +20,6 @@ namespace fg
             spdlog::memory_buf_t formatted;
             base_sink<std::mutex>::formatter_->format(msg, formatted);
 
-            // Store BOTH the text and the level
             m_MessageBuffer.push_back({ fmt::to_string(formatted), msg.level });
 
             if (m_MessageBuffer.size() > 500)
