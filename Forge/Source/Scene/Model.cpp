@@ -108,4 +108,3 @@ namespace fg
             specs.push_back({ fullPath, FG_type });
         }
     }
-}
