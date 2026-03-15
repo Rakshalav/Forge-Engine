@@ -5,7 +5,7 @@
 
 namespace fg
 {
-	class OpenGLFramebuffer : public Framebuffer
+	class OpenGLFramebuffer final : public Framebuffer
 	{
 	public:
 		OpenGLFramebuffer(const FramebufferSpecification& spec);

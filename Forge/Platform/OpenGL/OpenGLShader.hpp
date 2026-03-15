@@ -5,7 +5,7 @@
 
 namespace fg
 {
-	class OpenGLShader : public Shader
+	class OpenGLShader final : public Shader
 	{
 	public:
 		OpenGLShader(const std::string& vertexpath, const std::string& fragmentpath);

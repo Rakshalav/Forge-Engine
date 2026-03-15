@@ -92,10 +92,8 @@ namespace fg
 
                 std::lock_guard<std::mutex> lock(m_MeshMutex);
                 m_Meshes.push_back(std::move(finalMesh));
-
-                FG_TRACE("Mesh finalized and uploaded to GPU.");
-                });
-            }));
+            });
+        }));
     }
 
     void Model::FillTextureSpecs(std::vector<std::pair<std::string, TextureType>>& specs, aiMaterial* mat, aiTextureType type, TextureType FG_type)
@@ -108,3 +106,4 @@ namespace fg
             specs.push_back({ fullPath, FG_type });
         }
     }
+}

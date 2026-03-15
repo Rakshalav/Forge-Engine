@@ -4,7 +4,7 @@
 
 namespace fg 
 {
-	class OpenGLVertexArray : public VertexArray
+	class OpenGLVertexArray final : public VertexArray
 	{
 	public:
 		OpenGLVertexArray();

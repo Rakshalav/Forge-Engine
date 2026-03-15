@@ -81,7 +81,7 @@ namespace fg
 				Renderer::SubmitRenderTask(new LayerRenderTask(layer));
 			Renderer::WaitForRenderTasks();
 
-			RenderCommand::Execute();
+			RenderCommand::Dispatch();
 
 			m_OverlayLayer->Begin();
 			{

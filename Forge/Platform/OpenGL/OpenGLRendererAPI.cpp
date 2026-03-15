@@ -70,6 +70,7 @@ namespace fg
         #endif
 
         ToggleDepthTesting(true);
+        ToggleStencilTesting(true);
         ToggleFaceCulling(true);
 	}
 
@@ -81,7 +82,6 @@ namespace fg
 	void OpenGLRendererAPI::ToggleDepthTesting(bool value)
 	{
 		value ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
-		m_isDepthTesting = value;
 	}
 
     void OpenGLRendererAPI::ToggleFaceCulling(bool value)
@@ -94,6 +94,11 @@ namespace fg
         }
 
         else glDisable(GL_CULL_FACE);
+    }
+
+    void OpenGLRendererAPI::ToggleStencilTesting(bool value)
+    {
+        value ? glEnable(GL_STENCIL_TEST) : glDisable(GL_STENCIL_TEST);
     }
 
     void OpenGLRendererAPI::DrawIndexed(const Ref<VertexArray>& vertexArray)
@@ -110,8 +115,23 @@ namespace fg
 
 	void OpenGLRendererAPI::Clear()
 	{
-		m_isDepthTesting ? glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT) : glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	}
+
+    void OpenGLRendererAPI::SetStenscilFunc(uint32_t func, int ref, uint32_t mask)
+    {
+        glStencilFunc(func, ref, mask);
+    }
+
+    void OpenGLRendererAPI::SetStencilMask(uint32_t mask)
+    {
+        glStencilMask(mask);
+    }
+
+    void OpenGLRendererAPI::SetStencilOp(uint32_t sfail, uint32_t dpfail, uint32_t dppass)
+    {
+        glStencilOp(sfail, dpfail, dppass);
+    }
 
     OpenGLRendererAPI::~OpenGLRendererAPI()
     {

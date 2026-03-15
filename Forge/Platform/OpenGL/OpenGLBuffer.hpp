@@ -4,7 +4,7 @@
 
 namespace fg
 {
-	class OpenGLVertexBuffer : public VertexBuffer
+	class OpenGLVertexBuffer final : public VertexBuffer
 	{
 	public:
 		OpenGLVertexBuffer(float* vertices, uint32_t size);

@@ -24,6 +24,11 @@ namespace fg
 			Submit([value]() { s_RenderApi->ToggleDepthTesting(value); });
 		}
 
+		static void inline ToggleStencilTesting(bool value)
+		{
+			Submit([value]() { s_RenderApi->ToggleStencilTesting(value); });
+		}
+
 		static void inline ToggleFaceCulling(bool value)
 		{
 			Submit([value]() { s_RenderApi->ToggleFaceCulling(value); });
@@ -44,12 +49,27 @@ namespace fg
 			Submit([]() { s_RenderApi->Clear(); });
 		}
 
+		static void inline SetStencilFunc(uint32_t func, int ref, uint32_t mask)
+		{
+			Submit([func, ref, mask]() { s_RenderApi->SetStenscilFunc(func, ref, mask); });
+		}
+
+		static void SetStencilMask(uint32_t mask) 
+		{
+			Submit([mask]() {  s_RenderApi->SetStencilMask(mask); });
+		}
+
+		static void SetStencilOp(uint32_t sfail, uint32_t dpfail, uint32_t dppass) 
+		{
+			Submit([sfail, dpfail, dppass]() {  s_RenderApi->SetStencilOp(sfail, dpfail, dppass); });
+		}
+
 		static void inline Submit(std::function<void()> function)
 		{
 			m_Commands.push_back(function);
 		}
 
-		static void inline Execute()
+		static void inline Dispatch()
 		{
 			if (m_Commands.empty())
 				return;

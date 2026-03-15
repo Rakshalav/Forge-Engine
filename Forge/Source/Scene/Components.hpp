@@ -2,7 +2,9 @@
 
 #include "Maths/Math.hpp"
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/quaternion.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include "Model.hpp"
+#include "Renderer/Shader.hpp"
 
 namespace fg
 {
@@ -19,9 +21,18 @@ namespace fg
 		inline glm::mat4 GetTransformation() const
 		{
 			glm::mat4 translation	= glm::translate(glm::mat4(1.0f), Translation);
-			glm::mat4 rotation		= glm::toMat4(glm::quat(Rotation));
+			glm::mat4 rotation		= glm::mat4_cast(glm::quat(Rotation));
 			glm::mat4 scale			= glm::scale(glm::mat4(1.0f), Scale);
 			return translation * rotation * scale;
 		}
+	};
+
+	struct MeshComponent
+	{
+		Ref<Model> Model;
+		Ref<Shader> Shader;
+
+		MeshComponent() = default;
+		MeshComponent(Ref<fg::Model> model, Ref<fg::Shader> shader) : Model(model), Shader(shader) {}
 	};
 }

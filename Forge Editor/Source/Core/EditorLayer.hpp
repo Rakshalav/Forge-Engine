@@ -32,8 +32,8 @@ namespace Editor
 
 		bool m_BlockUpdates;
 
-		fg::Ref<fg::Shader> m_Shader;
-		fg::Scope<fg::Model> m_Model;
+		fg::Scene m_Scene;
+		fg::Entity m_Guitar;
 		
 		fg::Ref<fg::Framebuffer> m_FrameBuffer;
 	};

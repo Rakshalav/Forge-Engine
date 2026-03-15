@@ -23,9 +23,14 @@ namespace fg
 		virtual void SetViewPort(const Vec2u& lowerLeft, const Vec2u& size) = 0;
 		virtual void ToggleDepthTesting(bool value) = 0;
 		virtual void ToggleFaceCulling(bool value) = 0;
+		virtual void ToggleStencilTesting(bool value) = 0;
 		virtual void DrawIndexed(const Ref<VertexArray>& vertexArray) = 0;
 		virtual void ClearColor(const Vec4f& color) = 0;
 		virtual void Clear() = 0;
+
+		virtual void SetStenscilFunc(uint32_t func, int ref, uint32_t mask) = 0;
+		virtual void SetStencilMask(uint32_t mask) = 0;
+		virtual void SetStencilOp(uint32_t sfail, uint32_t dpfail, uint32_t dppass) = 0;
 
 		static API GetAPI() { return s_API; }
 

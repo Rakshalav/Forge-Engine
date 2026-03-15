@@ -138,12 +138,12 @@ namespace fg
 
         enum class Mod : uint8_t
         {
-            Shift = 1,
-            Control = 2,
-            Alt = 4,
-            Super = 8,
-            CapsLock = 16,
-            NumLock = 32
+            Shift       = 1 << 0,
+            Control     = 1 << 1,
+            Alt         = 1 << 2,
+            Super       = 1 << 3,
+            CapsLock    = 1 << 4,
+            NumLock     = 1 << 5
         };
 
         static int GetScanCode(Key key);
@@ -160,9 +160,9 @@ namespace fg
     {
         enum Button : uint8_t
         {
-            Left = 0,
-            Right = 1,
-            Middle = 2
+            Left    = 0,
+            Right   = 1,
+            Middle  = 2
         };
 
         static bool IsButtonPressed(Button button);

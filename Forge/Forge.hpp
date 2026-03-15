@@ -33,3 +33,6 @@
 // Engine Scene
 #include "Source/Scene/Mesh.hpp"
 #include "Source/Scene/Model.hpp"
+#include "Source//Scene/Components.hpp"
+#include "Source/Scene/Entity.hpp"
+#include "Source/Scene/Scene.hpp"

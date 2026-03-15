@@ -10,11 +10,12 @@ namespace Editor
 
 	void EditorLayer::OnAttach()
 	{
-		m_Shader = fg::Shader::Create("C:/Dev/Forge/Sandbox/Shaders/vertex_cube.glsl", "C:/Dev/Forge/Sandbox/Shaders/Model_fragment.glsl"
-		);
+		auto shader = fg::Shader::Create("C:/Dev/Forge/Forge Editor/Source/Shaders/ModelVertex.glsl", "C:/Dev/Forge/Forge Editor/Source/Shaders/ModelFragment.glsl");
+		auto model = fg::CreateRef<fg::Model>("C:/Dev/Forge/Sandbox/Textures/Guitar/Guitar.obj");
 
-		FG_TRACE("Creating model");
-		m_Model = fg::CreateScope<fg::Model>("C:/Dev/Forge/Sandbox/Textures/Guitar/Guitar.obj");
+		m_Guitar = m_Scene.CreateEntity();
+		m_Guitar.AddComponent<fg::TransformComponent>();
+		m_Guitar.AddComponent<fg::MeshComponent>(model, shader);
 
 		fg::FramebufferSpecification spec;
 		spec.Width = 1;
@@ -42,25 +43,18 @@ namespace Editor
 
 		if (!m_BlockUpdates)
 			m_CamController.OnUpdate(ts, m_ViewportBounds);
+
+		m_Guitar.GetComponent<fg::TransformComponent>().Rotation.y += ts * 10.0f;
 	}
 
 	void EditorLayer::OnRender()
 	{
-		m_Shader->Bind();
-
 		m_FrameBuffer->Bind();
 		fg::RenderCommand::ClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
 		fg::RenderCommand::Clear();
 		fg::Renderer::BeginScene(m_Camera);
 
-		glm::mat4 model(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
-		model = glm::rotate(model, glm::radians(fg::Application::Get().GetTime() * 50), glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
-
-		m_Shader->SetMat3("u_normal", glm::mat3(glm::transpose(glm::inverse(model))));
-		m_Shader->SetMat4("u_model", model);
-		m_Model->Draw(m_Shader);
+		m_Scene.OnRender();
 
 		m_FrameBuffer->Unbind();
 	}
