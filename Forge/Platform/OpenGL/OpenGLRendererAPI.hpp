@@ -20,6 +20,8 @@ namespace fg
 		void SetStencilMask(uint32_t mask) override;
 		void SetStencilOp(uint32_t sfail, uint32_t dpfail, uint32_t dppass) override;
 
+		void SetDepthFunc(uint32_t func) override;
+
 		~OpenGLRendererAPI();
 
 	private:

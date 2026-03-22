@@ -1,5 +1,6 @@
 #include "Application.hpp"
 #include "Renderer/Renderer.hpp"
+#include "Renderer/RenderCommand.hpp"
 #include "Debug/Log.hpp"
 #include "Task.hpp"
 #include <ranges>

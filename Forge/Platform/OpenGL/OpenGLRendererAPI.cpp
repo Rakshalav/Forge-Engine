@@ -133,6 +133,11 @@ namespace fg
         glStencilOp(sfail, dpfail, dppass);
     }
 
+    void OpenGLRendererAPI::SetDepthFunc(uint32_t func)
+    {
+        glDepthFunc(func);
+    }
+
     OpenGLRendererAPI::~OpenGLRendererAPI()
     {
         #ifdef _DEBUG

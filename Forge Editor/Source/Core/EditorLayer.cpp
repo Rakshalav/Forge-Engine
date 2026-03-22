@@ -13,7 +13,9 @@ namespace Editor
 		auto shader = fg::Shader::Create("C:/Dev/Forge/Forge Editor/Source/Shaders/ModelVertex.glsl", "C:/Dev/Forge/Forge Editor/Source/Shaders/ModelFragment.glsl");
 		auto model = fg::CreateRef<fg::Model>("C:/Dev/Forge/Sandbox/Textures/Guitar/Guitar.obj");
 
-		m_Guitar = m_Scene.CreateEntity();
+		m_Scene = fg::CreateScope<fg::Scene>();
+
+		m_Guitar = m_Scene->CreateEntity();
 		m_Guitar.AddComponent<fg::TransformComponent>();
 		m_Guitar.AddComponent<fg::MeshComponent>(model, shader);
 
@@ -50,12 +52,7 @@ namespace Editor
 	void EditorLayer::OnRender()
 	{
 		m_FrameBuffer->Bind();
-		fg::RenderCommand::ClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
-		fg::RenderCommand::Clear();
-		fg::Renderer::BeginScene(m_Camera);
-
-		m_Scene.OnRender();
-
+		m_Scene->OnRender(m_Camera);
 		m_FrameBuffer->Unbind();
 	}
 

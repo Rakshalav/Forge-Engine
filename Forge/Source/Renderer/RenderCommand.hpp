@@ -9,7 +9,7 @@ namespace fg
 	class RenderCommand
 	{
 	public:
-		static inline void Init()
+		static void inline Init()
 		{
 			s_RenderApi->Init();
 		}
@@ -54,14 +54,19 @@ namespace fg
 			Submit([func, ref, mask]() { s_RenderApi->SetStenscilFunc(func, ref, mask); });
 		}
 
-		static void SetStencilMask(uint32_t mask) 
+		static void inline SetStencilMask(uint32_t mask) 
 		{
 			Submit([mask]() {  s_RenderApi->SetStencilMask(mask); });
 		}
 
-		static void SetStencilOp(uint32_t sfail, uint32_t dpfail, uint32_t dppass) 
+		static void inline SetStencilOp(uint32_t sfail, uint32_t dpfail, uint32_t dppass) 
 		{
 			Submit([sfail, dpfail, dppass]() {  s_RenderApi->SetStencilOp(sfail, dpfail, dppass); });
+		}
+
+		static void inline SetDepthFunc(uint32_t func)
+		{
+			s_RenderApi->SetDepthFunc(func);
 		}
 
 		static void inline Submit(std::function<void()> function)

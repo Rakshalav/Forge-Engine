@@ -7,7 +7,7 @@ namespace fg
 {
     struct Keyboard
     {
-        enum class Key : uint32_t
+        enum class Key : uint16_t
         {
             /* Printable keys */
             Space = 32,

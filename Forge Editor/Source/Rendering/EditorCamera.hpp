@@ -22,7 +22,7 @@ namespace Editor
 		float FarClip = 1000.0f;
 	};
 
-	class EditorCamera : public fg::Camera
+	class EditorCamera final : public fg::Camera
 	{
 	public:
 		EditorCamera(const EditorCameraSpecification& specification);
@@ -59,8 +59,8 @@ namespace Editor
 
 		enum Flags : uint8_t
 		{
-			Projection_Dirty = 1 << 0,
-			View_Dirty = 1 << 1
+			Projection_Dirty	= 1 << 0,
+			View_Dirty			= 1 << 1
 		};
 		uint8_t m_DirtyFlags;
 

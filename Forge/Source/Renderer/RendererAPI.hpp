@@ -32,6 +32,8 @@ namespace fg
 		virtual void SetStencilMask(uint32_t mask) = 0;
 		virtual void SetStencilOp(uint32_t sfail, uint32_t dpfail, uint32_t dppass) = 0;
 
+		virtual void SetDepthFunc(uint32_t func) = 0;
+
 		static API GetAPI() { return s_API; }
 
 	private:

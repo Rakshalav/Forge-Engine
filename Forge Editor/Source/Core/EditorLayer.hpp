@@ -32,7 +32,7 @@ namespace Editor
 
 		bool m_BlockUpdates;
 
-		fg::Scene m_Scene;
+		fg::Scope<fg::Scene> m_Scene;
 		fg::Entity m_Guitar;
 		
 		fg::Ref<fg::Framebuffer> m_FrameBuffer;
