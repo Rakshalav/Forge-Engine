@@ -140,15 +140,15 @@ namespace Editor
 
 		for (const auto& log : logs)
 		{
-			ImVec4 color = { 1.0f, 1.0f, 1.0f, 1.0f }; // Default White
+			ImVec4 color = { 1.0f, 1.0f, 1.0f, 1.0f }; 
 
 			switch (log.Level)
 			{
-			case spdlog::level::warn:     color = { 1.0f, 0.8f, 0.0f, 1.0f }; break; // Yellow
-			case spdlog::level::err:      color = { 1.0f, 0.2f, 0.2f, 1.0f }; break; // Red
-			case spdlog::level::critical: color = { 1.0f, 0.0f, 1.0f, 1.0f }; break; // Magenta
-			case spdlog::level::info:     color = { 0.4f, 0.9f, 0.4f, 1.0f }; break; // Green
-			case spdlog::level::trace:    color = { 0.7f, 0.7f, 0.7f, 1.0f }; break; // Gray
+			case spdlog::level::warn:     color = { 1.0f, 0.8f, 0.0f, 1.0f }; break; 
+			case spdlog::level::err:      color = { 1.0f, 0.2f, 0.2f, 1.0f }; break; 
+			case spdlog::level::critical: color = { 1.0f, 0.0f, 1.0f, 1.0f }; break; 
+			case spdlog::level::info:     color = { 0.4f, 0.9f, 0.4f, 1.0f }; break;
+			case spdlog::level::trace:    color = { 0.7f, 0.7f, 0.7f, 1.0f }; break; 
 			}
 
 			ImGui::TextColored(color, log.Message.c_str());

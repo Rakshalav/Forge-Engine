@@ -5,29 +5,54 @@
 #include "Renderer/RenderCommand.hpp"
 
 float SkyboxVertices[] = {
-	-1.0f, -1.0f, -1.0f,//   7--------6
-	 1.0f, -1.0f, -1.0f,//  /|       /| 
-	 1.0f, -1.0f,  1.0f,// 4--------5 |
-	-1.0f, -1.0f,  1.0f,// | |      | | 
-	-1.0f,  1.0f, -1.0f,// | 3------|-2
-	 1.0f,  1.0f, -1.0f,// |/       |/
-	 1.0f,  1.0f,  1.0f,// 0--------1
-	-1.0f,  1.0f,  1.0f,
-};
+                              
+	// Right (+X)        //   7--------6       
+	 1.0f, -1.0f, -1.0f, //  /|       /|
+	 1.0f, -1.0f,  1.0f, // 4--------5 |       
+	 1.0f,  1.0f,  1.0f, // | |      | |
+	 1.0f,  1.0f,  1.0f, // | 3------|-2
+	 1.0f,  1.0f, -1.0f, // |/       |/
+	 1.0f, -1.0f, -1.0f, // 0--------1
+	                     
+	 // Left (-X)
+	 -1.0f, -1.0f,  1.0f,
+	 -1.0f, -1.0f, -1.0f,
+	 -1.0f,  1.0f, -1.0f,
+	 -1.0f,  1.0f, -1.0f,
+	 -1.0f,  1.0f,  1.0f,
+	 -1.0f, -1.0f,  1.0f,
 
-uint32_t SkyBoxIndices[] = {
-	// Right (+X): 1, 5, 6, 2
-	1, 5, 6,  6, 2, 1,
-	// Left  (-X): 4, 0, 3, 7
-	4, 0, 3,  3, 7, 4,
-	// Top   (+Y): 4, 7, 6, 5
-	4, 7, 6,  6, 5, 4,
-	// Bottom(-Y): 0, 1, 2, 3
-	0, 1, 2,  2, 3, 0,
-	// Front (+Z): 3, 2, 6, 7
-	3, 2, 6,  6, 7, 3,
-	// Back  (-Z): 0, 4, 5, 1
-	0, 4, 5,  5, 1, 0
+	 // Top (+Y)
+	 -1.0f,  1.0f, -1.0f,
+	  1.0f,  1.0f, -1.0f,
+	  1.0f,  1.0f,  1.0f,
+	  1.0f,  1.0f,  1.0f,
+	 -1.0f,  1.0f,  1.0f,
+	 -1.0f,  1.0f, -1.0f,
+
+	 // Bottom (-Y)
+	 -1.0f, -1.0f,  1.0f,
+	  1.0f, -1.0f,  1.0f,
+	  1.0f, -1.0f, -1.0f,
+	  1.0f, -1.0f, -1.0f,
+	 -1.0f, -1.0f, -1.0f,
+	 -1.0f, -1.0f,  1.0f,
+
+	 // Front (+Z)
+	 -1.0f, -1.0f,  1.0f,
+	 -1.0f,  1.0f,  1.0f,
+	  1.0f,  1.0f,  1.0f,
+	  1.0f,  1.0f,  1.0f,
+	  1.0f, -1.0f,  1.0f,
+	 -1.0f, -1.0f,  1.0f,
+
+	 // Back (-Z)
+	  1.0f, -1.0f, -1.0f,
+	  1.0f,  1.0f, -1.0f,
+	 -1.0f,  1.0f, -1.0f,
+	 -1.0f,  1.0f, -1.0f,
+	 -1.0f, -1.0f, -1.0f,
+	  1.0f, -1.0f, -1.0f,
 };
 
 namespace fg
@@ -37,7 +62,6 @@ namespace fg
 		LoadCubemap(texturePaths);
 
 		auto vertexBuffer = VertexBuffer::Create(SkyboxVertices, sizeof(SkyboxVertices));
-		auto indexBuffer = IndexBuffer::Create(SkyBoxIndices, sizeof(SkyBoxIndices));
 
 		BufferLayout layout;
 		layout.Push(3, ElementType::FLOAT);
@@ -46,7 +70,6 @@ namespace fg
 
 		m_VertexArray = VertexArray::Create();
 		m_VertexArray->AddVertexBuffer(vertexBuffer);
-		m_VertexArray->SetIndexBuffer(indexBuffer);
 	}
 
 	void OpenGLCubemap::LoadCubemap(std::array<std::string, 6>& texturePaths)
@@ -66,10 +89,13 @@ namespace fg
 			unsigned char* data = stbi_load(texturePaths[i].c_str(), &width, &height, &nrChannels, 0);
 			if (data)
 			{
+				GLenum format = (nrChannels == 4) ? GL_RGBA : GL_RGB;
+				GLenum internalFormat = (nrChannels == 4) ? GL_RGBA8 : GL_RGB8;
+
 				glTexImage2D(
-					GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 
-					0, GL_RGBA8, width, height, 0,
-					GL_RGBA, GL_UNSIGNED_BYTE, data
+					GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+					0, internalFormat, width, height, 0,
+					format, GL_UNSIGNED_BYTE, data
 				);
 				stbi_image_free(data);
 			}
@@ -85,21 +111,22 @@ namespace fg
 
 	void OpenGLCubemap::Draw(Ref<Shader>& shader, Camera& camera)
 	{
-
-		RenderCommand::SetDepthFunc(GL_LEQUAL);
-		
 		shader->Bind();
-		auto id = m_RendererID;
-		RenderCommand::Submit([id]() { 
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_CUBE_MAP, id); 
-			});
 		shader->SetInt("u_Skybox", 0);
 		shader->SetMat4("u_View", camera.GetViewMatrix());
 		shader->SetMat4("u_Projection", camera.GetProjectionMatrix());
 
-		RenderCommand::DrawIndexed(m_VertexArray);
+		auto id = m_RendererID;
+		auto vertexArray = m_VertexArray;
 
-		RenderCommand::SetDepthFunc(GL_LESS);
+		RenderCommand::Submit([id, vertexArray]()
+			{
+				glDepthFunc(GL_LEQUAL);
+				glActiveTexture(GL_TEXTURE0);
+				glBindTexture(GL_TEXTURE_CUBE_MAP, id);
+				vertexArray->Bind();
+				glDrawArrays(GL_TRIANGLES, 0, 36); 
+				glDepthFunc(GL_LESS);
+			});
 	}
 }
