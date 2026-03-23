@@ -140,26 +140,25 @@ namespace fg
 			glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 		});
 
+		RenderCommand::Submit([vao]() { vao->Bind(); });
+
 		for (uint32_t i = 0; i < 6; i++)
+		{
 			m_ConversionShader->SetMat4("u_View", views[i]);
 
-		RenderCommand::Submit([FBO, RBO, id, vao]() {
-			vao->Bind();
-			for (uint32_t i = 0; i < 6; i++)
-			{
+			RenderCommand::Submit([FBO, id, i]() {
 				glNamedFramebufferTextureLayer(FBO, GL_COLOR_ATTACHMENT0, id, 0, i);
 
 				auto status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 				if (status != GL_FRAMEBUFFER_COMPLETE)
-				{
 					FG_ERROR("FBO incomplete on face {}: {}", i, status);
-					continue;
-				}
 
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 				glDrawArrays(GL_TRIANGLES, 0, 36);
-			}
+			});
+		}
 
+		RenderCommand::Submit([FBO, RBO]() {
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 			glDeleteFramebuffers(1, &FBO);
 			glDeleteRenderbuffers(1, &RBO);

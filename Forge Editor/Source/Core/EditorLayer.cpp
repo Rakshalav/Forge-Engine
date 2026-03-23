@@ -30,7 +30,7 @@ namespace Editor
 
 	void EditorLayer::OnEvent(fg::Event& event)
 	{
-		if (!m_BlockUpdates)
+		if (!isViewportFocused)
 			m_CamController.OnEvent(event);
 	}
 
@@ -43,10 +43,11 @@ namespace Editor
 			m_Camera.SetViewPortSize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 		}
 
-		if (!m_BlockUpdates)
+		if (!isViewportFocused)
 			m_CamController.OnUpdate(ts, m_ViewportBounds);
 
-		m_Guitar.GetComponent<fg::TransformComponent>().Rotation.y += ts * 10.0f;
+		m_Guitar.GetComponent<fg::TransformComponent>().Rotation.y += ts * 5.0f;
+		m_Guitar.GetComponent<fg::TransformComponent>().Translation.x += cos(fg::Application::Get().GetTime()) * 10.0f * ts;
 	}
 
 	void EditorLayer::OnRender()
@@ -110,7 +111,7 @@ namespace Editor
 	{
 		ImGui::Begin("Game", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 		{
-			m_BlockUpdates = !ImGui::IsWindowFocused();
+			isViewportFocused = !ImGui::IsWindowFocused();
 
 			ImVec2 windowPos = ImGui::GetWindowPos();
 			ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();

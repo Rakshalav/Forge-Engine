@@ -30,7 +30,7 @@ namespace Editor
 		fg::Vec2f m_ViewportSize = { 0.0f, 0.0f };
 		fg::Vec4f m_ViewportBounds;
 
-		bool m_BlockUpdates;
+		bool isViewportFocused;
 
 		fg::Scope<fg::Scene> m_Scene;
 		fg::Entity m_Guitar;
