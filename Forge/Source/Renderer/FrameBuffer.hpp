@@ -17,8 +17,8 @@ namespace fg
 		// Depth/stencil
 		DEPTH24STENCIL8,
 
-		// Defaults
-		Depth = DEPTH24STENCIL8
+		//Depth
+		DEPTH24
 	};
 
 	struct FramebufferTextureSpecification

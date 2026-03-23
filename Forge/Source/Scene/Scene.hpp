@@ -23,7 +23,6 @@ namespace fg
 
 	private:
 		Ref<Cubemap> m_Skybox;
-		Ref<Shader> m_SkyboxShader;
 
 		Registery m_Registery;
 		friend class Entity;
