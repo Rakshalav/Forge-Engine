@@ -14,4 +14,15 @@ namespace fg
 			return CreateRef<OpenGLShader>(vertexpath, fragmentpath);
 		}
 	}
+
+	Ref<Shader> Shader::Create(const char* vertexCode, const char* fragmentCode)
+	{
+		switch (RendererAPI::GetAPI())
+		{
+		case RendererAPI::None:
+			return nullptr;
+		case RendererAPI::OpenGL:
+			return CreateRef<OpenGLShader>(vertexCode, fragmentCode);
+		}
+	}
 }

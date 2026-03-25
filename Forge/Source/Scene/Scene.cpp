@@ -7,11 +7,9 @@
 
 namespace fg
 {
-	Scene::Scene()
+	void Scene::CreateSkybox(const std::string& path)
 	{
-		auto cubemapShader = Shader::Create("C:/Dev/Forge/Forge Editor/Source/Shaders/SkyboxVert.glsl", "C:/Dev/Forge/Forge Editor/Source/Shaders/SkyboxFrag.glsl");
-		auto conversionShader = Shader::Create("C:/Dev/Forge/Forge Editor/Source/Shaders/EquirectangularToCubemap_Vert.glsl", "C:/Dev/Forge/Forge Editor/Source/Shaders/EquirectangularToCubemap_Frag.glsl");
-		m_Skybox = Cubemap::Create("C:/Dev/Forge/Forge Editor/Source/Assets/Textures/Skybox/skybox.hdr", cubemapShader, conversionShader);
+		m_Skybox = Cubemap::Create(path);
 	}
 
 	Entity Scene::CreateEntity()
@@ -26,7 +24,6 @@ namespace fg
 
 	void Scene::OnRender(Camera& camera)
 	{
-		RenderCommand::ClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
 		RenderCommand::Clear();
 		Renderer::BeginScene(camera);
 		RenderSystem();

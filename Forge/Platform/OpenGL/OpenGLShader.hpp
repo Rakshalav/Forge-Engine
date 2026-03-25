@@ -9,6 +9,7 @@ namespace fg
 	{
 	public:
 		OpenGLShader(const std::string& vertexpath, const std::string& fragmentpath);
+		OpenGLShader(const char* vertexCode, const char* fragmentCode) { LoadShader(vertexCode, fragmentCode); }
 		~OpenGLShader();
 
 		void Bind() const override;
@@ -28,6 +29,8 @@ namespace fg
 
 	private:
 		int GetLocation(const std::string& name);
+
+		void LoadShader(const char* vertexCode, const char* fragmentCode);
 
 	private:
 		uint32_t m_RendererID;

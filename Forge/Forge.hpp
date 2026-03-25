@@ -4,6 +4,7 @@
 #include "Source/Core/Window.hpp"
 #include "Source/Core/Layer.hpp"
 #include "Source/Core/Application.hpp"
+#include "Source/Core/FileSystem.hpp"
 
 // Engine Debugger
 #include "Source/Debug/Log.hpp"

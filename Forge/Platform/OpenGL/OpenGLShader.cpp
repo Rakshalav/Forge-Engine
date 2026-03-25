@@ -37,15 +37,17 @@ namespace fg
 			FG_ERROR("File not succesfully read | Vertex Path: {} | Fragment Path: {}", vertexpath, fragmentpath);
 		}
 
-		const char* vShaderCode = vertexCode.c_str();
-		const char* fShaderCode = fragmentCode.c_str();
+		LoadShader(vertexCode.c_str(), fragmentCode.c_str());
+	}
 
+	void OpenGLShader::LoadShader(const char* vertexCode, const char* fragmentCode)
+	{
 		unsigned int vertex, fragment;
 		int success;
 		char infoLog[512];
 
 		vertex = glCreateShader(GL_VERTEX_SHADER);
-		glShaderSource(vertex, 1, &vShaderCode, NULL);
+		glShaderSource(vertex, 1, &vertexCode, NULL);
 		glCompileShader(vertex);
 
 		glGetShaderiv(vertex, GL_COMPILE_STATUS, &success);
@@ -57,7 +59,7 @@ namespace fg
 
 		// fragment shader
 		fragment = glCreateShader(GL_FRAGMENT_SHADER);
-		glShaderSource(fragment, 1, &fShaderCode, NULL);
+		glShaderSource(fragment, 1, &fragmentCode, NULL);
 		glCompileShader(fragment);
 
 		glGetShaderiv(fragment, GL_COMPILE_STATUS, &success);

@@ -74,8 +74,6 @@ namespace Editor
 			m_Yaw   -= x_offset * m_MouseSensitivity;
 			m_Pitch += y_offset * m_MouseSensitivity;
 
-			m_Pitch = glm::clamp(m_Pitch, -m_Constain, m_Constain);
-
 			glm::quat yaw = glm::angleAxis(glm::radians(m_Yaw), glm::vec3(0.0f, 1.0f, 0.0f));
 			glm::quat pitch = glm::angleAxis(glm::radians(m_Pitch), glm::vec3(1.0f, 0.0f, 0.0f));
 

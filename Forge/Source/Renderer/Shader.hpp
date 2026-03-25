@@ -27,5 +27,6 @@ namespace fg
 		virtual void SetMat4(std::string name, glm::mat4 value) = 0;
 
 		static Ref<Shader> Create(const std::string& vertexpath, const std::string& fragmentpath);
+		static Ref<Shader> Create(const char* vertexCode, const char* fragmentCode);
 	};
 }

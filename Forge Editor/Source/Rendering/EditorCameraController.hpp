@@ -30,7 +30,5 @@ namespace Editor
 		bool m_CamCanMove;
 		bool m_FirstMouse = true;
 		float m_MouseSensitivity = 0.08f;
-
-		float m_Constain = 89.0f;
 	};
 }

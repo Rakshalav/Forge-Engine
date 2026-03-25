@@ -13,6 +13,6 @@ namespace fg
 	public:
 		virtual void Draw(Camera& camera) = 0;
 
-		static Ref<Cubemap> Create(const std::string& path, const Ref<Shader>& shader1, const Ref<Shader>& shader2);
+		static Ref<Cubemap> Create(const std::string& path);
 	};
 }

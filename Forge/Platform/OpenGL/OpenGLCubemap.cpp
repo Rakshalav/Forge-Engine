@@ -57,10 +57,86 @@ float SkyboxVertices[] = {
 	  1.0f, -1.0f, -1.0f,
 };
 
+static const char* SkyboxVert = R"(
+#version 460 core
+layout (location = 0) in vec3 aPos;
+out vec3 TexCoords;
+
+uniform mat4 u_View;
+uniform mat4 u_Projection;
+
+void main()
+{
+    TexCoords = aPos;
+    vec4 pos = u_Projection * mat4(mat3(u_View)) * vec4(aPos, 1.0);
+    gl_Position = pos.xyww; 
+}
+)";
+
+static const char* SkyboxFrag = R"(
+#version 460 core
+out vec4 FragColor;
+
+in vec3 TexCoords;
+
+uniform samplerCube u_Skybox;
+
+void main()
+{    
+    vec3 envColor = texture(u_Skybox, TexCoords).rgb;
+    float exposure = 1.0; 
+    envColor *= exposure;
+    vec3 mapped = envColor / (envColor + vec3(1.0));
+    mapped = pow(mapped, vec3(1.0 / 2.2)); 
+
+    FragColor = vec4(mapped, 1.0);
+}
+)";
+
+static const char* ConverterVert = R"(
+#version 460 core
+layout (location = 0) in vec3 aPos;
+
+out vec3 TexCoords;
+
+uniform mat4 u_Projection;
+uniform mat4 u_View;
+
+void main()
+{
+    TexCoords = aPos;
+    gl_Position = u_Projection * u_View * vec4(aPos, 1.0);
+}
+)";
+
+static const char* ConverterFrag = R"(
+#version 460 core
+in vec3 TexCoords;
+out vec4 FragColor;
+
+uniform sampler2D u_EquirectMap;
+
+const vec2 invAtan = vec2(0.1591f, 0.3183f); // (1/2PI, 1/PI)
+
+void main()
+{
+    vec3 dir = normalize(TexCoords);
+    vec2 uv = vec2(atan(dir.z, dir.x), asin(dir.y));
+    
+    uv *= invAtan;
+    uv += 0.5f;
+    
+    FragColor = texture(u_EquirectMap, uv);
+}
+)";
+
 namespace fg
 {
-	OpenGLCubemap::OpenGLCubemap(const std::string& path, const Ref<Shader>& shader1, const Ref<Shader>& shader2) : m_CubemapShader(shader1), m_ConversionShader(shader2)
+	OpenGLCubemap::OpenGLCubemap(const std::string& path)
 	{
+		m_CubemapShader = Shader::Create(SkyboxVert, SkyboxFrag);
+		m_ConversionShader = Shader::Create(ConverterVert, ConverterFrag);
+
 		auto vertexBuffer = VertexBuffer::Create(SkyboxVertices, sizeof(SkyboxVertices));
 		BufferLayout layout;
 		layout.Push(3, ElementType::FLOAT);

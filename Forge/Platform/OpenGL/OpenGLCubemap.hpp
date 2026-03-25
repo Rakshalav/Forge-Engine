@@ -10,7 +10,7 @@ namespace fg
 	class OpenGLCubemap final : public Cubemap
 	{
 	public:
-		OpenGLCubemap(const std::string& path, const Ref<Shader>& shader1, const Ref<Shader>& shader2);
+		OpenGLCubemap(const std::string& path);
 		void Draw(Camera& camera) override;
 
 	private:
