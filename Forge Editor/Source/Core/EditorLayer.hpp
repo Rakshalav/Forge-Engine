@@ -32,9 +32,7 @@ namespace Editor
 
 		bool isViewportFocused;
 
-		fg::Scope<fg::Scene> m_Scene;
-		fg::Entity m_Guitar;
-		
+		fg::Scope<fg::Scene> m_Scene;		
 		fg::Ref<fg::Framebuffer> m_FrameBuffer;
 	};
 }

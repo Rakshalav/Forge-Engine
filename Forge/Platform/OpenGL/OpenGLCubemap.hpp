@@ -21,8 +21,6 @@ namespace fg
 	private:
 		uint32_t m_RendererID;
 		Ref<VertexArray> m_VertexArray;
-		Ref<Shader> m_CubemapShader;
-		Ref<Shader> m_ConversionShader;
 
 		uint32_t m_TextureID;
 		uint32_t m_CubemapWidth;

@@ -3,20 +3,21 @@
 #include "Maths/Math.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
-#include "Model.hpp"
+#include "Mesh.hpp"
 #include "Renderer/Shader.hpp"
+#include "Renderer/Material.hpp"
 
 namespace fg
 {
 	struct TransformComponent
 	{
-		Vec3f Translation	= { 0.0f, 0.0f, 0.0f };
-		Vec3f Rotation		= { 0.0f, 0.0f, 0.0f };
-		Vec3f Scale			= { 1.0f, 1.0f, 1.0f };
-
 		TransformComponent() = default;
 		TransformComponent(const TransformComponent&) = default;
 		TransformComponent(const Vec3f& translation) : Translation(translation) {}
+		
+		Vec3f Translation	= { 0.0f, 0.0f, 0.0f };
+		Vec3f Rotation		= { 0.0f, 0.0f, 0.0f };
+		Vec3f Scale			= { 1.0f, 1.0f, 1.0f };
 
 		inline glm::mat4 GetTransformation() const
 		{
@@ -29,10 +30,26 @@ namespace fg
 
 	struct MeshComponent
 	{
-		Ref<Model> Model;
-		Ref<Shader> Shader;
-
 		MeshComponent() = default;
-		MeshComponent(Ref<fg::Model> model, Ref<fg::Shader> shader) : Model(model), Shader(shader) {}
+		MeshComponent(Ref<fg::Mesh> mesh) : Mesh(mesh) {}
+
+		Ref<Mesh> Mesh;
+	};
+
+	struct MeshRendererComponent
+	{
+		MeshRendererComponent() = default;
+
+		std::vector<Ref<Material>> Materials;
+
+		enum ShadowFlag : uint8_t
+		{
+			None			= 0 << 0,
+			CastShadow		= 1 << 0,
+			TwoSided		= 1 << 1,
+			ReceiveShadow	= 1 << 2
+		};
+
+		uint8_t ShadowFlags = CastShadow | ReceiveShadow;
 	};
 }

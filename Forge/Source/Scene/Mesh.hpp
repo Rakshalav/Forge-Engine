@@ -20,20 +20,17 @@ namespace fg
 		Vec3f Bitangent;
 	};
 
-	class Mesh
+	struct SubMesh
 	{
-	public:
-		Mesh(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, const std::vector<Ref<Texture2D>>& textures);
+		SubMesh(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices);
 
-		void Draw(Ref<Shader>& shader);
+		Ref<VertexArray> VertexArray;
+		std::vector<Vertex> Vertices;
+		std::vector<uint32_t> Indices;
+	};
 
-	private:
-		Ref<VertexBuffer> m_VertexBuffer;
-		Ref<IndexBuffer> m_IndexBuffer;
-		Ref<VertexArray> m_VertexArray;
-
-		std::vector<Vertex> m_Vertices;
-		std::vector<uint32_t> m_Indices;
-		std::vector<Ref<Texture2D>> m_Textures;
+	struct Mesh
+	{
+		std::vector<SubMesh> SubMeshes;
 	};
 }

@@ -5,6 +5,7 @@
 #include "Camera.hpp"
 #include "RenderCommand.hpp"
 #include "Core/TaskManager.hpp"
+#include "ShaderLibrary.hpp"
 
 namespace fg
 {
@@ -15,11 +16,13 @@ namespace fg
 
 		static void Init();
 		static void BeginScene(Camera& camera);
-		static void Submit(const Ref<VertexArray>& vertexarray, const Ref<Shader>& shader);
+		static void Submit(const Ref<VertexArray>& vertexarray);
 		static void SubmitRenderTask(Task* task);
 		static void WaitForRenderTasks();
 		static void OnWindowResize(const Vec2u& lowerLeft, const Vec2u& size);
 		static void ShutDown();
+
+		static ShaderLibrary& GetShaderLibrary() { return *s_ShaderLibrary; }
 
 	private:
 		Renderer();
@@ -31,5 +34,6 @@ namespace fg
 
 		static inline SceneData* s_SceneData = new SceneData();
 		static inline TaskManager* s_RenderTaskManager = &TaskManager::Get();
+		static inline ShaderLibrary* s_ShaderLibrary = new ShaderLibrary();
 	};
 }

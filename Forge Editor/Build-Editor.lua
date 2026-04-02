@@ -4,6 +4,10 @@ project "Editor"
     cppdialect "C++23"
     staticruntime "off"
 
+    flags { "MultiProcessorCompile" }
+
+    defines { "YAML_CPP_STATIC_DEFINE" }
+
     targetdir ("../Binaries/" .. OutputDir .. "/%{prj.name}")
     objdir ("../Binaries/Intermediates/" .. OutputDir .. "/%{prj.name}")
 
@@ -56,13 +60,13 @@ project "Editor"
         }
 
     filter "configurations:Debug"
-       links { "assimp-vc143-mtd" } 
+       links { "assimp-vc143-mtd", "yaml-cppd" } 
 
     filter "configurations:Release"
-       links { "assimp-vc143-mt" }
+       links { "assimp-vc143-mt", "yaml-cpp" }
     
     filter "configurations:Dist"
-       links { "assimp-vc143-mt" } 
+       links { "assimp-vc143-mt", "yaml-cpp" } 
 
     filter {}
 

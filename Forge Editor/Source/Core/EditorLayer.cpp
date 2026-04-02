@@ -1,5 +1,6 @@
 #include "EditorLayer.hpp"
 #include <ImGui/imgui_internal.h>
+#include <Project/Project.hpp>
 
 namespace Editor
 {
@@ -10,15 +11,24 @@ namespace Editor
 
 	void EditorLayer::OnAttach()
 	{
-		auto shader = fg::Shader::Create(FG_ROOT_DIR("Forge/Source/Renderer/Shaders/Model.vert"), FG_ROOT_DIR("Forge/Source/Renderer/Shaders/Model.frag"));
-		auto model = fg::CreateRef<fg::Model>(FG_ROOT_DIR("Sandbox/Textures/Guitar/Guitar.obj"));
+		//auto shader = fg::Renderer::GetShaderLibrary().Load("Model", FG_ROOT_DIR("Forge/Source/Renderer/Shaders/Model.vert"), FG_ROOT_DIR("Forge/Source/Renderer/Shaders/Model.frag"));
+		//auto model = fg::CreateRef<fg::Model>(FG_ROOT_DIR("Sandbox/Textures/Guitar/Guitar.obj"));
 
 		m_Scene = fg::CreateScope<fg::Scene>();
-		m_Scene->CreateSkybox(FG_ROOT_DIR("Forge Editor/Source/Assets/Textures/Skybox/skybox.hdr"));
+		m_Scene->CreateSkybox("C:/Dev/Forge/Forge Editor/Source/Assets/Textures/Skybox/skybox.hdr");
 
-		m_Guitar = m_Scene->CreateEntity();
-		m_Guitar.AddComponent<fg::TransformComponent>();
-		m_Guitar.AddComponent<fg::MeshComponent>(model, shader);
+		//m_Guitar = m_Scene->CreateEntity();
+		//m_Guitar.AddComponent<fg::TransformComponent>();
+		//m_Guitar.AddComponent<fg::MeshComponent>(model, shader);
+
+		auto project = fg::Project::New();
+		auto& projectConfig = project->GetActive()->GetConfig();
+		projectConfig.Name = "Sandbox";
+		projectConfig.StartScene = "Assets/Scene/TestScene.forge";
+		projectConfig.AssetDirectory = "Assets/";
+
+		if (project->SaveActive(std::filesystem::path("C:/Dev/Forge/Sandbox") / projectConfig.Name))
+			FG_CORE_INFO("Project Saved!!");
 
 		fg::FramebufferSpecification spec;
 		spec.Width = 1;
@@ -47,8 +57,8 @@ namespace Editor
 		if (!isViewportFocused)
 			m_CamController.OnUpdate(ts, m_ViewportBounds);
 
-		m_Guitar.GetComponent<fg::TransformComponent>().Rotation.y += ts * 5.0f;
-		m_Guitar.GetComponent<fg::TransformComponent>().Translation.x += cos(fg::Application::Get().GetTime()) * 5.0f * ts;
+		//m_Guitar.GetComponent<fg::TransformComponent>().Rotation.y += ts * 5.0f;
+		//m_Guitar.GetComponent<fg::TransformComponent>().Translation.x += cos(fg::Application::Get().GetTime()) * 5.0f * ts;
 	}
 
 	void EditorLayer::OnRender()
@@ -105,7 +115,7 @@ namespace Editor
 
 	void EditorLayer::OnDetach()
 	{
-
+		
 	}
 
 	void EditorLayer::Viewport()

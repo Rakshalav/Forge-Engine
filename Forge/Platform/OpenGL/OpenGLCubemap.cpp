@@ -5,6 +5,7 @@
 #include "Renderer/RenderCommand.hpp"
 #include "Maths/Math.hpp"
 #include <glm/gtc/matrix_transform.hpp>
+#include "Renderer/Renderer.hpp"
 
 float SkyboxVertices[] = {
                               
@@ -134,8 +135,8 @@ namespace fg
 {
 	OpenGLCubemap::OpenGLCubemap(const std::string& path)
 	{
-		m_CubemapShader = Shader::Create(SkyboxVert, SkyboxFrag);
-		m_ConversionShader = Shader::Create(ConverterVert, ConverterFrag);
+		Renderer::GetShaderLibrary().Load("Skybox", SkyboxVert, SkyboxFrag);
+		Renderer::GetShaderLibrary().Load("EquirectangularToCubemap", ConverterVert, ConverterFrag);
 
 		auto vertexBuffer = VertexBuffer::Create(SkyboxVertices, sizeof(SkyboxVertices));
 		BufferLayout layout;
@@ -174,7 +175,7 @@ namespace fg
 	void OpenGLCubemap::CreateCubemap()
 	{
 		glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &m_RendererID);
-		glTextureStorage2D(m_RendererID, 1, GL_RGB16F, m_CubemapWidth, m_CubemapWidth);
+		glTextureStorage2D(m_RendererID, 1, GL_RGB32F, m_CubemapWidth, m_CubemapWidth);
 		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -206,9 +207,11 @@ namespace fg
 		auto id = m_RendererID;
 		auto& vao = m_VertexArray;
 
-		m_ConversionShader->Bind();
-		m_ConversionShader->SetInt("u_EquirectMap", 0);
-		m_ConversionShader->SetMat4("u_Projection", projection);
+		auto conversionShader = Renderer::GetShaderLibrary().GetShader("EquirectangularToCubemap");
+
+		conversionShader->Bind();
+		conversionShader->SetInt("u_EquirectMap", 0);
+		conversionShader->SetMat4("u_Projection", projection);
 
 		RenderCommand::Submit([textureID, width, FBO]() {
 			glBindTextureUnit(0, textureID);
@@ -220,7 +223,7 @@ namespace fg
 
 		for (uint32_t i = 0; i < 6; i++)
 		{
-			m_ConversionShader->SetMat4("u_View", views[i]);
+			conversionShader->SetMat4("u_View", views[i]);
 
 			RenderCommand::Submit([FBO, id, i]() {
 				glNamedFramebufferTextureLayer(FBO, GL_COLOR_ATTACHMENT0, id, 0, i);
@@ -243,10 +246,12 @@ namespace fg
 
 	void OpenGLCubemap::Draw(Camera& camera)
 	{
-		m_CubemapShader->Bind();
-		m_CubemapShader->SetInt("u_Skybox", 0);
-		m_CubemapShader->SetMat4("u_View", camera.GetViewMatrix());
-		m_CubemapShader->SetMat4("u_Projection", camera.GetProjectionMatrix());
+		auto shader = Renderer::GetShaderLibrary().GetShader("Skybox");
+
+		shader->Bind();
+		shader->SetInt("u_Skybox", 0);
+		shader->SetMat4("u_View", camera.GetViewMatrix());
+		shader->SetMat4("u_Projection", camera.GetProjectionMatrix());
 
 		auto id = m_RendererID;
 		auto vertexArray = m_VertexArray;

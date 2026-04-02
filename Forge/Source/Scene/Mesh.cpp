@@ -1,17 +1,16 @@
 #include "Mesh.hpp"
 #include "Renderer/Renderer.hpp"
 #include "../Platform/OpenGL/OpenGLShader.hpp"
-#include "Model.hpp"
 #include "Debug/Log.hpp"
 
 namespace fg
 {
-	Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, const std::vector<Ref<Texture2D>>& textures)
-		: m_Vertices(vertices), m_Indices(indices), m_Textures(textures)
+	SubMesh::SubMesh(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices)
+		: Vertices(vertices), Indices(indices)
 	{
-		m_VertexArray = VertexArray::Create();
-		m_VertexBuffer = VertexBuffer::Create((float*)m_Vertices.data(), static_cast<uint32_t>(m_Vertices.size() * sizeof(Vertex)));
-		m_IndexBuffer = IndexBuffer::Create(m_Indices.data(), static_cast<uint32_t>(m_Indices.size() * sizeof(uint32_t)));
+		VertexArray = VertexArray::Create();
+		auto vertexBuffer = VertexBuffer::Create((float*)Vertices.data(), static_cast<uint32_t>(Vertices.size() * sizeof(Vertex)));
+		auto indexBuffer = IndexBuffer::Create(Indices.data(), static_cast<uint32_t>(Indices.size() * sizeof(uint32_t)));
 
 		BufferLayout layout;
 		layout.Push(3, ElementType::FLOAT);
@@ -20,18 +19,18 @@ namespace fg
 		layout.Push(3, ElementType::FLOAT);
 		layout.Push(3, ElementType::FLOAT);
 
-		m_VertexBuffer->SetLayout(layout);
-		m_VertexArray->AddVertexBuffer(m_VertexBuffer);
-		m_VertexArray->SetIndexBuffer(m_IndexBuffer);
+		vertexBuffer->SetLayout(layout);
+		VertexArray->AddVertexBuffer(vertexBuffer);
+		VertexArray->SetIndexBuffer(indexBuffer);
 	}
 
-	void Mesh::Draw(Ref<Shader>& shader)
+/*	void SubMesh::Draw()
 	{		
-		uint32_t diffuseNr = 1, specularNr = 1, ambientNr = 1, normalNr = 1, emmisiveNr = 1;
+		uint32_t diffuseNr = 1, specularNr = 1, ambientNr = 1, normalNr = 1, emissiveNr = 1;
 
-		for (uint32_t i = 0; i < m_Textures.size(); i++)
+		for (uint32_t i = 0; i < Textures.size(); i++)
 		{
-			const Texture2D& texture = *m_Textures[i].get();
+			const Texture2D& texture = *Textures[i].get();
 
 			texture.Activate(i);
 
@@ -56,8 +55,8 @@ namespace fg
 				break;
 
 			case TextureType::EMMISIVE:
-				name = "texture_emmisive";
-				number = std::to_string(emmisiveNr++);
+				name = "texture_emissive";
+				number = std::to_string(emissiveNr++);
 				break;
 
 			case TextureType::NORMAL:
@@ -70,10 +69,10 @@ namespace fg
 				continue;
 			}
 
-			shader->SetInt(("material." + name + number).c_str(), i);
+			Renderer::GetShaderLibrary().GetShader("Model")->SetInt(("material." + name + number), i);
 			texture.Bind();
 		}
 
-		Renderer::Submit(m_VertexArray, shader);
-	}
+		Renderer::Submit(VertexArray);
+	}*/
 }

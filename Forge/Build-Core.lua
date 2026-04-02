@@ -4,6 +4,10 @@ project "Forge"
    cppdialect "C++23"
    staticruntime "off"
 
+   flags { "MultiProcessorCompile" }
+
+   defines { "YAML_CPP_STATIC_DEFINE" }
+
    targetdir ("../Binaries/" .. OutputDir .. "/%{prj.name}")
    objdir ("../Binaries/Intermediates/" .. OutputDir .. "/%{prj.name}")
 

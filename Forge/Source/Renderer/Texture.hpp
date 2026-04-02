@@ -8,12 +8,14 @@ namespace fg
 {
 	enum class TextureType : uint8_t
 	{
-		NONE = 0,
-		DIFFUSE,
-		SPECULAR,
-		AMBIENT,
-		EMMISIVE,
-		NORMAL
+		None = 0,
+		Albedo,
+		Metallic,
+		Roughness,
+		AO,
+		Emisive,
+		Normal,
+		Parrallex
 	};
 
 	enum class TextureFormat : uint8_t
@@ -31,7 +33,7 @@ namespace fg
 		uint32_t Height = 1;
 		TextureFormat InternalFormat = TextureFormat::None;
 		uint32_t DataFormat = 0;
-		TextureType Type = TextureType::NONE;
+		TextureType Type = TextureType::None;
 	};
 
 	class Texture2D

@@ -34,8 +34,11 @@ namespace fg
 		s_SceneData->ViewProjectionMatrix = camera.GetViewProjectionMatrix();
 	}
 
-	void Renderer::Submit(const Ref<VertexArray>& vertexarray, const Ref<Shader>& shader)
+	void Renderer::Submit(const Ref<VertexArray>& vertexarray)
 	{
+		auto shader = s_ShaderLibrary->GetShader("Model");
+		if (!shader)
+			return;
 		shader->Bind();
 		shader->SetMat4("u_ViewProjection", s_SceneData->ViewProjectionMatrix);
 		RenderCommand::DrawIndexed(vertexarray);
@@ -66,6 +69,7 @@ namespace fg
 	{
 		s_Instance = nullptr;
 		delete s_SceneData;
+		delete s_ShaderLibrary;
 		s_SceneData = nullptr;
 	}
 }
