@@ -8,6 +8,8 @@ project "Editor"
 
     defines { "YAML_CPP_STATIC_DEFINE" }
 
+    linkoptions { "/ignore:4099" }
+
     targetdir ("../Binaries/" .. OutputDir .. "/%{prj.name}")
     objdir ("../Binaries/Intermediates/" .. OutputDir .. "/%{prj.name}")
 

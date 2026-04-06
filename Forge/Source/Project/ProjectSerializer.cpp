@@ -5,7 +5,7 @@
 
 namespace fg
 {
-	fg::ProjectSerializer::ProjectSerializer(Ref<Project> project)
+	fg::ProjectSerializer::ProjectSerializer(Ref<Project> project) : m_Project(project)
 	{
 	}
 
@@ -22,7 +22,7 @@ namespace fg
 				out << YAML::Key << "Name" << YAML::Value << config.Name;
 				out << YAML::Key << "StartScene" << YAML::Value << config.StartScene.string();
 				out << YAML::Key << "AssetDirectory" << YAML::Value << config.AssetDirectory.string();
-				out << YAML::EndMap; // Project
+				out << YAML::EndMap; 
 			}
 			out << YAML::EndMap;
 		}

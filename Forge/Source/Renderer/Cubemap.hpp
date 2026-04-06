@@ -1,18 +1,18 @@
 #pragma once
 
 #include "Core/Base.hpp"
-#include "Shader.hpp"
 #include "Renderer/Camera.hpp"
-#include <string>
-#include <array>
+#include "Texture.hpp"
+#include "AssetManager/Asset.hpp"
 
 namespace fg
 {
-	class Cubemap
+	class EnvironmentMap : public Asset
 	{
 	public:
 		virtual void Draw(Camera& camera) = 0;
-
-		static Ref<Cubemap> Create(const std::string& path);
+		virtual AssetType GetAssetType() = 0;
+		static AssetType GetStaticAssetType() { return AssetType::EnvironmentMap; }
+		static Ref<EnvironmentMap> Create(Ref<Texture2D> texture);
 	};
 }

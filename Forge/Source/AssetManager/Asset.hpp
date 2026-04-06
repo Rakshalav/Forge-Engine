@@ -9,7 +9,9 @@ namespace fg
 		None = 0,
 		Scene,
 		Texture2D,
-		Mesh
+		EnvironmentMap,
+		Mesh,
+		Material
 	};
 
 	class Asset

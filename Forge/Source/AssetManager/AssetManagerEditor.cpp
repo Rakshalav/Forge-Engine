@@ -1,4 +1,5 @@
 #include "AssetManagerEditor.hpp"
+#include "AssetImporter.hpp"
 
 namespace fg
 {
@@ -35,10 +36,10 @@ namespace fg
 
         //3. if asset not loaded in memory then load it from registry
         const AssetMetaData& metadata = GetAssetMetaData(handle);
-        //Ref<Asset> asset = AssetImporter::ImportAsset(metadata);
+        Ref<Asset> asset = AssetImporter::ImportAsset(handle, metadata);
 
-        //if (!asset)
-        //    return asset;
+        if (!asset)
+            return asset;
     }
 }
 

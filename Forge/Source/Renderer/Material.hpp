@@ -19,6 +19,18 @@ namespace fg
 		UnLit
 	};
 
+	enum class PBR : uint8_t
+	{
+		None = 0,
+		Albedo,
+		Metallic,
+		Roughness,
+		AO,
+		Emisive,
+		Normal,
+		Parrallex
+	};
+
 	class Material
 	{
 	public:

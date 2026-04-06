@@ -1,9 +1,0 @@
-Assets:
-    60f2be9c5f1575ed:
-        Type: Mesh
-        Path: Guitar/Guitar.fbx
-        Name: Guitar.fbx
-    64f629920cadb723:
-        Type: Texture2D
-        Path: Textures/awesomeface.png
-        Name: awesomeface.png

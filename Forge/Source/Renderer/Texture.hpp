@@ -3,43 +3,53 @@
 #include "../Core/Base.hpp"
 #include <Maths/Math.hpp>
 #include <string>
+#include "AssetManager/Asset.hpp"
 
 namespace fg
 {
-	enum class TextureType : uint8_t
-	{
-		None = 0,
-		Albedo,
-		Metallic,
-		Roughness,
-		AO,
-		Emisive,
-		Normal,
-		Parrallex
-	};
-
-	enum class TextureFormat : uint8_t
-	{
-		None = 0,
-		R8,
-		RGB8,
-		RGBA8,
-		RGBA32F
-	};
-
 	struct TextureSpecification
 	{
 		uint32_t Width = 1;
 		uint32_t Height = 1;
-		TextureFormat InternalFormat = TextureFormat::None;
-		uint32_t DataFormat = 0;
-		TextureType Type = TextureType::None;
+
+		enum class InternalFormat : uint8_t
+		{
+			None = 0,
+			R8,    
+			RG8,
+			RGB8,         
+			RGBA8,        
+
+			SRGB8,        
+			SRGBA8,       
+
+			R16F,         
+			RG16F,        
+			RGB16F,       
+			RGBA16F,      
+
+			R32F,    
+			RG32F,
+			RGB32F,       
+			RGBA32F,      
+
+		/*	BC1,          
+			BC3,          
+			BC7  */         
+		};
+
+		enum class Wrap : uint8_t { Repeat = 0, ClampToEdge, MirroredRepeat };
+		enum class Filter : uint8_t { Linear = 0, Nearest, LinearMipmapLinear };
+
+		InternalFormat Format = InternalFormat::None;
+		Wrap WrapMode = Wrap::Repeat;
+		Filter FilterMode = Filter::Linear;
+		bool GenerateMipMap = true;
 	};
 
-	class Texture2D
+	class Texture2D : public Asset
 	{
 	public:
-		static Ref<Texture2D> Create(const std::string& path);
 		static Ref<Texture2D> Create(const TextureSpecification& specification);
 
 		virtual void Bind() const = 0;
@@ -50,9 +60,10 @@ namespace fg
 		virtual Vec2u GetSize() const = 0;
 		virtual uint32_t GetRendererID() const = 0;
 
-		virtual void SetType(TextureType type) = 0;
-		virtual TextureType GetType() const = 0;
-		virtual std::string GetPath() const = 0;
+		virtual AssetType GetType() = 0;
+		static AssetType GetStaticType() { return AssetType::Texture2D; }
+
+		virtual const TextureSpecification& GetSpecification() const;
 
 		virtual bool operator== (const Texture2D& other) const = 0;
 	};

@@ -21,14 +21,13 @@ namespace Editor
 		//m_Guitar.AddComponent<fg::TransformComponent>();
 		//m_Guitar.AddComponent<fg::MeshComponent>(model, shader);
 
-		auto project = fg::Project::New();
-		auto& projectConfig = project->GetActive()->GetConfig();
-		projectConfig.Name = "Sandbox";
-		projectConfig.StartScene = "Assets/Scene/TestScene.forge";
-		projectConfig.AssetDirectory = "Assets/";
+		auto project = fg::Project::Load("C:/Dev/Forge/Sandbox/Sandbox.fgproj");
 
-		if (project->SaveActive(std::filesystem::path("C:/Dev/Forge/Sandbox") / projectConfig.Name))
-			FG_CORE_INFO("Project Saved!!");
+		if (project)
+		{
+			FG_TRACE("project path: {}", project->GetProjectDirectory().string());
+			FG_TRACE("Asset path: {}", project->GetAssetDirectory().generic_string());
+		}
 
 		fg::FramebufferSpecification spec;
 		spec.Width = 1;

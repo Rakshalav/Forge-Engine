@@ -20,12 +20,14 @@ namespace fg
 		{
 			if (s_ActiveProject)
 				return s_ActiveProject->m_ProjectDirectory;
+			return {};
 		}
 
 		static std::filesystem::path GetAssetDirectory()
 		{
 			if (s_ActiveProject)
 				return GetProjectDirectory() / s_ActiveProject->m_Config.AssetDirectory;
+			return {};
 		}
 
 		ProjectConfig& GetConfig() { return m_Config; }

@@ -24,7 +24,7 @@ namespace fg
 		void RenderSystem();
 
 	private:
-		Ref<Cubemap> m_Skybox;
+		Ref<EnvironmentMap> m_Skybox;
 
 		Registery m_Registery;
 		friend class Entity;
