@@ -24,6 +24,18 @@ namespace fg
         return nullptr;
     }
 
+    bool Project::Create(const std::string& name, const std::filesystem::path& projectDirectory)
+    {
+        New();
+        if (!std::filesystem::create_directories(projectDirectory / s_ActiveProject->GetConfig().AssetDirectory))
+            return false;
+
+        ProjectSerializer serializer(s_ActiveProject);
+        if (serializer.Serialize(s_ActiveProject->m_ProjectDirectory / (name + ".fgproj")))
+            return true;
+        return false;
+    }
+
     bool Project::SaveActive(const std::filesystem::path& path)
     {
         ProjectSerializer serializer(s_ActiveProject);

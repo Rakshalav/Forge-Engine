@@ -10,24 +10,31 @@ namespace fg
 	{
 		switch (format)
 		{
-		case TextureSpecification::InternalFormat::None:      return 0;
-		case TextureSpecification::InternalFormat::R8:        return GL_R8;
-		case TextureSpecification::InternalFormat::RG8:       return GL_RG8;
-		case TextureSpecification::InternalFormat::RGB8:      return GL_RGB8;
-		case TextureSpecification::InternalFormat::RGBA8:     return GL_RGBA8;
-		case TextureSpecification::InternalFormat::SRGB8:     return GL_SRGB8;
-		case TextureSpecification::InternalFormat::SRGBA8:    return GL_SRGB8_ALPHA8;
+		case TextureSpecification::InternalFormat::None:				return 0;
+		case TextureSpecification::InternalFormat::R8:					return GL_R8;
+		case TextureSpecification::InternalFormat::RG8:					return GL_RG8;
+		case TextureSpecification::InternalFormat::RGB8:				return GL_RGB8;
+		case TextureSpecification::InternalFormat::RGBA8:				return GL_RGBA8;
+		case TextureSpecification::InternalFormat::SRGB8:				return GL_SRGB8;
+		case TextureSpecification::InternalFormat::SRGBA8:				return GL_SRGB8_ALPHA8;
 
-		case TextureSpecification::InternalFormat::R16F:      return GL_R16F;      
-		case TextureSpecification::InternalFormat::RG16F:     return GL_RG16F;
-		case TextureSpecification::InternalFormat::RGB16F:    return GL_RGB16F;
-		case TextureSpecification::InternalFormat::RGBA16F:   return GL_RGBA16F;
+		case TextureSpecification::InternalFormat::R16F:				return GL_R16F;      
+		case TextureSpecification::InternalFormat::RG16F:				return GL_RG16F;
+		case TextureSpecification::InternalFormat::RGB16F:				return GL_RGB16F;
+		case TextureSpecification::InternalFormat::RGBA16F:				return GL_RGBA16F;
 
-		case TextureSpecification::InternalFormat::R32F:      return GL_R32F;
-		case TextureSpecification::InternalFormat::RG32F:     return GL_RG32F;     
-		case TextureSpecification::InternalFormat::RGB32F:    return GL_RGB32F;
-		case TextureSpecification::InternalFormat::RGBA32F:   return GL_RGBA32F;
+		case TextureSpecification::InternalFormat::R32F:				return GL_R32F;
+		case TextureSpecification::InternalFormat::RG32F:				return GL_RG32F;     
+		case TextureSpecification::InternalFormat::RGB32F:				return GL_RGB32F;
+		case TextureSpecification::InternalFormat::RGBA32F:				return GL_RGBA32F;
 
+		case TextureSpecification::InternalFormat::R32I:				return GL_R32I;
+		case TextureSpecification::InternalFormat::RG32I:				return GL_RG32I;
+		case TextureSpecification::InternalFormat::RGB32I:				return GL_RGB32I;
+		case TextureSpecification::InternalFormat::RGBA32I:				return GL_RGBA32I;
+
+		case TextureSpecification::InternalFormat::DEPTH24:				return GL_DEPTH_COMPONENT24;
+		case TextureSpecification::InternalFormat::DEPTH24STENSIL8:		return GL_DEPTH24_STENCIL8;
 		default: return 0;
 		}
 	}
@@ -38,22 +45,25 @@ namespace fg
 		{
 		case TextureSpecification::InternalFormat::R8:
 		case TextureSpecification::InternalFormat::R16F:
-		case TextureSpecification::InternalFormat::R32F:      return GL_RED;
+		case TextureSpecification::InternalFormat::R32F:		return GL_RED;
 
 		case TextureSpecification::InternalFormat::RG8:
 		case TextureSpecification::InternalFormat::RG16F:
-		case TextureSpecification::InternalFormat::RG32F:     return GL_RG;        
+		case TextureSpecification::InternalFormat::RG32F:		return GL_RG;        
 
 		case TextureSpecification::InternalFormat::RGB8:
 		case TextureSpecification::InternalFormat::SRGB8:     
 		case TextureSpecification::InternalFormat::RGB16F:
-		case TextureSpecification::InternalFormat::RGB32F:    return GL_RGB;
+		case TextureSpecification::InternalFormat::RGB32F:		return GL_RGB;
 
 		case TextureSpecification::InternalFormat::RGBA8:
 		case TextureSpecification::InternalFormat::SRGBA8:    
 		case TextureSpecification::InternalFormat::RGBA16F:
-		case TextureSpecification::InternalFormat::RGBA32F:   return GL_RGBA;
+		case TextureSpecification::InternalFormat::RGBA32F:		return GL_RGBA;
 
+		case TextureSpecification::InternalFormat::RG32I:		return GL_RED_INTEGER;
+
+		case TextureSpecification::InternalFormat::DEPTH24STENSIL8: return GL_DEPTH_ATTACHMENT;
 		default: return 0;
 		}
 	}

@@ -18,7 +18,7 @@
 namespace fg
 {
 #pragma region Texture
-    static Ref<Texture2D> ImportTexture2D(const UUID& handle, const AssetMetaData& metadata)
+    static Ref<Texture2D> ImportTexture2D(const AssetHandle& handle, const AssetMetaData& metadata)
     {
         std::filesystem::path path = Project::GetActive()->GetAssetDirectory() / metadata.FilePath;
 
@@ -62,7 +62,7 @@ namespace fg
         return texture;
     }
 
-    static Ref<EnvironmentMap> ImportEnvironmentMap(const UUID& handle, const AssetMetaData& metadata)
+    static Ref<EnvironmentMap> ImportEnvironmentMap(const AssetHandle& handle, const AssetMetaData& metadata)
     {
         std::filesystem::path path = Project::GetActive()->GetAssetDirectory() / metadata.FilePath;
 
@@ -93,7 +93,7 @@ namespace fg
 #pragma endregion and HDR files importer
 
 #pragma region Mesh
-    static Ref<Mesh> ImportMesh(const UUID& handle, const AssetMetaData& metadata)
+    static Ref<Mesh> ImportMesh(const AssetHandle& handle, const AssetMetaData& metadata)
     {
         std::filesystem::path path = Project::GetActive()->GetAssetDirectory() / metadata.FilePath;
 
@@ -165,7 +165,7 @@ namespace fg
     }
 #pragma endregion Importer
 
-	using AssetImportFunction = std::function<Ref<Asset>(const UUID&, const AssetMetaData&)>;
+	using AssetImportFunction = std::function<Ref<Asset>(const AssetHandle&, const AssetMetaData&)>;
 
     static std::map <AssetType, AssetImportFunction> s_AssetImportFunctions = {
         { AssetType::Texture2D, ImportTexture2D },
@@ -173,7 +173,7 @@ namespace fg
         { AssetType::Mesh, ImportMesh }
 	};
 
-	Ref<Asset> AssetImporter::ImportAsset(const UUID& handle, const AssetMetaData& metadata)
+	Ref<Asset> AssetImporter::ImportAsset(const AssetHandle& handle, const AssetMetaData& metadata)
 	{
 		return s_AssetImportFunctions.at(metadata.Type)(handle, metadata);
 	}

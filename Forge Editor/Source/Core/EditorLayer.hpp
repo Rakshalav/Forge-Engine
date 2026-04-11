@@ -7,7 +7,7 @@
 
 namespace Editor
 {
-	class EditorLayer : public fg::Layer
+	class EditorLayer final : public fg::Layer
 	{
 	public:
 		EditorLayer();

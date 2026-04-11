@@ -31,11 +31,15 @@ namespace fg
 			R32F,    
 			RG32F,
 			RGB32F,       
-			RGBA32F,      
+			RGBA32F,  
 
-		/*	BC1,          
-			BC3,          
-			BC7  */         
+			R32I,
+			RG32I,
+			RGB32I,
+			RGBA32I,
+
+			DEPTH24,
+			DEPTH24STENSIL8
 		};
 
 		enum class Wrap : uint8_t { Repeat = 0, ClampToEdge, MirroredRepeat };
@@ -54,17 +58,11 @@ namespace fg
 
 		virtual void Bind() const = 0;
 		virtual void Activate(uint32_t slot = 0) const = 0;
-
 		virtual void SetData(void* data, uint32_t size) = 0;
-
 		virtual Vec2u GetSize() const = 0;
 		virtual uint32_t GetRendererID() const = 0;
-
-		virtual AssetType GetType() = 0;
-		static AssetType GetStaticType() { return AssetType::Texture2D; }
-
+		AssetType GetType() const override { return AssetType::Texture2D; }
 		virtual const TextureSpecification& GetSpecification() const;
-
 		virtual bool operator== (const Texture2D& other) const = 0;
 	};
 }

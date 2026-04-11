@@ -15,7 +15,7 @@ namespace Editor
 		//auto model = fg::CreateRef<fg::Model>(FG_ROOT_DIR("Sandbox/Textures/Guitar/Guitar.obj"));
 
 		m_Scene = fg::CreateScope<fg::Scene>();
-		m_Scene->CreateSkybox("C:/Dev/Forge/Forge Editor/Source/Assets/Textures/Skybox/skybox.hdr");
+		
 
 		//m_Guitar = m_Scene->CreateEntity();
 		//m_Guitar.AddComponent<fg::TransformComponent>();

@@ -29,11 +29,10 @@ namespace fg
 		std::vector<uint32_t> Indices;
 	};
 
-	struct Mesh : public Asset
+	struct Mesh final : public Asset
 	{
 		std::vector<SubMesh> SubMeshes;
 
-		AssetType GetAssetType() { return AssetType::Mesh; }
-		AssetType GetAssetStaticType() { return AssetType::Mesh; }
+		AssetType GetType() const override { return AssetType::Mesh; }
 	};
 }

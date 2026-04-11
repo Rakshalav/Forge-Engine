@@ -14,8 +14,6 @@ namespace fg
 	public:
 		Scene() = default;
 
-		void CreateSkybox(const std::string& path);
-
 		Entity CreateEntity();
 		void OnUpdate(float ts);
 		void OnRender(Camera& camera);

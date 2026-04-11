@@ -38,9 +38,10 @@ namespace fg
     class AssetManagerBase
     {
     public:
-        virtual Ref<Asset> GetAsset(const UUID& handle) = 0;
-        virtual bool IsAssetHandleValid(const UUID& handle) const = 0;
-        virtual bool IsAssetLoaded(const UUID& handle) const  = 0;
-        virtual const AssetMetaData& GetAssetMetaData(const UUID& handle) const = 0;
+        virtual Ref<Asset> GetAsset(const AssetHandle& handle) = 0;
+        virtual bool IsAssetHandleValid(const AssetHandle& handle) const = 0;
+        virtual bool IsAssetLoaded(const AssetHandle& handle) const  = 0;
+        virtual const AssetMetaData& GetAssetMetaData(const AssetHandle& handle) const = 0;
+        virtual AssetType GetAssetType(const AssetHandle& handle) const = 0;
     };
 }

@@ -9,6 +9,6 @@ namespace fg
 	class AssetImporter
 	{
 	public:
-		static Ref<Asset> ImportAsset(const UUID& handle, const AssetMetaData& metadata);
+		static Ref<Asset> ImportAsset(const AssetHandle& handle, const AssetMetaData& metadata);
 	};
 }

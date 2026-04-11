@@ -19,8 +19,6 @@ namespace fg
 		inline Vec2u GetSize() const override { return { m_Specification.Width, m_Specification.Height }; }
 		inline uint32_t GetRendererID() const override { return m_RendererID; }
 
-		inline AssetType GetType() { return AssetType::Texture2D; }
-
 		bool operator== (const Texture2D& other) const override
 		{
 			return m_RendererID == other.GetRendererID();

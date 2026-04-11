@@ -2,6 +2,7 @@
 #include <random>
 
 namespace fg {
+
     static uint64_t GenerateInternal() 
     {
         thread_local std::random_device rd;
@@ -11,6 +12,4 @@ namespace fg {
     }
 
     UUID::UUID() : m_UUID(GenerateInternal()) {}
-
-    UUID::UUID(uint64_t uuid) : m_UUID(uuid) {}
 }

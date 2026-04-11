@@ -7,11 +7,6 @@
 
 namespace fg
 {
-	void Scene::CreateSkybox(const std::string& path)
-	{
-		m_Skybox = EnvironmentMap::Create(path);
-	}
-
 	Entity Scene::CreateEntity()
 	{
 		return Entity(m_Registery.CreateEntity(), this);

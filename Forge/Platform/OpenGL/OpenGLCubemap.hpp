@@ -12,7 +12,6 @@ namespace fg
 	public:
 		OpenGLEnvironmentMap(Ref<Texture2D> texture);
 		void Draw(Camera& camera) override;
-		AssetType GetAssetType() override { return AssetType::EnvironmentMap; }
 
 	private:
 		void CreateCubemap(uint32_t width);

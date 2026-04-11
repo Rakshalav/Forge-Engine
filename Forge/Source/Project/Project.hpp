@@ -3,6 +3,7 @@
 #include <string>
 #include <filesystem>
 #include "Core/Base.hpp"
+#include "AssetManager/AssetManagerEditor.hpp"
 
 namespace fg
 {
@@ -10,7 +11,8 @@ namespace fg
 	{
 		std::string Name = "Untitled";
 		std::filesystem::path StartScene;
-		std::filesystem::path AssetDirectory;
+		std::filesystem::path AssetDirectory = "Assets";
+		std::filesystem::path AssetRegistry = "Asset.db";
 	};
 
 	class Project
@@ -30,17 +32,29 @@ namespace fg
 			return {};
 		}
 
+		static std::filesystem::path GetAssetRegistryPath()
+		{
+			if (s_ActiveProject)
+				return GetProjectDirectory() / s_ActiveProject->m_Config.AssetRegistry;
+			return {};
+		}
+
 		ProjectConfig& GetConfig() { return m_Config; }
 
 		static Ref<Project> GetActive() { return s_ActiveProject; }
 
+		Ref<AssetManagerBase> GetAssetManager() { return m_AssetManager; }
+		Ref<AssetManagerEditor> GetEditorAssetManager() { return std::static_pointer_cast<AssetManagerEditor>(m_AssetManager); }
+
 		static Ref<Project> New();
 		static Ref<Project> Load(const std::filesystem::path& path);
+		static bool Create(const std::string& name, const std::filesystem::path& projectDirectory);
 		static bool SaveActive(const std::filesystem::path& path);
 
 	private:
 		ProjectConfig m_Config;
 		std::filesystem::path m_ProjectDirectory;
+		Ref<AssetManagerBase> m_AssetManager;
 		static inline Ref<Project> s_ActiveProject = nullptr;
 	};
 }

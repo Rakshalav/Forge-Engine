@@ -4,7 +4,6 @@
 #include "Source/Core/Window.hpp"
 #include "Source/Core/Layer.hpp"
 #include "Source/Core/Application.hpp"
-#include "Source/Core/FileSystem.hpp"
 
 // Engine Debugger
 #include "Source/Debug/Log.hpp"
@@ -36,3 +35,6 @@
 #include "Source//Scene/Components.hpp"
 #include "Source/Scene/Entity.hpp"
 #include "Source/Scene/Scene.hpp"
+
+// Engine Assets
+#include "Source/AssetManager/Assetmanager.hpp"

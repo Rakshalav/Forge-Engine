@@ -11,8 +11,7 @@ namespace fg
 	{
 	public:
 		virtual void Draw(Camera& camera) = 0;
-		virtual AssetType GetAssetType() = 0;
-		static AssetType GetStaticAssetType() { return AssetType::EnvironmentMap; }
+		AssetType GetType() const override { return AssetType::EnvironmentMap; }
 		static Ref<EnvironmentMap> Create(Ref<Texture2D> texture);
 	};
 }

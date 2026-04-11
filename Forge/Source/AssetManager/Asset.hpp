@@ -4,7 +4,9 @@
 
 namespace fg
 {
-	enum class AssetType
+	using AssetHandle = UUID;
+
+	enum class AssetType : uint8_t
 	{
 		None = 0,
 		Scene,
@@ -17,9 +19,8 @@ namespace fg
 	class Asset
 	{
 	public:
-		UUID Handle = 0;
-
+		AssetHandle Handle = 0;
+		virtual ~Asset() = default;
 		virtual AssetType GetType() const = 0;
-
 	};
 }
