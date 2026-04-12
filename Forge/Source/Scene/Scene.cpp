@@ -23,7 +23,7 @@ namespace fg
 		Renderer::BeginScene(camera);
 		//RenderSystem();
 
-		m_Skybox->Draw(camera);
+		//m_Skybox->Draw(camera);
 	}
 
 	void Scene::RenderSystem()

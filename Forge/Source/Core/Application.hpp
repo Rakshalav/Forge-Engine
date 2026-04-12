@@ -3,7 +3,7 @@
 #include "Window.hpp"
 #include "Layer.hpp"
 #include "LayerStack.hpp"
-#include "ImGui/ImGuiLayer.hpp"
+#include "Overlay/Overlay.hpp"
 #include "Base.hpp"
 
 namespace fg
@@ -82,7 +82,7 @@ namespace fg
 		bool m_Running = false;
 
 		LayerStack m_LayerStack;
-		ImGuiLayer* m_OverlayLayer = nullptr;
+		OverlayLayer* m_OverlayLayer = nullptr;
 
 		struct LayerCommand
 		{

@@ -21,13 +21,11 @@ namespace Editor
 		//m_Guitar.AddComponent<fg::TransformComponent>();
 		//m_Guitar.AddComponent<fg::MeshComponent>(model, shader);
 
-		auto project = fg::Project::Load("C:/Dev/Forge/Sandbox/Sandbox.fgproj");
+		auto project = fg::Project::Load("C:/Dev/Sandbox/Sandbox.fgproj");
 
-		if (project)
-		{
-			FG_TRACE("project path: {}", project->GetProjectDirectory().string());
-			FG_TRACE("Asset path: {}", project->GetAssetDirectory().generic_string());
-		}
+		if (fg::AssetManager::IsAssetHandleValid(0xd64f238dfb53cd30))
+			FG_INFO("exists");
+		else FG_INFO("no");
 
 		fg::FramebufferSpecification spec;
 		spec.Width = 1;

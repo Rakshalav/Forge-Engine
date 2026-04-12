@@ -6,9 +6,8 @@
 
 namespace fg
 {
-	class AssetImporter
+	struct AssetImporter
 	{
-	public:
 		static Ref<Asset> ImportAsset(const AssetHandle& handle, const AssetMetaData& metadata);
 	};
 }

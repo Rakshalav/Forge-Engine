@@ -42,8 +42,8 @@ namespace fg
 			DEPTH24STENSIL8
 		};
 
-		enum class Wrap : uint8_t { Repeat = 0, ClampToEdge, MirroredRepeat };
-		enum class Filter : uint8_t { Linear = 0, Nearest, LinearMipmapLinear };
+		enum class Wrap : uint8_t { Repeat = 1, ClampToEdge, MirroredRepeat };
+		enum class Filter : uint8_t { Linear = 1, Nearest, LinearMipmapLinear };
 
 		InternalFormat Format = InternalFormat::None;
 		Wrap WrapMode = Wrap::Repeat;

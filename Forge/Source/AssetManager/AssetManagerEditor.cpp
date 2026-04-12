@@ -79,25 +79,18 @@ namespace fg
             out << YAML::Key << "Assets" << YAML::Value;
             for (const auto& [handle, metadata] : m_Registry)
             {
-                out << YAML::Key << std::format("{:016x}", handle);
+                out << YAML::Key << YAML::Hex << (uint64_t)handle;
                 out << YAML::BeginMap;
                 {
                     out << YAML::Key << "Type" << YAML::Value << AssetTypeToString[metadata.Type];
                     out << YAML::Key << "Path" << YAML::Value << metadata.FilePath.string();
-                    out << YAML::Key << "Config";
+
+                    if (metadata.HasConfig<Texture2DConfig>())
                     {
-                        if (metadata.HasConfig<Texture2DConfig>())
-                        {
-                            auto& config = metadata.GetConfig<Texture2DConfig>();
-                            out << YAML::BeginMap;
-                            {
-                                out << YAML::Key << "Wrap" << YAML::Value << (int)config.WrapMode;
-                                out << YAML::Key << "Filter" << YAML::Value << (int)config.FilterMode;
-                                out << YAML::Key << "MipMap" << YAML::Value << config.GenerateMipMap;
-                            }
-                            out << YAML::EndMap;
-                        }
-                        else out << YAML::Value << "None";
+                        auto& config = metadata.GetConfig<Texture2DConfig>();
+                        out << YAML::Key << "Wrap" << YAML::Value << (int)config.WrapMode;
+                        out << YAML::Key << "Filter" << YAML::Value << (int)config.FilterMode;
+                        out << YAML::Key << "MipMap" << YAML::Value << config.GenerateMipMap;
                     }
                 }
                 out << YAML::EndMap;
@@ -125,29 +118,34 @@ namespace fg
             return false;
         }
 
-        for (auto it = data.begin(); it != data.end(); it++)
+        auto assets = data["Assets"];
+        if (!assets) return false;
+
+        for (auto it = assets.begin(); it != assets.end(); it++)
         {
-            AssetHandle handle(std::stoull(it->first.as<std::string>(), nullptr, 16));
+            AssetHandle handle(it->first.as<uint64_t>());
             auto entry = it->second;
 
             AssetMetaData metadata;
             metadata.Type = StringToAssetType[entry["Type"].as<std::string>()];
             metadata.FilePath = entry["Path"].as<std::string>();
 
-            auto configNode = entry["Config"];
-            if (configNode && configNode.IsMap())
+            switch (metadata.Type)
             {
-                if (metadata.Type == AssetType::Texture2D)
-                {
-                    Texture2DConfig texConfig;
-                    if (configNode["Wrap"]) texConfig.WrapMode = (TextureSpecification::Wrap)configNode["Wrap"].as<int>();
-                    if (configNode["Filter"]) texConfig.FilterMode = (TextureSpecification::Filter)configNode["Filter"].as<int>();
-                    if (configNode["MipMap"]) texConfig.GenerateMipMap = configNode["MipMap"].as<bool>();
+            case AssetType::Texture2D:
+            {
+                Texture2DConfig texConfig;
+                if (entry["Wrap"]) texConfig.WrapMode = (TextureSpecification::Wrap)entry["Wrap"].as<int>();
+                if (entry["Filter"]) texConfig.FilterMode = (TextureSpecification::Filter)entry["Filter"].as<int>();
+                if (entry["MipMap"]) texConfig.GenerateMipMap = entry["MipMap"].as<bool>();
 
-                    metadata.Config = texConfig;
-                }
+                metadata.Config = texConfig;
+                break;
             }
-            else metadata.Config = std::monostate{};
+            default:
+                metadata.Config = std::monostate{};
+                break;
+            }
 
             m_Registry.emplace(handle, metadata);
         }

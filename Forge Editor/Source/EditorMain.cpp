@@ -3,7 +3,7 @@
 int main()
 {
 	fg::ApplicationSpecification EditorSpecifications;
-	EditorSpecifications.Name = "Forge Editor 1.0.0 Alpha";
+	EditorSpecifications.Name = "Forge Editor (Asset Manager) 1.0";
 	EditorSpecifications.WindowSpec.Width = 1920;
 	EditorSpecifications.WindowSpec.Height = 1080;
 
