@@ -33,7 +33,6 @@ namespace fg
             return m_RefCount.load(std::memory_order_relaxed);
         }
 
-    protected:
         virtual ~RefCounted() = default;
 
     private:
@@ -73,6 +72,8 @@ namespace fg
         {
             other.m_Ptr = nullptr;
         }
+
+        Ref(std::nullptr_t) : m_Ptr(nullptr) {}
 
         ~Ref() { Reset(); }
 
@@ -127,12 +128,25 @@ namespace fg
         friend class Ref;
     };
 
-
     template<typename T, typename... Args>
         requires(std::is_base_of_v<RefCounted, T>)
     Ref<T> CreateRef(Args&&... args)
     {
         return Ref<T>(new T(std::forward<Args>(args)...));
+    }
+
+    template<typename T, typename U>
+        requires(std::is_base_of_v<U, T>)
+    Ref<T> StaticRefCast(const Ref<U>& other)
+    {
+        return Ref<T>(static_cast<T*>(other.Get()));
+    }
+
+    template<typename T, typename U>
+        requires(std::is_base_of_v<U, T>)
+    Ref<T> DynamicRefCast(const Ref<U>& other)
+    {
+        return Ref<T>(dynamic_cast<T*>(other.Get()));
     }
 
     template<class T>

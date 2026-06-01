@@ -17,13 +17,12 @@ namespace fg
 		const AssetMetaData& GetAssetMetaData(const AssetHandle& handle) const override;
 		AssetType GetAssetType(const AssetHandle& handle) const override;
 
-	private:
 		bool SerializeAssetRegistry();
 		bool DeserializeAssetRegistry();
 
 	private:
 		AssetRegistry<AssetMetaData> m_Registry;
-		AssetRegistry<std::weak_ptr<Asset>> m_LoadedAssets;
+		AssetRegistry<Ref<Asset>> m_LoadedAssets;
 
 		std::mutex m_CacheMutex;
 	};

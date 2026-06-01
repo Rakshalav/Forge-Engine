@@ -9,7 +9,7 @@ namespace fg
 	class OverlayLayer : public Layer
 	{
 	public:
-		OverlayLayer(Window& window) : m_Window(window), m_BlockEvents(true) {}
+		OverlayLayer(Ref<Window> window) : m_Window(window), m_BlockEvents(true) {}
 
 	public:
 		void OnEvent(Event& event) override;
@@ -24,7 +24,7 @@ namespace fg
 		uint32_t GetActiveWidgetID();
 
 	private:
-		Window m_Window;
+		Ref<Window> m_Window;
 		bool m_BlockEvents;
 		bool m_ViewportEnabled;
 		std::string m_IniFilePath;

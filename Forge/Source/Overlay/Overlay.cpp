@@ -57,7 +57,7 @@ namespace fg
 			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 		}
 
-		ImGui_ImplGlfw_InitForOpenGL(m_Window.GetHandle(), true);
+		ImGui_ImplGlfw_InitForOpenGL(m_Window->GetHandle(), true);
 		ImGui_ImplOpenGL3_Init("#version 460");
 	}
 
@@ -81,7 +81,7 @@ namespace fg
 	void OverlayLayer::End()
 	{
 		auto& io = ImGui::GetIO();
-		io.DisplaySize = ImVec2(m_Window.GetSize().x, m_Window.GetSize().y);
+		io.DisplaySize = ImVec2(m_Window->GetSize().x, m_Window->GetSize().y);
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

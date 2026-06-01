@@ -23,9 +23,27 @@ namespace Editor
 
 		auto project = fg::Project::Load("C:/Dev/Sandbox/Sandbox.fgproj");
 
-		if (fg::AssetManager::IsAssetHandleValid(0xd64f238dfb53cd30))
-			FG_INFO("exists");
-		else FG_INFO("no");
+		fg::AssetHandle handle = 0xd64f238dfb53cd30;
+
+		if (fg::Project::GetActive()->GetAssetManager())
+		{
+			FG_INFO("Asset manager exists!");
+			if (fg::AssetManager::IsAssetHandleValid(handle))
+			{
+				auto type = fg::AssetManager::GetAssetType(handle);
+
+				if (type == fg::AssetType::EnvironmentMap)
+					FG_INFO("Its an environment map.");
+				else
+					FG_ERROR("undefined asset type.");
+				
+				FG_INFO("Current asset loaded?: {}", fg::AssetManager::IsAssetLoaded(handle));
+
+				auto map = fg::AssetManager::GetAsset<fg::EnvironmentMap>(handle);
+
+				FG_INFO("Current asset loaded?: {}", fg::AssetManager::IsAssetLoaded(handle));
+			}
+		}
 
 		fg::FramebufferSpecification spec;
 		spec.Width = 1;

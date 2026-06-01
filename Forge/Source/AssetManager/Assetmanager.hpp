@@ -8,7 +8,7 @@ namespace fg::AssetManager
 	template<typename T>
 	static Ref<T> GetAsset(const AssetHandle& handle)
 	{
-		return std::dynamic_pointer_cast<T>(Project::GetActive()->GetAssetManager()->GetAsset(handle));
+		return DynamicRefCast<T>(Project::GetActive()->GetAssetManager()->GetAsset(handle));
 	}
 
 	static bool IsAssetHandleValid(const AssetHandle& handle)

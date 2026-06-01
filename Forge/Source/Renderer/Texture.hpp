@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../Core/Base.hpp"
 #include <Maths/Math.hpp>
 #include <string>
 #include "AssetManager/Asset.hpp"
@@ -62,7 +61,7 @@ namespace fg
 		virtual Vec2u GetSize() const = 0;
 		virtual uint32_t GetRendererID() const = 0;
 		AssetType GetType() const override { return AssetType::Texture2D; }
-		virtual const TextureSpecification& GetSpecification() const;
+		virtual const TextureSpecification& GetSpecification() const = 0;
 		virtual bool operator== (const Texture2D& other) const = 0;
 	};
 }

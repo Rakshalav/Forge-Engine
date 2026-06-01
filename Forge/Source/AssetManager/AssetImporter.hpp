@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/Base.hpp"
+#include "Core/Memory.hpp"
 #include "Asset.hpp"
 #include "AssetManagerBase.hpp"
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Maths/Math.hpp"
-#include "Core/Base.hpp"
+#include "Core/Memory.hpp"
 #include "VertexArray.hpp"
 
 namespace fg

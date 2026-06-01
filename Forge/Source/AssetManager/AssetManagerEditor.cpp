@@ -36,22 +36,25 @@ namespace fg
         if (!IsAssetHandleValid(handle))
             return nullptr;
 
-        if (IsAssetLoaded(handle)) {
+        if (IsAssetLoaded(handle))
+        {
             auto it = m_LoadedAssets.find(handle);
-            if (Ref<Asset> ref = it->second.lock())
-                return ref;
-            else
-                m_LoadedAssets.erase(it);
+            if (it != m_LoadedAssets.end())
+            {
+                if (it->second->RefCount() == 1)
+                    m_LoadedAssets.erase(it);
+            }
         }
 
         const AssetMetaData& metadata = GetAssetMetaData(handle);
         Ref<Asset> asset = AssetImporter::ImportAsset(handle, metadata);
-
         if (!asset)
         {
             FG_ERROR("Failed to import asset!");
             return nullptr;
         }
+
+        m_LoadedAssets[handle] = asset;
         return asset;
     }
 
@@ -119,7 +122,8 @@ namespace fg
         }
 
         auto assets = data["Assets"];
-        if (!assets) return false;
+        if (!assets || !assets.IsMap()) 
+            return false;
 
         for (auto it = assets.begin(); it != assets.end(); it++)
         {
@@ -149,5 +153,6 @@ namespace fg
 
             m_Registry.emplace(handle, metadata);
         }
+        return true;
     }
 }

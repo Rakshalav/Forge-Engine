@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Core/Base.hpp"
 #include "Renderer/Camera.hpp"
 #include "Texture.hpp"
 #include "AssetManager/Asset.hpp"

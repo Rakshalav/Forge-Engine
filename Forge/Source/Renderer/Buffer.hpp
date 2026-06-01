@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Core/Base.hpp"
+#include "Core/Memory.hpp"
 #include <vector>
 
 namespace fg
@@ -42,7 +42,7 @@ namespace fg
 		size_t m_Stride;
 	};
 
-	class VertexBuffer
+	class VertexBuffer : public RefCounted
 	{
 	public:
 		virtual ~VertexBuffer() {}
@@ -56,7 +56,7 @@ namespace fg
 		static Ref<VertexBuffer> Create(float* vertices, uint32_t size);
 	};
 
-	class IndexBuffer
+	class IndexBuffer : public RefCounted
 	{
 	public:
 		virtual ~IndexBuffer() {}

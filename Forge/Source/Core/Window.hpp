@@ -1,9 +1,10 @@
 #pragma once
 
-#include "../Maths/Math.hpp"
-#include <string>
+#include "Event/Event.hpp"
+#include "Maths/Math.hpp"
 #include <functional>
-#include "../Event/Event.hpp"
+#include "Memory.hpp"
+#include <string>
 
 struct GLFWwindow;
 
@@ -23,7 +24,7 @@ namespace fg
 
 	class Application;
 
-	class Window
+	class Window : public RefCounted
 	{
 	public:
 		Window(const WindowSpecification& specification = WindowSpecification());
@@ -52,7 +53,6 @@ namespace fg
 
 	private:
 		WindowSpecification m_Specification;
-
 		GLFWwindow* m_Handle = nullptr;
 	};
 }	

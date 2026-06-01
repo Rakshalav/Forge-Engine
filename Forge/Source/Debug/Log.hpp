@@ -1,7 +1,7 @@
 #pragma once
 
 #include <spdlog/spdlog.h>
-#include "Core/Base.hpp"
+#include <memory>
 #include "ImGuiLogSink.hpp"
 
 namespace fg
@@ -17,14 +17,14 @@ namespace fg
         static void UnInit();
         static Log& Get();
 
-        static inline Ref<spdlog::logger>& GetCoreLogger() { return s_CoreLogger; }
-        static inline Ref<spdlog::logger>& GetClientLogger() { return s_ClientLogger; }
-        static inline Ref<ImGuiLogSink>& GetClientSink() { return s_ClientSink; }
+        static inline std::shared_ptr<spdlog::logger>& GetCoreLogger() { return s_CoreLogger; }
+        static inline std::shared_ptr<spdlog::logger>& GetClientLogger() { return s_ClientLogger; }
+        static inline std::shared_ptr<ImGuiLogSink>& GetClientSink() { return s_ClientSink; }
 
     private:
-        static inline Ref<spdlog::logger> s_CoreLogger;
-        static inline Ref<spdlog::logger> s_ClientLogger;
-        static inline Ref<ImGuiLogSink> s_ClientSink;
+        static inline std::shared_ptr<spdlog::logger> s_CoreLogger;
+        static inline std::shared_ptr<spdlog::logger> s_ClientLogger;
+        static inline std::shared_ptr<ImGuiLogSink> s_ClientSink;
     };
 }
 

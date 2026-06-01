@@ -72,10 +72,15 @@ namespace fg
         if (ProjectSerializer::Deserialize(project, path))
         {
             project->m_ProjectDirectory = path.parent_path();
+            project->m_ProjectDirectory = path.parent_path();
             s_ActiveProject = project;
-            s_ActiveProject->m_AssetManager = CreateRef<AssetManagerBase>();
+            s_ActiveProject->m_AssetManager = CreateRef<AssetManagerEditor>();
+
+            if (!StaticRefCast<AssetManagerEditor>(s_ActiveProject->m_AssetManager)->DeserializeAssetRegistry())
+                FG_CORE_ERROR("Failed to deserialize asset registry!");
+
             return s_ActiveProject;
-        }
+        }   
 
         return nullptr;
     }
@@ -123,6 +128,12 @@ namespace fg
         if (ProjectSerializer::Serialize(s_ActiveProject, path))
         {
             s_ActiveProject->m_ProjectDirectory = path.parent_path();
+
+            if (!StaticRefCast<AssetManagerEditor>(s_ActiveProject->m_AssetManager)->SerializeAssetRegistry())
+            {
+                FG_CORE_ERROR("Failed to save project!");
+                return false;
+            }
             return true;
         }
 

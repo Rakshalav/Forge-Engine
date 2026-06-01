@@ -2,7 +2,7 @@
 
 #include <string>
 #include <filesystem>
-#include "Core/Base.hpp"
+#include "Core/Memory.hpp"
 #include "AssetManager/AssetManagerEditor.hpp"
 
 namespace fg
@@ -15,7 +15,7 @@ namespace fg
 		std::filesystem::path StartScene = AssetDirectory / ("Scenes/" + Name + ".forge");
 	};
 
-	class Project
+	class Project : public RefCounted
 	{
 	public:
 		static const std::filesystem::path& GetProjectDirectory()
@@ -44,7 +44,7 @@ namespace fg
 		static Ref<Project> GetActive() { return s_ActiveProject; }
 
 		Ref<AssetManagerBase> GetAssetManager() { return m_AssetManager; }
-		Ref<AssetManagerEditor> GetEditorAssetManager() { return std::static_pointer_cast<AssetManagerEditor>(m_AssetManager); }
+		Ref<AssetManagerEditor> GetEditorAssetManager() { return StaticRefCast<AssetManagerEditor>(m_AssetManager); }
 
 		static Ref<Project> New();
 		static Ref<Project> Load(const std::filesystem::path& path);

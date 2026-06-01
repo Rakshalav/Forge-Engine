@@ -4,7 +4,6 @@
 #include "Layer.hpp"
 #include "LayerStack.hpp"
 #include "Overlay/Overlay.hpp"
-#include "Base.hpp"
 
 namespace fg
 {
@@ -71,7 +70,7 @@ namespace fg
 
 		Vec2f GetFrameBufferSize() const;
 
-		inline Ref<Window> GetWindow() const { return m_Window; }
+		inline Ref<Window> GetWindow() { return m_Window; }
 
 		static Application& Get();
 		float GetTime();

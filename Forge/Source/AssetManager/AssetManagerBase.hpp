@@ -35,7 +35,7 @@ namespace fg
         }
     };
 
-    class AssetManagerBase
+    class AssetManagerBase : public RefCounted
     {
     public:
         virtual Ref<Asset> GetAsset(const AssetHandle& handle) = 0;

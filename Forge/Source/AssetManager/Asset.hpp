@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/UUID.hpp"
+#include "Core/Memory.hpp"
 
 namespace fg
 {
@@ -16,7 +17,7 @@ namespace fg
 		Material
 	};
 
-	class Asset
+	class Asset : public RefCounted
 	{
 	public:
 		AssetHandle Handle = 0;
