@@ -28,19 +28,19 @@ namespace Editor
 					if (handle != 0)
 					{
 						auto type = editorAssetManager->GetAssetType(handle);
-						ImGui::Text("[%s] %s (ID: %llx)", editorAssetManager->AssetTypeToString(type).c_str(), filename.c_str(), (uint64_t)handle);
+						ImGui::Text("%s", filename.c_str());
 					}
 					else
 					{
 						ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5f, 0.5f, 0.5f, 1.0f));
-						ImGui::Text("[Unimported] %s", filename.c_str());
+						ImGui::Text("%s", filename.c_str());
 						ImGui::PopStyleColor();
 
 						if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
 						{
 							editorAssetManager->RegisterAsset(relativePath);
 							if (editorAssetManager->SerializeAssetRegistry())
-								FG_INFO("Item imported succesfully");
+								FG_INFO("{} imported succesfully!", filename.c_str());
 						}
 					}
 				}

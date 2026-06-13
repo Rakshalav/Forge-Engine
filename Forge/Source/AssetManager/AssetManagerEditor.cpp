@@ -196,7 +196,7 @@ namespace fg
 
         { ".scene", AssetType::Scene },
 
-        {".hdr", AssetType::EnvironmentMap}
+        { ".hdr", AssetType::EnvironmentMap }
     };
 
     void AssetManagerEditor::RegisterAsset(const std::filesystem::path& path)
@@ -207,6 +207,9 @@ namespace fg
         metaData.FilePath = path;
         auto it = s_ExtensionToAssetType.find(path.extension().string());
         it != s_ExtensionToAssetType.end() ? metaData.Type = it->second : metaData.Type = AssetType::None;
+
+        if (metaData.Type == AssetType::Texture2D)
+            metaData.Config = Texture2DConfig();
 
         m_Registry.emplace(handle, metaData);
         m_PathToHandle.emplace(metaData.FilePath, handle);
