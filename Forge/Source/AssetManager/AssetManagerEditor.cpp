@@ -58,20 +58,22 @@ namespace fg
         return asset;
     }
 
-    static std::map<AssetType, std::string> AssetTypeToString = {
+    static std::map<AssetType, std::string> sAssetTypeToString = {
         { AssetType::Scene, "Scene" },
         { AssetType::Texture2D, "Texture2D" },
         { AssetType::EnvironmentMap, "EnvironmentMap" },
         { AssetType::Mesh, "Mesh" },
-        { AssetType::Material, "Material" }
+        { AssetType::Material, "Material" },
+        { AssetType::None, "None"}
     };
 
-    static std::map<std::string, AssetType> StringToAssetType = {
+    static std::map<std::string, AssetType> sStringToAssetType = {
         { "Scene", AssetType::Scene },
         { "Texture2D", AssetType::Texture2D },
         { "EnvironmentMap", AssetType::EnvironmentMap },
         { "Mesh", AssetType::Mesh },
-        { "Material", AssetType::Material }
+        { "Material", AssetType::Material },
+        { "None", AssetType::None }
     };
 
     bool AssetManagerEditor::SerializeAssetRegistry()
@@ -80,12 +82,18 @@ namespace fg
         {
             out << YAML::BeginMap;
             out << YAML::Key << "Assets" << YAML::Value;
+            out << YAML::BeginMap; 
+
             for (const auto& [handle, metadata] : m_Registry)
             {
-                out << YAML::Key << YAML::Hex << (uint64_t)handle;
+                std::stringstream ss;
+                ss << std::hex << (uint64_t)handle;
+                std::string handleStr = ss.str();
+
+                out << YAML::Key << handleStr;
                 out << YAML::BeginMap;
                 {
-                    out << YAML::Key << "Type" << YAML::Value << AssetTypeToString[metadata.Type];
+                    out << YAML::Key << "Type" << YAML::Value << sAssetTypeToString[metadata.Type];
                     out << YAML::Key << "Path" << YAML::Value << metadata.FilePath.string();
 
                     if (metadata.HasConfig<Texture2DConfig>())
@@ -98,7 +106,8 @@ namespace fg
                 }
                 out << YAML::EndMap;
             }
-            out << YAML::EndMap;
+            out << YAML::EndMap; 
+            out << YAML::EndMap; 
         }
 
         std::ofstream fout(Project::GetAssetRegistryPath());
@@ -115,23 +124,28 @@ namespace fg
         {
             data = YAML::LoadFile(Project::GetAssetRegistryPath().string());
         }
-        catch (YAML::ParserException e)
+        catch (const YAML::ParserException& e)
         {
-            FG_ERROR("Failed to load Asset Registry '{}'\n {}", Project::GetAssetRegistryPath().string(), e.what());
+            FG_ERROR("Failed to read Asset Registry '{}'\n {}", Project::GetAssetRegistryPath().string(), e.what());
             return false;
         }
 
         auto assets = data["Assets"];
-        if (!assets || !assets.IsMap()) 
+        if (!assets || !assets.IsMap())
             return false;
 
         for (auto it = assets.begin(); it != assets.end(); it++)
         {
-            AssetHandle handle(it->first.as<uint64_t>());
+            std::string handleStr = it->first.as<std::string>();
+
+            uint64_t rawHandleValue = std::stoull(handleStr, nullptr, 16);
+
+            AssetHandle handle(rawHandleValue);
+
             auto entry = it->second;
 
             AssetMetaData metadata;
-            metadata.Type = StringToAssetType[entry["Type"].as<std::string>()];
+            metadata.Type = sStringToAssetType[entry["Type"].as<std::string>()];
             metadata.FilePath = entry["Path"].as<std::string>();
 
             switch (metadata.Type)
@@ -152,7 +166,49 @@ namespace fg
             }
 
             m_Registry.emplace(handle, metadata);
+            m_PathToHandle.emplace(metadata.FilePath, handle);
         }
+
         return true;
+    }
+
+    AssetHandle AssetManagerEditor::GetHandleFromRelativePath(const std::filesystem::path& path)
+    {
+        auto it = m_PathToHandle.find(path);
+        return it != m_PathToHandle.end() ? it->second : 0;
+    }
+
+    std::string AssetManagerEditor::AssetTypeToString(AssetType type)
+    {
+        return sAssetTypeToString[type];
+    }
+
+    static const std::unordered_map<std::string, AssetType> s_ExtensionToAssetType = {
+        { ".png",  AssetType::Texture2D },
+        { ".jpg",  AssetType::Texture2D },
+        { ".jpeg", AssetType::Texture2D },
+
+        { ".fbx",  AssetType::Mesh },
+        { ".obj",  AssetType::Mesh },
+        { ".glTF", AssetType::Mesh },
+
+        { ".mat",  AssetType::Material },
+
+        { ".scene", AssetType::Scene },
+
+        {".hdr", AssetType::EnvironmentMap}
+    };
+
+    void AssetManagerEditor::RegisterAsset(const std::filesystem::path& path)
+    {
+        AssetHandle handle;
+        AssetMetaData metaData;
+
+        metaData.FilePath = path;
+        auto it = s_ExtensionToAssetType.find(path.extension().string());
+        it != s_ExtensionToAssetType.end() ? metaData.Type = it->second : metaData.Type = AssetType::None;
+
+        m_Registry.emplace(handle, metaData);
+        m_PathToHandle.emplace(metaData.FilePath, handle);
     }
 }

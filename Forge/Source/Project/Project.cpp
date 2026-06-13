@@ -77,7 +77,7 @@ namespace fg
             s_ActiveProject->m_AssetManager = CreateRef<AssetManagerEditor>();
 
             if (!StaticRefCast<AssetManagerEditor>(s_ActiveProject->m_AssetManager)->DeserializeAssetRegistry())
-                FG_CORE_ERROR("Failed to deserialize asset registry!");
+                FG_ERROR("Failed to deserialize asset registry!");
 
             return s_ActiveProject;
         }   

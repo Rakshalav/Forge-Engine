@@ -30,7 +30,7 @@ namespace fg
         template<typename T>
         const T& GetConfig() const { 
             if (!HasConfig<T>())
-                assert("Metadata does not contain the requested config type!");
+                assert(HasConfig<T>() && "Metadata does not contain the requested config type!");
            return std::get<T>(Config); 
         }
     };

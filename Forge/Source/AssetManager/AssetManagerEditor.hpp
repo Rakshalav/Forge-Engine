@@ -20,9 +20,17 @@ namespace fg
 		bool SerializeAssetRegistry();
 		bool DeserializeAssetRegistry();
 
+		AssetHandle GetHandleFromRelativePath(const std::filesystem::path& path);
+
+		std::string AssetTypeToString(AssetType type);
+
+		void RegisterAsset(const std::filesystem::path& path);
+
 	private:
 		AssetRegistry<AssetMetaData> m_Registry;
 		AssetRegistry<Ref<Asset>> m_LoadedAssets;
+
+		std::unordered_map<std::filesystem::path, AssetHandle> m_PathToHandle;
 
 		std::mutex m_CacheMutex;
 	};

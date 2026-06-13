@@ -55,6 +55,8 @@ namespace fg
         }
 
         auto texture = Texture2D::Create(spec);
+        if (!texture)
+            return nullptr;
         texture->Handle = handle;
         texture->SetData(pixels, width * height * nrChannels);
 
@@ -87,8 +89,12 @@ namespace fg
         equirectTexture->SetData(pixels, width * height * nrChannels * (int)sizeof(float));
 
         stbi_image_free(pixels);
+
         auto envMap = EnvironmentMap::Create(equirectTexture);
+        if (!envMap)
+            return nullptr;
         envMap->Handle = handle;
+        return envMap;
     }
 #pragma endregion and HDR files importer
 

@@ -1,6 +1,7 @@
 #include "EditorLayer.hpp"
 #include <ImGui/imgui_internal.h>
 #include <Project/Project.hpp>
+#include "../GUI/ProjectWindow.hpp"
 
 namespace Editor
 {
@@ -22,28 +23,6 @@ namespace Editor
 		//m_Guitar.AddComponent<fg::MeshComponent>(model, shader);
 
 		auto project = fg::Project::Load("C:/Dev/Sandbox/Sandbox.fgproj");
-
-		fg::AssetHandle handle = 0xd64f238dfb53cd30;
-
-		if (fg::Project::GetActive()->GetAssetManager())
-		{
-			FG_INFO("Asset manager exists!");
-			if (fg::AssetManager::IsAssetHandleValid(handle))
-			{
-				auto type = fg::AssetManager::GetAssetType(handle);
-
-				if (type == fg::AssetType::EnvironmentMap)
-					FG_INFO("Its an environment map.");
-				else
-					FG_ERROR("undefined asset type.");
-				
-				FG_INFO("Current asset loaded?: {}", fg::AssetManager::IsAssetLoaded(handle));
-
-				auto map = fg::AssetManager::GetAsset<fg::EnvironmentMap>(handle);
-
-				FG_INFO("Current asset loaded?: {}", fg::AssetManager::IsAssetLoaded(handle));
-			}
-		}
 
 		fg::FramebufferSpecification spec;
 		spec.Width = 1;
@@ -124,6 +103,8 @@ namespace Editor
 		ImGui::Begin("Scene");
 		ImGui::Text("Scene Hierarchy");
 		ImGui::End();
+
+		ProjectWindow::OnRender();
 
 		Console();
 	}
