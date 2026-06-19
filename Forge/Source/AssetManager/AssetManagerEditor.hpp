@@ -25,6 +25,7 @@ namespace fg
 		std::string AssetTypeToString(AssetType type);
 
 		void RegisterAsset(const std::filesystem::path& path);
+		void UnRegisterAsset(const AssetHandle& handle);
 
 	private:
 		AssetRegistry<AssetMetaData> m_Registry;

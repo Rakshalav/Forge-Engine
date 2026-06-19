@@ -4,6 +4,7 @@
 #include <ImGui/imgui.h>
 #include "Rendering/EditorCamera.hpp"
 #include "Rendering/EditorCameraController.hpp"
+#include "GUI/ProjectWindow.hpp"
 
 namespace Editor
 {
@@ -34,5 +35,7 @@ namespace Editor
 
 		fg::Scope<fg::Scene> m_Scene;		
 		fg::Ref<fg::Framebuffer> m_FrameBuffer;
+
+		fg::Scope<ProjectWindow> m_ProjectWindow;
 	};
 }

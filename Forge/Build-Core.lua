@@ -4,7 +4,7 @@ project "Forge"
    cppdialect "C++23"
    staticruntime "off"
 
-   flags { "MultiProcessorCompile" }
+   flags { "multiprocessorcompile" }
 
    defines { "YAML_CPP_STATIC_DEFINE" }
 

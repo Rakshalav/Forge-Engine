@@ -1,7 +1,6 @@
 #include "EditorLayer.hpp"
 #include <ImGui/imgui_internal.h>
 #include <Project/Project.hpp>
-#include "../GUI/ProjectWindow.hpp"
 
 namespace Editor
 {
@@ -23,6 +22,8 @@ namespace Editor
 		//m_Guitar.AddComponent<fg::MeshComponent>(model, shader);
 
 		auto project = fg::Project::Load("C:/Dev/Sandbox/Sandbox.fgproj");
+
+		m_ProjectWindow = fg::CreateScope<ProjectWindow>();
 
 		fg::FramebufferSpecification spec;
 		spec.Width = 1;
@@ -104,7 +105,7 @@ namespace Editor
 		ImGui::Text("Scene Hierarchy");
 		ImGui::End();
 
-		ProjectWindow::OnRender();
+		m_ProjectWindow->OnRender();
 
 		Console();
 	}

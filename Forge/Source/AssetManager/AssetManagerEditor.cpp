@@ -95,14 +95,6 @@ namespace fg
                 {
                     out << YAML::Key << "Type" << YAML::Value << sAssetTypeToString[metadata.Type];
                     out << YAML::Key << "Path" << YAML::Value << metadata.FilePath.string();
-
-                    if (metadata.HasConfig<Texture2DConfig>())
-                    {
-                        auto& config = metadata.GetConfig<Texture2DConfig>();
-                        out << YAML::Key << "Wrap" << YAML::Value << (int)config.WrapMode;
-                        out << YAML::Key << "Filter" << YAML::Value << (int)config.FilterMode;
-                        out << YAML::Key << "MipMap" << YAML::Value << config.GenerateMipMap;
-                    }
                 }
                 out << YAML::EndMap;
             }
@@ -137,9 +129,7 @@ namespace fg
         for (auto it = assets.begin(); it != assets.end(); it++)
         {
             std::string handleStr = it->first.as<std::string>();
-
             uint64_t rawHandleValue = std::stoull(handleStr, nullptr, 16);
-
             AssetHandle handle(rawHandleValue);
 
             auto entry = it->second;
@@ -147,23 +137,6 @@ namespace fg
             AssetMetaData metadata;
             metadata.Type = sStringToAssetType[entry["Type"].as<std::string>()];
             metadata.FilePath = entry["Path"].as<std::string>();
-
-            switch (metadata.Type)
-            {
-            case AssetType::Texture2D:
-            {
-                Texture2DConfig texConfig;
-                if (entry["Wrap"]) texConfig.WrapMode = (TextureSpecification::Wrap)entry["Wrap"].as<int>();
-                if (entry["Filter"]) texConfig.FilterMode = (TextureSpecification::Filter)entry["Filter"].as<int>();
-                if (entry["MipMap"]) texConfig.GenerateMipMap = entry["MipMap"].as<bool>();
-
-                metadata.Config = texConfig;
-                break;
-            }
-            default:
-                metadata.Config = std::monostate{};
-                break;
-            }
 
             m_Registry.emplace(handle, metadata);
             m_PathToHandle.emplace(metadata.FilePath, handle);
@@ -190,7 +163,7 @@ namespace fg
 
         { ".fbx",  AssetType::Mesh },
         { ".obj",  AssetType::Mesh },
-        { ".glTF", AssetType::Mesh },
+        { ".gltf", AssetType::Mesh },
 
         { ".mat",  AssetType::Material },
 
@@ -208,10 +181,23 @@ namespace fg
         auto it = s_ExtensionToAssetType.find(path.extension().string());
         it != s_ExtensionToAssetType.end() ? metaData.Type = it->second : metaData.Type = AssetType::None;
 
-        if (metaData.Type == AssetType::Texture2D)
-            metaData.Config = Texture2DConfig();
-
         m_Registry.emplace(handle, metaData);
         m_PathToHandle.emplace(metaData.FilePath, handle);
+    }
+
+    void AssetManagerEditor::UnRegisterAsset(const AssetHandle& handle)
+    {
+        if (IsAssetHandleValid(handle))
+        {
+            auto it = m_Registry.find(handle);
+            m_PathToHandle.erase(it->second.FilePath);
+            m_Registry.erase(handle);
+        }
+        else
+        {
+            std::stringstream ss;
+            ss << std::hex << (uint64_t)handle;
+            FG_ERROR("Invalid AssetHandle: {}", ss.str());
+        }
     }
 }

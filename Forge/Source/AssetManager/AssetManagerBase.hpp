@@ -11,28 +11,10 @@
 
 namespace fg
 {
-    struct Texture2DConfig
-    {
-        TextureSpecification::Wrap WrapMode = TextureSpecification::Wrap::Repeat;
-        TextureSpecification::Filter FilterMode = TextureSpecification::Filter::Linear;
-        bool GenerateMipMap = true;
-    };
-
     struct AssetMetaData
     {
         AssetType Type;
         std::filesystem::path FilePath;
-        std::variant<std::monostate, Texture2DConfig> Config;
-
-        template<typename T>
-        bool HasConfig() const { return std::holds_alternative<T>(Config); }
-
-        template<typename T>
-        const T& GetConfig() const { 
-            if (!HasConfig<T>())
-                assert(HasConfig<T>() && "Metadata does not contain the requested config type!");
-           return std::get<T>(Config); 
-        }
     };
 
     class AssetManagerBase : public RefCounted

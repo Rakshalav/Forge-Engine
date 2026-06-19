@@ -36,11 +36,6 @@ namespace fg
         spec.Width = width;
         spec.Height = height;
 
-        auto& texConfig = metadata.GetConfig<Texture2DConfig>();
-        spec.WrapMode = texConfig.WrapMode;
-        spec.FilterMode = texConfig.FilterMode;
-        spec.GenerateMipMap = texConfig.GenerateMipMap;
-
         switch (nrChannels)
         {
         case 1: 

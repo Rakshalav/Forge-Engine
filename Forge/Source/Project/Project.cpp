@@ -75,6 +75,7 @@ namespace fg
             project->m_ProjectDirectory = path.parent_path();
             s_ActiveProject = project;
             s_ActiveProject->m_AssetManager = CreateRef<AssetManagerEditor>();
+            StaticRefCast<AssetManagerEditor>(s_ActiveProject->m_AssetManager)->DeserializeAssetRegistry();
             return s_ActiveProject;
         }   
 
