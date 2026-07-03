@@ -13,11 +13,18 @@
 #endif
 
 #include <cstring>
+#include <algorithm>
 #include <iostream>
 #include <string>
 
 namespace fg::Utility
 {
+	inline std::string ToForwardSlashPath(std::string path)
+	{
+		std::replace(path.begin(), path.end(), '\\', '/');
+		return path;
+	}
+
 #ifdef _WIN32
 	inline bool CopyToClipboard(const std::string& text)
 	{

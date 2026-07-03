@@ -2,10 +2,52 @@
 
 #include <ImGui/imgui.h>
 #include <ImGui/imgui_internal.h>
+#include <efsw/efsw.hpp>
 #include <Forge.hpp>
+#include <Core/Filelistener.hpp>
 	
 namespace Editor
 {
+	struct AssetNode
+	{
+		fg::UUID Id;
+		std::string Name;
+		std::filesystem::path RelativePath;
+		bool isDirectory;
+		AssetNode* Parent = nullptr;
+		std::vector<fg::Scope<AssetNode>> Children;
+	};
+
+	class AssetTree
+	{
+	public:
+		void BuildTreeFromDir(const std::filesystem::path& Rootpath);
+		AssetNode* GetRoot() const { return m_Root.get(); }
+		bool OnFileChange(const fg::Event::FileChange& e);
+
+		AssetNode* operator[](const fg::UUID& id) {
+			if (!m_AssetCache.contains(id))
+				return nullptr;
+			else
+				return m_AssetCache[id];
+		}
+
+		AssetNode* operator[](const std::filesystem::path& relative) {
+			return FindNode(relative);
+		}
+
+	public:
+		AssetNode* CurrentNode = nullptr;
+		AssetNode* SelectedNode = nullptr;
+
+	private:
+		AssetNode* FindNode(const std::filesystem::path& relativePath);
+
+	private:
+		fg::Scope<AssetNode> m_Root;
+		std::unordered_map<fg::UUID, AssetNode*> m_AssetCache;
+	};
+
 	class ProjectWindow
 	{
 	public:
@@ -16,16 +58,17 @@ namespace Editor
 		void OnRender();
 
 	private:
-		void RenderTreeLevel(const std::filesystem::path& directoryPath);
-
-		void RenderFolderContextMenu(const std::filesystem::path& folderPath);
-		void RenderAssetContextMenu(const std::filesystem::path& assetPath, const std::filesystem::path& relativePath);
+		void RenderTreeView(AssetNode* node);
+		void RenderContextMenu(AssetNode* node);
 
 	private:
 		std::filesystem::path m_RootDirectory;        
-		std::filesystem::path m_CurrentDirectory;   
-		std::filesystem::path m_SelectedAssetPath;
 
 		fg::Ref<fg::AssetManagerEditor> m_AssetManager;
+
+		efsw::FileWatcher* m_FileWatcher		= nullptr;
+		fg::UpdateListener* m_UpdateListener	= nullptr;
+
+		AssetTree m_AssetTree;
 	};
 }

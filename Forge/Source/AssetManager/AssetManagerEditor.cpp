@@ -172,9 +172,8 @@ namespace fg
         { ".hdr", AssetType::EnvironmentMap }
     };
 
-    void AssetManagerEditor::RegisterAsset(const std::filesystem::path& path)
+    void AssetManagerEditor::RegisterAsset(const std::filesystem::path& path, AssetHandle handle)
     {
-        AssetHandle handle;
         AssetMetaData metaData;
 
         metaData.FilePath = path;
@@ -183,6 +182,7 @@ namespace fg
 
         m_Registry.emplace(handle, metaData);
         m_PathToHandle.emplace(metaData.FilePath, handle);
+        SerializeAssetRegistry();
     }
 
     void AssetManagerEditor::UnRegisterAsset(const AssetHandle& handle)
@@ -192,12 +192,17 @@ namespace fg
             auto it = m_Registry.find(handle);
             m_PathToHandle.erase(it->second.FilePath);
             m_Registry.erase(handle);
+            SerializeAssetRegistry();
         }
-        else
+    }
+
+    void AssetManagerEditor::ModifyAsset(const AssetHandle& handle, const AssetMetaData& newMetadata)
+    {
+        if (IsAssetHandleValid(handle))
         {
-            std::stringstream ss;
-            ss << std::hex << (uint64_t)handle;
-            FG_ERROR("Invalid AssetHandle: {}", ss.str());
+            auto& currentMetaData = m_Registry[handle];
+            currentMetaData = newMetadata;
+            SerializeAssetRegistry();
         }
     }
 }

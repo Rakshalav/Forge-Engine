@@ -7,6 +7,16 @@ namespace fg
 {
     namespace ProjectSerializer
     {
+        static std::filesystem::path NormalizeProjectPath(const std::string& path)
+        {
+            std::string normalized = std::filesystem::path(path).lexically_normal().generic_string();
+
+            while (normalized.size() > 1 && (normalized.back() == '/' || normalized.back() == '\\'))
+                normalized.pop_back();
+
+            return normalized;
+        }
+
         static bool Serialize(Ref<Project> project, const std::filesystem::path& filepath)
         {
             const auto& config = project->GetConfig();
@@ -18,9 +28,9 @@ namespace fg
                 {
                     out << YAML::BeginMap;
                     out << YAML::Key << "Name" << YAML::Value << config.Name;
-                    out << YAML::Key << "StartScene" << YAML::Value << config.StartScene.string();
-                    out << YAML::Key << "AssetDirectory" << YAML::Value << config.AssetDirectory.string();
-                    out << YAML::Key << "AssetRegistry" << YAML::Value << config.AssetRegistry.string();
+                    out << YAML::Key << "StartScene" << YAML::Value << config.StartScene.generic_string();
+                    out << YAML::Key << "AssetDirectory" << YAML::Value << config.AssetDirectory.generic_string();
+                    out << YAML::Key << "AssetRegistry" << YAML::Value << config.AssetRegistry.generic_string();
                     out << YAML::EndMap;
                 }
                 out << YAML::EndMap;
@@ -52,9 +62,9 @@ namespace fg
                 return false;
 
             config.Name = projectNode["Name"].as<std::string>();
-            config.StartScene = projectNode["StartScene"].as<std::string>();
-            config.AssetDirectory = projectNode["AssetDirectory"].as<std::string>();
-            config.AssetRegistry = projectNode["AssetRegistry"].as<std::string>();
+            config.StartScene = NormalizeProjectPath(projectNode["StartScene"].as<std::string>());
+            config.AssetDirectory = NormalizeProjectPath(projectNode["AssetDirectory"].as<std::string>());
+            config.AssetRegistry = NormalizeProjectPath(projectNode["AssetRegistry"].as<std::string>());
             return true;
         }
     }
@@ -71,7 +81,6 @@ namespace fg
 
         if (ProjectSerializer::Deserialize(project, path))
         {
-            project->m_ProjectDirectory = path.parent_path();
             project->m_ProjectDirectory = path.parent_path();
             s_ActiveProject = project;
             s_ActiveProject->m_AssetManager = CreateRef<AssetManagerEditor>();

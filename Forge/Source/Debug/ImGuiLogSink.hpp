@@ -29,7 +29,12 @@ namespace fg
         void flush_() override {}
 
     public:
-        const std::vector<LogLine>& GetMessages() const { return m_MessageBuffer; }
+        std::vector<LogLine> GetMessages()
+        {
+            std::lock_guard<std::mutex> lock(base_sink<std::mutex>::mutex_);
+            return m_MessageBuffer;
+        }
+
         void Clear() { std::lock_guard<std::mutex> lock(base_sink<std::mutex>::mutex_); m_MessageBuffer.clear(); }
 
     private:

@@ -36,6 +36,9 @@ namespace Editor
 
 	void EditorLayer::OnEvent(fg::Event& event)
 	{
+		if (m_ProjectWindow)
+			m_ProjectWindow->OnEvent(event);
+
 		if (!isViewportFocused)
 			m_CamController.OnEvent(event);
 	}
@@ -145,7 +148,7 @@ namespace Editor
 		ImGui::Separator();
 
 		ImGui::BeginChild("LogRegion");
-		auto& logs = fg::Log::GetClientSink()->GetMessages();
+		auto logs = fg::Log::GetClientSink()->GetMessages();
 
 		for (const auto& log : logs)
 		{

@@ -13,7 +13,7 @@ namespace Editor
 	void EditorCameraController::OnEvent(fg::Event& event)
 	{
 		fg::EventDispatcher dispatcher(event);
-		dispatcher.Dispatch<fg::Event::MouseMove>([this](fg::Event::MouseMove& e) {return OnMouseMoved(e); });
+		dispatcher.Dispatch<fg::Event::MouseMove>([this](fg::Event::MouseMove& e) { return OnMouseMoved(e); });
 	}
 
 	void EditorCameraController::OnUpdate(float ts, const fg::Vec4f& size)

@@ -10,7 +10,7 @@ namespace fg
 	struct ProjectConfig
 	{
 		std::string Name = "Untitled";
-		std::filesystem::path AssetDirectory = "Assets/";
+		std::filesystem::path AssetDirectory = "Assets";
 		std::filesystem::path AssetRegistry = "Asset.db";
 		std::filesystem::path StartScene = AssetDirectory / ("Scenes/" + Name + ".forge");
 	};
