@@ -48,6 +48,7 @@ namespace Editor
                 ImGui::BeginChild("LeftTreeChild");
                 {
                     RenderTreeView(m_AssetTree.GetRoot());
+                    RenderContextMenu(m_AssetTree.GetRoot(), true);
                 }
                 ImGui::EndChild();
 
@@ -115,27 +116,35 @@ namespace Editor
         }
     }
 
-    void ProjectWindow::RenderContextMenu(AssetNode* node)
+    void ProjectWindow::RenderContextMenu(AssetNode* node, bool isWindowContext)
     {
-        if (ImGui::BeginPopupContextItem())
+        bool popupOpen = isWindowContext ? ImGui::BeginPopupContextWindow("RootContextMenu", ImGuiPopupFlags_MouseButtonRight | ImGuiPopupFlags_NoOpenOverExistingPopup) : ImGui::BeginPopupContextItem();
+
+        if (popupOpen)
         {
+            std::filesystem::path fullPath = m_RootDirectory / node->RelativePath;
+
             if (node->isDirectory)
             {
                 m_AssetTree.CurrentNode = node;
 
-                ImGui::TextDisabled("Folder Options");
-                ImGui::Separator();
+                if (ImGui::MenuItem("New Folder")) {}
 
-                if (ImGui::MenuItem("New Folder")) {  }
-                if (ImGui::MenuItem("Delete Folder"))
-                    std::filesystem::remove_all(m_RootDirectory / node->RelativePath);
+                if (node != m_AssetTree.GetRoot())
+                    if (ImGui::MenuItem("Delete Folder"))
+                        std::filesystem::remove_all(fullPath);
+
+                if (ImGui::MenuItem("Copy File Path"))
+                    fg::Utility::CopyToClipBoard(fullPath.generic_string());
+
+#ifdef _WIN32
+                if (ImGui::MenuItem("Open in File Explorer"))
+                    fg::Utility::OpenInExplorer(fullPath);
+#endif
             }
             else
             {
                 m_AssetTree.SelectedNode = node;
-
-                ImGui::TextDisabled("Asset Options");
-                ImGui::Separator();
 
                 auto handle = node->Id;
 
@@ -150,7 +159,6 @@ namespace Editor
                         m_AssetManager->UnRegisterAsset(handle);
                 }
 
-                std::filesystem::path fullPath = m_RootDirectory / node->RelativePath;
                 if (ImGui::MenuItem("Delete"))
                     std::filesystem::remove(fullPath);
                 if (ImGui::MenuItem("Copy File Path"))
@@ -161,44 +169,42 @@ namespace Editor
         }
     }
 
+    fg::Scope<AssetNode> AssetTree::BuildNodeRecursively(const std::filesystem::path& fullPath, AssetNode* parent)
+    {
+        fg::Scope<AssetNode> node = fg::CreateScope<AssetNode>();
+        node->Name = fullPath.filename().string();
+        node->RelativePath = std::filesystem::relative(fullPath, fg::Project::GetAssetDirectory());
+        node->isDirectory = std::filesystem::is_directory(fullPath);
+        node->Parent = parent;
+
+        if (node->isDirectory)
+            node->Id = fg::UUID();
+        else
+        {
+            auto id = fg::Project::GetActive()->GetEditorAssetManager()->GetHandleFromRelativePath(node->RelativePath);
+            node->Id = (id != 0) ? id : fg::UUID();
+        }
+
+        m_AssetCache[node->Id] = node.get();
+
+        if (node->isDirectory)
+            for (const auto& entry : std::filesystem::directory_iterator(fullPath))
+                node->Children.push_back(BuildNodeRecursively(entry.path(), node.get()));
+
+        return node;
+    }
+
     void AssetTree::BuildTreeFromDir(const std::filesystem::path& Rootpath)
     {
         m_Root = fg::CreateScope<AssetNode>();
         m_Root->Id = fg::UUID();
         m_Root->Name = Rootpath.filename().string();
-        m_Root->RelativePath = Rootpath; 
+        m_Root->RelativePath = "";
         m_Root->isDirectory = true;
-
         m_AssetCache[m_Root->Id] = m_Root.get();
 
-        std::function<void(const std::filesystem::path& currentDir, AssetNode* parentNode)> iteratethroughDir;
-
-        iteratethroughDir = [&](const std::filesystem::path& currentDir, AssetNode* parentNode) -> void 
-        {
-            for (const auto& entry : std::filesystem::directory_iterator(currentDir))
-            {
-                const auto& path = entry.path();
-
-                fg::Scope<AssetNode> childNode = fg::CreateScope<AssetNode>();
-                childNode->Name = path.filename().string();
-
-                childNode->RelativePath = std::filesystem::relative(path, Rootpath);
-                childNode->isDirectory = entry.is_directory();
-                childNode->Parent = parentNode;
-
-                auto id = fg::Project::GetActive()->GetEditorAssetManager()->GetHandleFromRelativePath(childNode.get()->RelativePath);
-                id != 0 ? childNode->Id = id : childNode->Id = fg::UUID();
-
-                AssetNode* childPtr = childNode.get();
-                m_AssetCache[childNode->Id] = childPtr;
-
-                parentNode->Children.push_back(std::move(childNode));
-
-                if (childPtr->isDirectory)
-                    iteratethroughDir(path, childPtr);
-            }
-        };
-        iteratethroughDir(Rootpath, m_Root.get());
+        for (const auto& entry : std::filesystem::directory_iterator(Rootpath))
+            m_Root->Children.push_back(BuildNodeRecursively(entry.path(), m_Root.get()));
     }
 
     AssetNode* AssetTree::FindNode(const std::filesystem::path& relativePath)
@@ -235,42 +241,20 @@ namespace Editor
         case Add:
         {
             std::filesystem::path fullPath = std::filesystem::path(e.Directory) / std::filesystem::path(e.FileName);
-            bool isDirectory = std::filesystem::is_directory(fullPath);
-            std::filesystem::path relativePath = std::filesystem::relative(fullPath, m_Root->RelativePath);
+            std::filesystem::path relativePath = std::filesystem::relative(fullPath, fg::Project::GetAssetDirectory());
 
-            auto newNode = fg::CreateScope<AssetNode>();
+            AssetNode* parentNode = (relativePath == relativePath.filename()) ? m_Root.get() : FindNode(relativePath.parent_path());
 
-            newNode->Name = e.FileName;
-            newNode->RelativePath = relativePath;
-
-            if (isDirectory)
-                newNode->Id = fg::UUID();
-            else
-            {
-                auto id = fg::Project::GetActive()->GetEditorAssetManager()->GetHandleFromRelativePath(newNode->RelativePath);
-                newNode->Id = (id != 0) ? id : fg::UUID();
-            }
-
-            AssetNode* parentNode = nullptr;
-            if (relativePath == relativePath.filename())
-                parentNode = m_Root.get();
-            else
-                parentNode = FindNode(relativePath.parent_path());
-
-            if (parentNode)
-            {
-                newNode->Parent = parentNode;
-                m_AssetCache[newNode->Id] = newNode.get();
-                parentNode->Children.push_back(std::move(newNode));
-                return true;
-            }
-            else
+            if (!parentNode)
                 return false;
+
+            parentNode->Children.push_back(BuildNodeRecursively(fullPath, parentNode));
+            return true;
         }
         case Delete:
         {
             std::filesystem::path fullPath = std::filesystem::path(e.Directory) / std::filesystem::path(e.FileName);
-            std::filesystem::path relativePath = std::filesystem::relative(fullPath, m_Root->RelativePath);
+            std::filesystem::path relativePath = std::filesystem::relative(fullPath, fg::Project::GetAssetDirectory());
 
             AssetNode* nodeToDelete = FindNode(relativePath);
             if (!nodeToDelete)
@@ -280,7 +264,6 @@ namespace Editor
             if (!parentNode)
                 return false;
     
-
             std::function<void(AssetNode*)> unregisterFromCache = [&](AssetNode* node) {
                 for (const auto& child : node->Children)
                 {
@@ -324,10 +307,10 @@ namespace Editor
         case Moved:
         {
             std::filesystem::path fullPath = std::filesystem::path(e.Directory) / std::filesystem::path(e.FileName);
-            std::filesystem::path relativePath = std::filesystem::relative(fullPath, m_Root->RelativePath);
+            std::filesystem::path relativePath = std::filesystem::relative(fullPath, fg::Project::GetAssetDirectory());
 
             std::filesystem::path oldFullPath = std::filesystem::path(e.Directory) / std::filesystem::path(e.OldFilename);
-            std::filesystem::path oldRelativePath = std::filesystem::relative(oldFullPath, m_Root->RelativePath);
+            std::filesystem::path oldRelativePath = std::filesystem::relative(oldFullPath, fg::Project::GetAssetDirectory());
 
             AssetNode* currentNode = FindNode(oldRelativePath);
 

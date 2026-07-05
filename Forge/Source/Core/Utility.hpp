@@ -8,6 +8,8 @@
 #define NOMINMAX
 #endif
 #include <windows.h>
+#include <shlobj.h>
+#include <shellapi.h>  
 #elif __linux__
 #include <cstdio>
 #endif
@@ -16,6 +18,7 @@
 #include <algorithm>
 #include <iostream>
 #include <string>
+#include <filesystem>
 
 namespace fg::Utility
 {
@@ -54,6 +57,22 @@ namespace fg::Utility
 	{
 		return CopyToClipboard(text);
 	}
+
+	inline void OpenInExplorer(const std::filesystem::path& fullPath)
+	{
+		ShellExecuteW(NULL, L"open", fullPath.wstring().c_str(), NULL, NULL, SW_SHOWNORMAL);
+	}
+
+	inline void ShowInExplorer(const std::filesystem::path& fullPath)
+	{
+		PIDLIST_ABSOLUTE pidl = ILCreateFromPathW(fullPath.wstring().c_str());
+		if (pidl)
+		{
+			SHOpenFolderAndSelectItems(pidl, 0, NULL, 0);
+			ILFree(pidl);
+		}
+	}
+
 #elif __linux__
 	inline bool CopyToClipboard(const std::string& text) 
 	{

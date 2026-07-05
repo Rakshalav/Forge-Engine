@@ -42,6 +42,7 @@ namespace Editor
 
 	private:
 		AssetNode* FindNode(const std::filesystem::path& relativePath);
+		fg::Scope<AssetNode> BuildNodeRecursively(const std::filesystem::path& fullPath, AssetNode* parent);
 
 	private:
 		fg::Scope<AssetNode> m_Root;
@@ -59,7 +60,7 @@ namespace Editor
 
 	private:
 		void RenderTreeView(AssetNode* node);
-		void RenderContextMenu(AssetNode* node);
+		void RenderContextMenu(AssetNode* node, bool isWindowContext = false);
 
 	private:
 		std::filesystem::path m_RootDirectory;        
