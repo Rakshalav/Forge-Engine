@@ -1,75 +1,65 @@
 #pragma once
-
-#include <ImGui/imgui.h>
-#include <ImGui/imgui_internal.h>
 #include <efsw/efsw.hpp>
 #include <Forge.hpp>
 #include <Core/Filelistener.hpp>
-	
+
 namespace Editor
 {
-	struct AssetNode
-	{
-		fg::UUID Id;
-		std::string Name;
-		std::filesystem::path RelativePath;
-		bool isDirectory;
-		AssetNode* Parent = nullptr;
-		std::vector<fg::Scope<AssetNode>> Children;
-	};
-
-	class AssetTree
-	{
-	public:
-		void BuildTreeFromDir(const std::filesystem::path& Rootpath);
-		AssetNode* GetRoot() const { return m_Root.get(); }
-		bool OnFileChange(const fg::Event::FileChange& e);
-
-		AssetNode* operator[](const fg::UUID& id) {
-			if (!m_AssetCache.contains(id))
-				return nullptr;
-			else
-				return m_AssetCache[id];
-		}
-
-		AssetNode* operator[](const std::filesystem::path& relative) {
-			return FindNode(relative);
-		}
-
-	public:
-		AssetNode* CurrentNode = nullptr;
-		AssetNode* SelectedNode = nullptr;
-
-	private:
-		AssetNode* FindNode(const std::filesystem::path& relativePath);
-		fg::Scope<AssetNode> BuildNodeRecursively(const std::filesystem::path& fullPath, AssetNode* parent);
-
-	private:
-		fg::Scope<AssetNode> m_Root;
-		std::unordered_map<fg::UUID, AssetNode*> m_AssetCache;
-	};
-
-	class ProjectWindow
-	{
-	public:
-		ProjectWindow();
-
-		void OnEvent(fg::Event& event);
-		void OnUpdate(float dt);
-		void OnRender();
-
-	private:
-		void RenderTreeView(AssetNode* node);
-		void RenderContextMenu(AssetNode* node, bool isWindowContext = false);
-
-	private:
-		std::filesystem::path m_RootDirectory;        
-
-		fg::Ref<fg::AssetManagerEditor> m_AssetManager;
-
-		efsw::FileWatcher* m_FileWatcher		= nullptr;
-		fg::UpdateListener* m_UpdateListener	= nullptr;
-
-		AssetTree m_AssetTree;
-	};
+    struct AssetNode
+    {
+        fg::UUID Id;
+        std::string Name;
+        std::filesystem::path RelativePath;
+        bool isDirectory;
+        AssetNode* Parent = nullptr;
+        std::vector<fg::Scope<AssetNode>> Children;
+    };
+    class AssetTree
+    {
+    public:
+        void BuildTreeFromDir(const std::filesystem::path& Rootpath);
+        AssetNode* GetRoot() const { return m_Root.get(); }
+        bool OnFileChange(const fg::Event::FileChange& e);
+        AssetNode* operator[](const fg::UUID& id) {
+            if (!m_AssetCache.contains(id))
+                return nullptr;
+            else
+                return m_AssetCache[id];
+        }
+        AssetNode* operator[](const std::filesystem::path& relative) {
+            return FindNode(relative);
+        }
+    public:
+        AssetNode* CurrentNode = nullptr;
+        AssetNode* SelectedNode = nullptr;
+        std::vector<AssetNode*> SelectedNodes;
+    private:
+        AssetNode* FindNode(const std::filesystem::path& relativePath);
+        fg::Scope<AssetNode> BuildNodeRecursively(const std::filesystem::path& fullPath, AssetNode* parent);
+    private:
+        fg::Scope<AssetNode> m_Root;
+        std::unordered_map<fg::UUID, AssetNode*> m_AssetCache;
+    };
+    class ContentBrowser
+    {
+    public:
+        ContentBrowser();
+        void OnEvent(fg::Event& event);
+        void OnUpdate(float dt);
+        void OnRender();
+    private:
+        void RenderTreeView(AssetNode* node);
+        void RenderGridView(AssetNode* currentDirectory);
+        void RenderContextMenu(AssetNode* node, bool isWindowContext = false);
+        void RenderDeleteModal();
+        void DeleteFileOrFolder();
+        void RenderAddFileModal();
+    private:
+        std::filesystem::path m_RootDirectory;
+        fg::Ref<fg::AssetManagerEditor> m_AssetManager;
+        efsw::FileWatcher* m_FileWatcher = nullptr;
+        fg::UpdateListener* m_UpdateListener = nullptr;
+        AssetTree m_AssetTree;
+        std::filesystem::path m_TargetDeletePath;
+    };
 }

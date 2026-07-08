@@ -89,7 +89,7 @@ namespace fg
 			std::string Directory;
 			std::string FileName;
 			std::string OldFilename;
-			int Action;
+			enum Actions : uint8_t { Add = 1, Delete = 2, Modified = 3, Moved = 4 } Action;
 		};
 				
 	public:

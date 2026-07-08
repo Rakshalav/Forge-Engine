@@ -79,7 +79,7 @@ namespace fg
 	{
 		Event event;
 		event.Type = EventType::FileChange;
-		event.m_Data = Event::FileChange(dir, fileName, oldFileName, Action);
+		event.m_Data = Event::FileChange(dir, fileName, oldFileName, static_cast<Event::FileChange::Actions>(Action));
 		event.CategoryFlags = EventCategory_None;
 		return event;
 	}

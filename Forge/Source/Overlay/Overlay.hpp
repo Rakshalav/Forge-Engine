@@ -23,6 +23,8 @@ namespace fg
 		void BlockEvents(bool value) { m_BlockEvents = value; }
 		uint32_t GetActiveWidgetID();
 
+		void SetDarkThemeColors();
+
 	private:
 		Ref<Window> m_Window;
 		bool m_BlockEvents;

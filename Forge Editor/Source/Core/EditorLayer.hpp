@@ -36,6 +36,6 @@ namespace Editor
 		fg::Scope<fg::Scene> m_Scene;		
 		fg::Ref<fg::Framebuffer> m_FrameBuffer;
 
-		fg::Scope<ProjectWindow> m_ProjectWindow;
+		fg::Scope<ContentBrowser> m_ProjectWindow;
 	};
 }
