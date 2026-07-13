@@ -14,6 +14,7 @@ namespace Editor
         AssetNode* Parent = nullptr;
         std::vector<fg::Scope<AssetNode>> Children;
     };
+
     class AssetTree
     {
     public:
@@ -29,6 +30,7 @@ namespace Editor
         AssetNode* operator[](const std::filesystem::path& relative) {
             return FindNode(relative);
         }
+        void AddChild(fg::Scope<AssetNode>& child, const fg::UUID& ParentID);
     public:
         AssetNode* CurrentNode = nullptr;
         AssetNode* SelectedNode = nullptr;
@@ -40,6 +42,7 @@ namespace Editor
         fg::Scope<AssetNode> m_Root;
         std::unordered_map<fg::UUID, AssetNode*> m_AssetCache;
     };
+
     class ContentBrowser
     {
     public:
@@ -61,5 +64,8 @@ namespace Editor
         fg::UpdateListener* m_UpdateListener = nullptr;
         AssetTree m_AssetTree;
         std::filesystem::path m_TargetDeletePath;
+        AssetNode* m_RenamingNode = nullptr;
+        char m_RenameBuffer[256] = "";
+        std::filesystem::path m_PathToRenameOnCreation;
     };
 }

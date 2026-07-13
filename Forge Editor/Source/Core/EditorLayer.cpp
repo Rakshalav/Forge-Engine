@@ -16,7 +16,6 @@ namespace Editor
 
 		m_Scene = fg::CreateScope<fg::Scene>();
 		
-
 		//m_Guitar = m_Scene->CreateEntity();
 		//m_Guitar.AddComponent<fg::TransformComponent>();
 		//m_Guitar.AddComponent<fg::MeshComponent>(model, shader);
@@ -196,6 +195,8 @@ namespace Editor
 			case spdlog::level::critical: color = { 1.0f, 0.0f, 1.0f, 1.0f }; break;
 			case spdlog::level::info:     color = { 0.4f, 0.9f, 0.4f, 1.0f }; break;
 			}
+
+			ImGui::TextColored(color, "%s", log.Message.c_str());
 		}
 
 		if (ImGui::GetScrollY() >= ImGui::GetScrollMaxY())

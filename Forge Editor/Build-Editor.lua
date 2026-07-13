@@ -6,7 +6,7 @@ project "Editor"
 
     flags { "multiprocessorcompile" }
 
-    defines { "YAML_CPP_STATIC_DEFINE" }
+    defines { "YAML_CPP_STATIC_DEFINE", "_CRT_SECURE_NO_WARNINGS" }
 
     linkoptions { "/ignore:4099" }
 

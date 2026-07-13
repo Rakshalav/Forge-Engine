@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Source/Renderer/Shader.hpp"
+#include <Renderer/Shader.hpp>
 #include <unordered_map>
 
 namespace fg
