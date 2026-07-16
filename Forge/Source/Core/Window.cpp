@@ -2,7 +2,7 @@
 #include <GLFW/glfw3.h>
 
 #include "Window.hpp"
-#include "../Debug/Log.hpp"
+#include <Debug/Log.hpp>
 
 namespace fg
 {

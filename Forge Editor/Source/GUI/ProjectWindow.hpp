@@ -9,7 +9,7 @@ namespace Editor
     {
         fg::UUID Id;
         std::string Name;
-        std::filesystem::path RelativePath;
+        std::filesystem::path Path;
         bool isDirectory;
         AssetNode* Parent = nullptr;
         std::vector<fg::Scope<AssetNode>> Children;
@@ -27,16 +27,15 @@ namespace Editor
             else
                 return m_AssetCache[id];
         }
-        AssetNode* operator[](const std::filesystem::path& relative) {
-            return FindNode(relative);
+        AssetNode* operator[](const std::filesystem::path& Path) {
+            return FindNode(Path);
         }
         void AddChild(fg::Scope<AssetNode>& child, const fg::UUID& ParentID);
     public:
-        AssetNode* CurrentNode = nullptr;
-        AssetNode* SelectedNode = nullptr;
         std::vector<AssetNode*> SelectedNodes;
+        AssetNode* CurrentDirectory = nullptr;
     private:
-        AssetNode* FindNode(const std::filesystem::path& relativePath);
+        AssetNode* FindNode(const std::filesystem::path& Path);
         fg::Scope<AssetNode> BuildNodeRecursively(const std::filesystem::path& fullPath, AssetNode* parent);
     private:
         fg::Scope<AssetNode> m_Root;
@@ -53,10 +52,12 @@ namespace Editor
     private:
         void RenderTreeView(AssetNode* node);
         void RenderGridView(AssetNode* currentDirectory);
-        void RenderContextMenu(AssetNode* node, bool isWindowContext = false);
+        void RenderContextMenu(AssetNode* node);
         void RenderDeleteModal();
         void DeleteFileOrFolder();
         void RenderAddFileModal();
+        void HierarchyPanel();
+        void RenameFileOrFolder();
     private:
         std::filesystem::path m_RootDirectory;
         fg::Ref<fg::AssetManagerEditor> m_AssetManager;

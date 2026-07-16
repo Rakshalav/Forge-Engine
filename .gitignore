@@ -3,5 +3,8 @@
 *.vcxproj
 *.vcxproj.user
 *.vcxproj.filters
+*.slnLaunch.user
 
 /Binaries/
+
+*.exe

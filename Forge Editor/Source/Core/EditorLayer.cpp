@@ -151,6 +151,7 @@ namespace Editor
 
 		ImGui::Begin("Log");
 
+		ImGui::AlignTextToFramePadding();
 		ImGui::Text("Filter:");
 
 		ImGui::SameLine();

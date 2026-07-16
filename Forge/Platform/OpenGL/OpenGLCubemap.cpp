@@ -71,7 +71,7 @@ void main()
 {
     TexCoords = aPos;
     vec4 pos = u_Projection * mat4(mat3(u_View)) * vec4(aPos, 1.0);
-    gl_Position = pos.xyww; 
+    gl_Position = pos.xyzw; 
 }
 )";
 
