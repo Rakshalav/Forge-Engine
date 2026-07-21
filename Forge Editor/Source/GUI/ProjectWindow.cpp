@@ -70,8 +70,6 @@ namespace Editor
                 ImGui::TableSetColumnIndex(0);
                 ImGui::BeginChild("LeftTreeChild");
                 {
-                    /*RenderTreeView(m_AssetTree.GetRoot());
-                    RenderContextMenu(m_AssetTree.GetRoot(), true);*/
                     HierarchyPanel();
                 }
                 ImGui::EndChild();
@@ -98,181 +96,95 @@ namespace Editor
         RenderAddFileModal();
     }
 
-    void ContentBrowser::RenderTreeView(AssetNode* node)
-    {
-        //const auto& children = node->Children;
-
-        //for (const auto& child : children)
-        //{
-            /*if (!m_PathToRenameOnCreation.empty() && child->Path == m_PathToRenameOnCreation)
-            {
-                m_RenamingNode = child.get();
-                strncpy(m_RenameBuffer, child->Name.c_str(), sizeof(m_RenameBuffer));
-                m_PathToRenameOnCreation.clear();
-            }
-
-            if (m_RenamingNode == child.get())
-            {
-                ImGui::SetKeyboardFocusHere();
-                ImGui::AlignTextToFramePadding();
-
-                if (ImGui::InputText("##RenameBox", m_RenameBuffer, IM_ARRAYSIZE(m_RenameBuffer), ImGuiInputTextFlags_EnterReturnsTrue))
-                {
-                    if (strlen(m_RenameBuffer) > 0 && m_RenameBuffer != child->Name)
-                    {
-                        std::filesystem::path oldPath = child->Path;
-                        std::filesystem::path newPath = oldPath.parent_path() / m_RenameBuffer;
-
-                        try {
-                            std::filesystem::rename(oldPath, newPath);
-                        }
-                        catch (const std::filesystem::filesystem_error& e) {
-                            FG_ERROR("Failed to rename: {}", e.what());
-                        }
-                    }
-                    m_RenamingNode = nullptr;
-                }
-
-                if (ImGui::IsItemDeactivated() || (!ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left)))
-                    m_RenamingNode = nullptr;
-            }*/
-        //    else
-        //    {
-        //        if (child->isDirectory)
-        //        {
-        //            ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanFullWidth | ImGuiTreeNodeFlags_DrawLinesToNodes;
-
-        //            if (m_AssetTree.CurrentDirectory == child.get())
-        //                flags |= ImGuiTreeNodeFlags_Selected;
-
-
-        //            bool isNodeOpen = ImGui::TreeNodeEx((void*)(uintptr_t)child->Id, flags, "%s", child->Name.c_str());
-
-        //            if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
-        //            {
-        //                m_AssetTree.CurrentDirectory = child.get();
-        //                m_AssetTree.SelectedNode = child.get();
-        //            }
-
-        //            if ((m_AssetTree.SelectedNode == child.get()) && ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) && ImGui::IsKeyPressed(ImGuiKey_F2))
-        //            {
-        //                m_RenamingNode = child.get();
-        //                strncpy(m_RenameBuffer, child->Name.c_str(), sizeof(m_RenameBuffer));
-        //            }
-
-        //            if ((m_AssetTree.SelectedNode == child.get()) && ImGui::IsKeyPressed(ImGuiKey_Delete))
-        //            {
-        //                m_TargetDeletePath = m_AssetTree.SelectedNode->Path;
-
-        //                if (dontAskNextTime)
-        //                    DeleteFileOrFolder();
-        //                else
-        //                    showDeleteDialog = true;
-        //            }
-
-        //            RenderContextMenu(child.get());
-
-        //            if (isNodeOpen)
-        //            {
-        //                RenderTreeView(child.get());
-        //                ImGui::TreePop();
-        //            }
-        //        }
-        //        else
-        //        {
-        //            auto handle = child->Id;
-
-        //            bool isImported = (handle != 0);
-        //            if (!isImported)
-        //                ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5f, 0.5f, 0.5f, 1.0f));
-
-        //            bool isSelected = (m_AssetTree.SelectedNode == child.get());
-
-        //            ImGui::PushID((void*)(uintptr_t)child->Id);
-
-        //            if (ImGui::Selectable(child->Name.c_str(), isSelected, ImGuiSelectableFlags_SpanAllColumns))
-        //                m_AssetTree.SelectedNode = child.get();
-
-        //            if (isSelected && ImGui::IsKeyPressed(ImGuiKey_Delete))
-        //            {
-        //                m_TargetDeletePath = m_AssetTree.SelectedNode->Path;
-
-        //                if (dontAskNextTime)
-        //                    DeleteFileOrFolder();
-        //                else
-        //                    showDeleteDialog = true;
-        //            }
-
-        //            RenderContextMenu(child.get());
-
-        //            ImGui::PopID();
-
-        //            if (!isImported)
-        //                ImGui::PopStyleColor();
-        //        }
-        //    }
-        //}
-    }
-
     void ContentBrowser::HierarchyPanel()
     {
-        std::function<void(const AssetNode*)> drawTree;
-        drawTree = [&](const AssetNode* currentDir)
+        if (!m_AssetTree.GetRoot())
+            return;
+
+        auto selectNode = [this](AssetNode* node)
         {
-            for (const auto& child : currentDir->Children)
+            m_AssetTree.SelectedNode = node;
+            m_AssetTree.CurrentDirectory = node->isDirectory ? node : node->Parent;
+        };
+
+        std::function<void(AssetNode*)> drawTree = [&](AssetNode* parent)
+        {
+            for (const auto& child : parent->Children)
             {
                 if (!m_PathToRenameOnCreation.empty() && child->Path == m_PathToRenameOnCreation)
                 {
                     m_RenamingNode = child.get();
-                    strncpy(m_RenameBuffer, child->Name.c_str(), sizeof(m_RenameBuffer));
+                    strncpy_s(m_RenameBuffer, child->Name.c_str(), _TRUNCATE);
                     m_PathToRenameOnCreation.clear();
                 }
 
                 if (m_RenamingNode == child.get())
-                    RenameFileOrFolder();
-                else
                 {
-                    ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_SpanAvailWidth;
-                    if (!child->isDirectory)
-                        flags |= ImGuiTreeNodeFlags_Leaf;
-                    else
-                        flags |= ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DrawLinesNone;
+                    RenameFileOrFolder();
+                    continue;
+                }
 
-                    // isOpen = true ? it's a directory : it's a file
-                    bool isOpen = ImGui::TreeNodeEx((void*)(uintptr_t)child->Id, flags, "%s", child->Name.c_str());
+                ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_SpanAvailWidth;
+                if (m_AssetTree.SelectedNode == child.get())
+                    flags |= ImGuiTreeNodeFlags_Selected;
 
-                    RenderContextMenu(child.get());
+                if (child->isDirectory)
+                    flags |= ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DrawLinesNone;
+                else
+                    flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
 
-                    if (ImGui::IsItemClicked(ImGuiMouseButton_Left) || ImGui::IsItemClicked(ImGuiMouseButton_Right))
-                        m_AssetTree.CurrentDirectory = child.get();
+                const bool isOpen = ImGui::TreeNodeEx((void*)(uintptr_t)child->Id, flags, "%s", child->Name.c_str());
+                if (ImGui::IsItemClicked(ImGuiMouseButton_Left) || ImGui::IsItemClicked(ImGuiMouseButton_Right))
+                    selectNode(child.get());
 
-                    if (isOpen)
-                    {
-                        drawTree(child.get());
-                        ImGui::TreePop();
-                    }
+                RenderContextMenu(child.get());
+
+                if (child->isDirectory && isOpen)
+                {
+                    drawTree(child.get());
+                    ImGui::TreePop();
                 }
             }
         };
 
-        ImGuiTreeNodeFlags rootNodeFlags = ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_DrawLinesNone | ImGuiTreeNodeFlags_OpenOnDoubleClick;
-        bool rootOpen = ImGui::TreeNodeEx((void*)(uintptr_t)m_AssetTree.GetRoot()->Id, rootNodeFlags, "%s", m_AssetTree.GetRoot()->Name.c_str());
+        AssetNode* root = m_AssetTree.GetRoot();
+        ImGuiTreeNodeFlags rootNodeFlags = ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_DrawLinesNone | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow;
+        if (m_AssetTree.SelectedNode == root)
+            rootNodeFlags |= ImGuiTreeNodeFlags_Selected;
+        const bool rootOpen = ImGui::TreeNodeEx((void*)(uintptr_t)root->Id, rootNodeFlags, "%s", root->Name.c_str());
 
         if (ImGui::IsItemClicked(ImGuiMouseButton_Left) || ImGui::IsItemClicked(ImGuiMouseButton_Right))
-            m_AssetTree.CurrentDirectory = m_AssetTree.GetRoot();
+            selectNode(root);
+
+        RenderContextMenu(root);
       
         if (rootOpen)
         {
-            RenderContextMenu(m_AssetTree.GetRoot());
-            drawTree(m_AssetTree.GetRoot());
+            drawTree(root);
             ImGui::TreePop();
+        }
+
+        if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) && m_AssetTree.SelectedNode && m_AssetTree.SelectedNode != root)
+        {
+            if (ImGui::IsKeyPressed(ImGuiKey_F2))
+            {
+                m_RenamingNode = m_AssetTree.SelectedNode;
+                strncpy_s(m_RenameBuffer, m_RenamingNode->Name.c_str(), _TRUNCATE);
+            }
+            else if (ImGui::IsKeyPressed(ImGuiKey_Delete))
+            {
+                m_TargetDeletePath = m_AssetTree.SelectedNode->Path;
+                if (dontAskNextTime)
+                    DeleteFileOrFolder();
+                else
+                    showDeleteDialog = true;
+            }
         }
     }
 
     void ContentBrowser::RenameFileOrFolder()
     {
         ImGui::SetKeyboardFocusHere();
-        //ImGui::AlignTextToFramePadding();
 
         float textWidth = ImGui::CalcTextSize(m_RenameBuffer).x;
         float extraWidthPadding = 10.0f;
@@ -282,7 +194,8 @@ namespace Editor
         ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 0.0f);
         ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 0.0f);
 
-        if (ImGui::InputText("##RenameBox", m_RenameBuffer, IM_ARRAYSIZE(m_RenameBuffer), ImGuiInputTextFlags_EnterReturnsTrue))
+        const bool renameSubmitted = ImGui::InputText("##RenameBox", m_RenameBuffer, IM_ARRAYSIZE(m_RenameBuffer), ImGuiInputTextFlags_EnterReturnsTrue);
+        if (renameSubmitted)
         {
             if (strlen(m_RenameBuffer) > 0 && m_RenameBuffer != m_RenamingNode->Name)
             {
@@ -301,7 +214,7 @@ namespace Editor
 
         ImGui::PopStyleVar(3);
 
-        if (ImGui::IsItemDeactivated() || (!ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left)))
+        if (!renameSubmitted && (ImGui::IsItemDeactivated() || (!ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left))))
             m_RenamingNode = nullptr;
     }
 
@@ -372,29 +285,33 @@ namespace Editor
 
                     if (ImGui::MenuItem("Copy", s_ShortCuts[ShortCut_Copy]))
                     {
-                        if (!m_AssetTree.SelectedNodes.empty())
-                            m_AssetTree.SelectedNodes.clear();
-                        m_AssetTree.SelectedNodes.push_back(node);
+                        m_CopiedPaths = { node->Path };
                         FG_INFO("{} copied!", node->Name);
                     }
                 }
 
                 if (isCurrentDir)
                 {
-                    if (ImGui::MenuItem("Paste", s_ShortCuts[ShortCut_Paste], false, !m_AssetTree.SelectedNodes.empty()))
+                    if (ImGui::MenuItem("Paste", s_ShortCuts[ShortCut_Paste], false, !m_CopiedPaths.empty()))
                     {
-                        for (const auto& node : m_AssetTree.SelectedNodes)
+                        for (const auto& sourcePath : m_CopiedPaths)
                         {
-                            auto dirPath = fullPath / node->Name;
-                            if (!std::filesystem::exists(dirPath))
+                            const std::filesystem::path destinationPath = fullPath / sourcePath.filename();
+                            const std::filesystem::path relativeDestination = destinationPath.lexically_relative(sourcePath);
+                            const bool destinationIsInsideSource = !relativeDestination.empty() && *relativeDestination.begin() != "..";
+                            if (sourcePath == destinationPath || destinationIsInsideSource || std::filesystem::exists(destinationPath))
+                                continue;
+
+                            try
                             {
-                                if (node->isDirectory)
-                                {
-                                    if (std::filesystem::create_directory(dirPath))
-                                        std::filesystem::copy(fullPath, dirPath, std::filesystem::copy_options::recursive);
-                                }
+                                if (std::filesystem::is_directory(sourcePath))
+                                    std::filesystem::copy(sourcePath, destinationPath, std::filesystem::copy_options::recursive);
                                 else
-                                    std::filesystem::copy_file(fullPath, dirPath);
+                                    std::filesystem::copy_file(sourcePath, destinationPath);
+                            }
+                            catch (const std::filesystem::filesystem_error& e)
+                            {
+                                FG_ERROR("Failed to copy '{}' to '{}': {}", sourcePath.string(), destinationPath.string(), e.what());
                             }
                         }
                     }
@@ -415,7 +332,7 @@ namespace Editor
                     if (ImGui::MenuItem("Rename", s_ShortCuts[ShortCut_Rename]))
                     {
                         m_RenamingNode = node;
-                        strncpy(m_RenameBuffer, node->Name.c_str(), sizeof(m_RenameBuffer));
+                        strncpy_s(m_RenameBuffer, node->Name.c_str(), _TRUNCATE);
                     }
                 }
             };
@@ -438,9 +355,15 @@ namespace Editor
                             counter++;
                         }
 
-                        std::filesystem::create_directory(newFolderPath);
-
-                        m_PathToRenameOnCreation = std::filesystem::relative(newFolderPath, m_RootDirectory);
+                        try
+                        {
+                            if (std::filesystem::create_directory(newFolderPath))
+                                m_PathToRenameOnCreation = newFolderPath.lexically_normal();
+                        }
+                        catch (const std::filesystem::filesystem_error& e)
+                        {
+                            FG_ERROR("Failed to create folder '{}': {}", newFolderPath.string(), e.what());
+                        }
                     }
 
                     ImGui::EndMenu();
@@ -662,6 +585,7 @@ namespace Editor
 
     void AssetTree::BuildTreeFromDir(const std::filesystem::path& Rootpath)
     {
+        m_AssetCache.clear();
         m_Root = fg::CreateScope<AssetNode>();
         m_Root->Id = fg::UUID();
         m_Root->Name = Rootpath.filename().string();
@@ -681,23 +605,27 @@ namespace Editor
 
     AssetNode* AssetTree::FindNode(const std::filesystem::path& Path)
     {
+        if (!m_Root)
+            return nullptr;
+
+        const std::filesystem::path targetPath = Path.lexically_normal();
         std::function<AssetNode* (const std::filesystem::path& currentPath, AssetNode* current)> getNodebyPath;
 
         getNodebyPath = [&](const std::filesystem::path& currentPath, AssetNode* current) -> AssetNode*
             {
-                if (current->Path == Path)
+                if (current->Path.lexically_normal() == targetPath)
                     return current;
 
                 for (const auto& child : current->Children)
                 {
                     if (child->isDirectory)
                     {
-                        AssetNode* found = getNodebyPath(Path, child.get());
+                        AssetNode* found = getNodebyPath(targetPath, child.get());
                         if (found)
                             return found;
                     }
                     else
-                        if (child->Path == Path)
+                        if (child->Path.lexically_normal() == targetPath)
                             return child.get();
                 }
                 return nullptr;
@@ -711,11 +639,17 @@ namespace Editor
         {
         case fg::Event::FileChange::Add:
         {
-            std::filesystem::path path = std::filesystem::path(e.Directory) / std::filesystem::path(e.FileName);
+            const std::filesystem::path path = (std::filesystem::path(e.Directory) / std::filesystem::path(e.FileName)).lexically_normal();
+
+            // Recursive copy operations commonly emit an Add event for both the
+            // folder and every item inside it. The folder event already builds its
+            // descendants, so ignore the follow-up events rather than duplicating nodes.
+            if (FindNode(path))
+                return true;
 
             AssetNode* parentNode = FindNode(path.parent_path());
 
-            if (!parentNode)
+            if (!parentNode || !std::filesystem::exists(path))
                 return false;
 
             parentNode->Children.push_back(BuildNodeRecursively(path, parentNode));
@@ -723,7 +657,7 @@ namespace Editor
         }
         case fg::Event::FileChange::Delete:
         {
-            std::filesystem::path path = std::filesystem::path(e.Directory) / std::filesystem::path(e.FileName);
+            const std::filesystem::path path = (std::filesystem::path(e.Directory) / std::filesystem::path(e.FileName)).lexically_normal();
 
             AssetNode* nodeToDelete = FindNode(path);
             if (!nodeToDelete)
@@ -761,15 +695,24 @@ namespace Editor
             {
                 parentChildren.erase(it);
 
-                if (CurrentDirectory == nodeToDelete)
+                auto belongsToDeletedSubtree = [nodeToDelete](AssetNode* node) {
+                    for (AssetNode* current = node; current; current = current->Parent)
+                        if (current == nodeToDelete)
+                            return true;
+                    return false;
+                };
+
+                if (belongsToDeletedSubtree(CurrentDirectory))
                     CurrentDirectory = parentNode;
+                if (belongsToDeletedSubtree(SelectedNode))
+                    SelectedNode = nullptr;
                 return true;
             }
             return false;
         }
         case fg::Event::FileChange::Modified:
         {
-
+            return true;
         }
         case fg::Event::FileChange::Moved:
         {
@@ -843,5 +786,7 @@ namespace Editor
             return true;
         }
         }
+
+        return false;
     }
 }

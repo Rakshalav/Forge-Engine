@@ -32,7 +32,7 @@ namespace Editor
         }
         void AddChild(fg::Scope<AssetNode>& child, const fg::UUID& ParentID);
     public:
-        std::vector<AssetNode*> SelectedNodes;
+        AssetNode* SelectedNode = nullptr;
         AssetNode* CurrentDirectory = nullptr;
     private:
         AssetNode* FindNode(const std::filesystem::path& Path);
@@ -50,7 +50,6 @@ namespace Editor
         void OnUpdate(float dt);
         void OnRender();
     private:
-        void RenderTreeView(AssetNode* node);
         void RenderGridView(AssetNode* currentDirectory);
         void RenderContextMenu(AssetNode* node);
         void RenderDeleteModal();
@@ -68,5 +67,6 @@ namespace Editor
         AssetNode* m_RenamingNode = nullptr;
         char m_RenameBuffer[256] = "";
         std::filesystem::path m_PathToRenameOnCreation;
+        std::vector<std::filesystem::path> m_CopiedPaths;
     };
 }
