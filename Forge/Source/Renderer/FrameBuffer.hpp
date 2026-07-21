@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/Base.hpp"
+#include "Core/Memory.hpp"
 #include "Maths/Math.hpp"
 #include <vector>
 
@@ -50,7 +50,7 @@ namespace fg
 		bool SwapChainTarget = false;
 	};
 
-	class Framebuffer
+	class Framebuffer : public RefCounted
 	{
 	public:
 		virtual ~Framebuffer() = default;

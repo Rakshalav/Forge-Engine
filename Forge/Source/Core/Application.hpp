@@ -3,8 +3,7 @@
 #include "Window.hpp"
 #include "Layer.hpp"
 #include "LayerStack.hpp"
-#include "ImGui/ImGuiLayer.hpp"
-#include "Base.hpp"
+#include "Overlay/Overlay.hpp"
 
 namespace fg
 {
@@ -71,7 +70,7 @@ namespace fg
 
 		Vec2f GetFrameBufferSize() const;
 
-		inline Ref<Window> GetWindow() const { return m_Window; }
+		inline Ref<Window> GetWindow() { return m_Window; }
 
 		static Application& Get();
 		float GetTime();
@@ -82,7 +81,7 @@ namespace fg
 		bool m_Running = false;
 
 		LayerStack m_LayerStack;
-		ImGuiLayer* m_OverlayLayer = nullptr;
+		OverlayLayer* m_OverlayLayer = nullptr;
 
 		struct LayerCommand
 		{

@@ -4,6 +4,12 @@ project "Editor"
     cppdialect "C++23"
     staticruntime "off"
 
+    flags { "multiprocessorcompile" }
+
+    defines { "YAML_CPP_STATIC_DEFINE", "_CRT_SECURE_NO_WARNINGS" }
+
+    linkoptions { "/ignore:4099" }
+
     targetdir ("../Binaries/" .. OutputDir .. "/%{prj.name}")
     objdir ("../Binaries/Intermediates/" .. OutputDir .. "/%{prj.name}")
 
@@ -56,13 +62,13 @@ project "Editor"
         }
 
     filter "configurations:Debug"
-       links { "assimp-vc143-mtd" } 
+       links { "assimp-vc143-mtd", "yaml-cppd", "efsw-static-debug.lib" } 
 
     filter "configurations:Release"
-       links { "assimp-vc143-mt" }
+       links { "assimp-vc143-mt", "yaml-cpp", "efsw-static-release.lib" }
     
     filter "configurations:Dist"
-       links { "assimp-vc143-mt" } 
+       links { "assimp-vc143-mt", "yaml-cpp", "efsw-static-release.lib" } 
 
     filter {}
 

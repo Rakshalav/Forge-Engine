@@ -13,6 +13,8 @@ namespace fg
 
 		virtual void OnUpdate(float ts) {}
 		virtual void OnRender() {}
+		
+		[[maybe_unused]]
 		virtual void OnImGuiRender() {}
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}

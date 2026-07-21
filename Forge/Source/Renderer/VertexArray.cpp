@@ -1,7 +1,5 @@
 #include "VertexArray.hpp"
 #include "RendererAPI.hpp"
-#include "../Core/Base.hpp"
-
 #include "../Platform/OpenGL/OpenGLVertexArray.hpp"
 
 namespace fg

@@ -1,12 +1,12 @@
 #pragma once
 
 #include <vector>
-#include "../Core/Base.hpp"
+#include "Core/Memory.hpp"
 #include "Buffer.hpp"
 
 namespace fg 
 {
-	class VertexArray
+	class VertexArray : public RefCounted
 	{
 	public:
 		~VertexArray() = default;

@@ -1,12 +1,12 @@
 #pragma once
 
 #include <string>
-#include "../Core/Base.hpp"
-#include "../Source/Maths/Math.hpp"
+#include "Core/Memory.hpp"
+#include "Maths/Math.hpp"
 
 namespace fg
 {
-	class Shader
+	class Shader : public RefCounted
 	{
 	public:
 		virtual ~Shader() = default;

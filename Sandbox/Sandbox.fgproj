@@ -1,0 +1,4 @@
+Project:
+  Name: Sandbox
+  StartScene: Assets/Scene/TestScene.forge
+  AssetDirectory: Assets/

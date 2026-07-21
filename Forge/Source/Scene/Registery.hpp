@@ -4,7 +4,6 @@
 #include <vector>
 #include <unordered_map>
 #include <typeindex>
-#include "../Core/Base.hpp"
 
 namespace fg
 {

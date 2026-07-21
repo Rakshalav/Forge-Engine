@@ -4,10 +4,11 @@
 #include <ImGui/imgui.h>
 #include "Rendering/EditorCamera.hpp"
 #include "Rendering/EditorCameraController.hpp"
+#include "GUI/ProjectWindow.hpp"
 
 namespace Editor
 {
-	class EditorLayer : public fg::Layer
+	class EditorLayer final : public fg::Layer
 	{
 	public:
 		EditorLayer();
@@ -32,9 +33,9 @@ namespace Editor
 
 		bool isViewportFocused;
 
-		fg::Scope<fg::Scene> m_Scene;
-		fg::Entity m_Guitar;
-		
+		fg::Scope<fg::Scene> m_Scene;		
 		fg::Ref<fg::Framebuffer> m_FrameBuffer;
+
+		fg::Scope<ContentBrowser> m_ProjectWindow;
 	};
 }

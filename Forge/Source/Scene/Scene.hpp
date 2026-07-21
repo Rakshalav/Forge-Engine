@@ -14,8 +14,6 @@ namespace fg
 	public:
 		Scene() = default;
 
-		void CreateSkybox(const std::string& path);
-
 		Entity CreateEntity();
 		void OnUpdate(float ts);
 		void OnRender(Camera& camera);
@@ -24,7 +22,7 @@ namespace fg
 		void RenderSystem();
 
 	private:
-		Ref<Cubemap> m_Skybox;
+		Ref<EnvironmentMap> m_Skybox;
 
 		Registery m_Registery;
 		friend class Entity;

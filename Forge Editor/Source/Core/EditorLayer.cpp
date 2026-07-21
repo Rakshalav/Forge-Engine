@@ -1,5 +1,6 @@
 #include "EditorLayer.hpp"
 #include <ImGui/imgui_internal.h>
+#include <Project/Project.hpp>
 
 namespace Editor
 {
@@ -10,15 +11,18 @@ namespace Editor
 
 	void EditorLayer::OnAttach()
 	{
-		auto shader = fg::Shader::Create(FG_ROOT_DIR("Forge/Source/Renderer/Shaders/Model.vert"), FG_ROOT_DIR("Forge/Source/Renderer/Shaders/Model.frag"));
-		auto model = fg::CreateRef<fg::Model>(FG_ROOT_DIR("Sandbox/Textures/Guitar/Guitar.obj"));
+		//auto shader = fg::Renderer::GetShaderLibrary().Load("Model", FG_ROOT_DIR("Forge/Source/Renderer/Shaders/Model.vert"), FG_ROOT_DIR("Forge/Source/Renderer/Shaders/Model.frag"));
+		//auto model = fg::CreateRef<fg::Model>(FG_ROOT_DIR("Sandbox/Textures/Guitar/Guitar.obj"));
 
 		m_Scene = fg::CreateScope<fg::Scene>();
-		m_Scene->CreateSkybox(FG_ROOT_DIR("Forge Editor/Source/Assets/Textures/Skybox/skybox.hdr"));
+		
+		//m_Guitar = m_Scene->CreateEntity();
+		//m_Guitar.AddComponent<fg::TransformComponent>();
+		//m_Guitar.AddComponent<fg::MeshComponent>(model, shader);
 
-		m_Guitar = m_Scene->CreateEntity();
-		m_Guitar.AddComponent<fg::TransformComponent>();
-		m_Guitar.AddComponent<fg::MeshComponent>(model, shader);
+		auto project = fg::Project::Load("C:/Dev/Sandbox/Sandbox.fgproj");
+
+		m_ProjectWindow = fg::CreateScope<ContentBrowser>();
 
 		fg::FramebufferSpecification spec;
 		spec.Width = 1;
@@ -31,6 +35,9 @@ namespace Editor
 
 	void EditorLayer::OnEvent(fg::Event& event)
 	{
+		if (m_ProjectWindow)
+			m_ProjectWindow->OnEvent(event);
+
 		if (!isViewportFocused)
 			m_CamController.OnEvent(event);
 	}
@@ -47,8 +54,8 @@ namespace Editor
 		if (!isViewportFocused)
 			m_CamController.OnUpdate(ts, m_ViewportBounds);
 
-		m_Guitar.GetComponent<fg::TransformComponent>().Rotation.y += ts * 5.0f;
-		m_Guitar.GetComponent<fg::TransformComponent>().Translation.x += cos(fg::Application::Get().GetTime()) * 5.0f * ts;
+		//m_Guitar.GetComponent<fg::TransformComponent>().Rotation.y += ts * 5.0f;
+		//m_Guitar.GetComponent<fg::TransformComponent>().Translation.x += cos(fg::Application::Get().GetTime()) * 5.0f * ts;
 	}
 
 	void EditorLayer::OnRender()
@@ -100,12 +107,18 @@ namespace Editor
 		ImGui::Text("Scene Hierarchy");
 		ImGui::End();
 
+		static bool show_demo_window = true;
+		if (show_demo_window)
+			ImGui::ShowDemoWindow(&show_demo_window);
+
+		m_ProjectWindow->OnRender();
+
 		Console();
 	}
 
 	void EditorLayer::OnDetach()
 	{
-
+		
 	}
 
 	void EditorLayer::Viewport()
@@ -133,27 +146,58 @@ namespace Editor
 
 	void EditorLayer::Console()
 	{
-		ImGui::Begin("Console");
-		if (ImGui::Button("Clear")) fg::Log::GetClientSink()->Clear();
+		static ImGuiTextFilter logFilter;
+		auto logs = fg::Log::GetClientSink()->GetMessages();
+
+		ImGui::Begin("Log");
+
+		ImGui::AlignTextToFramePadding();
+		ImGui::Text("Filter:");
+
+		ImGui::SameLine();
+
+		ImGui::SetNextItemWidth(360.0f);
+		logFilter.Draw("##Filter");
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Clear"))
+			fg::Log::GetClientSink()->Clear();
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Copy"))
+		{
+			std::string clipboardBuffer;
+
+			for (const auto& log : logs)
+				if (logFilter.PassFilter(log.Message.c_str()))
+					clipboardBuffer += log.Message;
+				
+			if (!clipboardBuffer.empty())
+				fg::Utility::CopyToClipBoard(clipboardBuffer);
+		}
+
 		ImGui::Separator();
 
 		ImGui::BeginChild("LogRegion");
-		auto& logs = fg::Log::GetClientSink()->GetMessages();
 
 		for (const auto& log : logs)
 		{
-			ImVec4 color = { 1.0f, 1.0f, 1.0f, 1.0f }; 
+			if (!logFilter.PassFilter(log.Message.c_str()))
+				continue;
+
+			ImVec4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 			switch (log.Level)
 			{
-			case spdlog::level::warn:     color = { 1.0f, 0.8f, 0.0f, 1.0f }; break; 
-			case spdlog::level::err:      color = { 1.0f, 0.2f, 0.2f, 1.0f }; break; 
-			case spdlog::level::critical: color = { 1.0f, 0.0f, 1.0f, 1.0f }; break; 
+			case spdlog::level::warn:     color = { 1.0f, 0.8f, 0.2f, 1.0f }; break; 
+			case spdlog::level::err:      color = { 1.0f, 0.2f, 0.2f, 1.0f }; break;
+			case spdlog::level::critical: color = { 1.0f, 0.0f, 1.0f, 1.0f }; break;
 			case spdlog::level::info:     color = { 0.4f, 0.9f, 0.4f, 1.0f }; break;
-			case spdlog::level::trace:    color = { 0.7f, 0.7f, 0.7f, 1.0f }; break; 
 			}
 
-			ImGui::TextColored(color, log.Message.c_str());
+			ImGui::TextColored(color, "%s", log.Message.c_str());
 		}
 
 		if (ImGui::GetScrollY() >= ImGui::GetScrollMaxY())

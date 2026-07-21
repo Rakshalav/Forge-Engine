@@ -4,6 +4,12 @@ project "Sandbox"
     cppdialect "C++23"
     staticruntime "off"
 
+    flags { "multiprocessorcompile" }
+
+    defines { "YAML_CPP_STATIC_DEFINE" }
+
+    linkoptions { "/ignore:4099" }
+
     targetdir ("../Binaries/" .. OutputDir .. "/%{prj.name}")
     objdir ("../Binaries/Intermediates/" .. OutputDir .. "/%{prj.name}")
 
@@ -55,14 +61,14 @@ project "Sandbox"
             "shell32" 
         }
 
-    filter "configurations:Debug"
-       links { "assimp-vc143-mtd" } 
+   filter "configurations:Debug"
+       links { "assimp-vc143-mtd", "yaml-cppd" } 
 
-    filter "configurations:Release"
-       links { "assimp-vc143-mt" }
+   filter "configurations:Release"
+       links { "assimp-vc143-mt", "yaml-cpp" }
     
-    filter "configurations:Dist"
-       links { "assimp-vc143-mt" } 
+   filter "configurations:Dist"
+       links { "assimp-vc143-mt", "yaml-cpp" } 
 
     filter {}
 

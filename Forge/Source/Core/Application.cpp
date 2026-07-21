@@ -40,7 +40,7 @@ namespace fg
 		m_Window->Create();
 
 		Renderer::Init();
-		m_OverlayLayer = new ImGuiLayer(*m_Window);
+		m_OverlayLayer = new OverlayLayer(m_Window);
 		m_LayerStack.PushLayer(m_OverlayLayer);
 	}
 

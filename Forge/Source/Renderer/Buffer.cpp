@@ -3,7 +3,6 @@
 
 #include "../Platform/OpenGL/OpenGLBuffer.hpp"
 
-
 namespace fg
 {
 	uint8_t BufferElement::GetSizeOfType(ElementType type)

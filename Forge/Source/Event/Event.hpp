@@ -5,14 +5,15 @@
 #include <variant>
 #include <functional>
 #include <string>
+#include <type_traits>
+#include <format>
+#include "Debug/Log.hpp"
 
 namespace fg
 {
-	class Window;
-
-	enum EventCategory
+	enum EventCategory : uint8_t
 	{
-		None = 0,
+		EventCategory_None = 0,
 		EventCategory_Application	= 1 << 0,
 		EventCategory_Input			= 1 << 1,
 		EventCategory_Keyboard		= 1 << 2,
@@ -20,23 +21,23 @@ namespace fg
 		EventCategory_MouseButton	= 1 << 4
 	};
 
+	enum class EventType : uint8_t
+	{
+		WindowClose,
+		WindowResize,
+		KeyPress,
+		KeyRelease,
+		MouseButtonPress,
+		MouseButtonRelease,
+		MouseMove,
+		MouseScroll,
+		FileChange,
+
+		Count
+	};
+
 	class Event
 	{
-	public:
-		enum class Type
-		{
-			WindowClose,
-			WindowResize,
-			KeyPress,
-			KeyRelease,
-			MouseButtonPress,
-			MouseButtonRelease,
-			MouseMove,
-			MouseScroll,
-
-			Count
-		};
-
 	public:
 		//--- KeyBoard ---
 		struct KeyPress
@@ -82,15 +83,30 @@ namespace fg
 			Vec2u Size;
 		};
 
+		//--- FileChange ---
+		struct FileChange
+		{
+			std::string Directory;
+			std::string FileName;
+			std::string OldFilename;
+			enum Actions : uint8_t { Add = 1, Delete = 2, Modified = 3, Moved = 4 } Action;
+		};
+				
 	public:
 		template<typename T>
 		inline T& GetData() { return std::get<T>(m_Data); }
 
 		std::string ToString() const;
 
+		template<EventType T>
+		static void Print(fg::Event& event)
+		{
+			if (event.Type == T)
+				FG_TRACE("{}", event.ToString());
+		}
+
 		inline bool IsInCategory(EventCategory category) const { return (CategoryFlags & (int)category) != 0; }
 
-	private:
 		static Event KeyPressCallback(int code, int scancode, int mods, bool isRepeated);
 		static Event KeyReleaseCallback(int code, int scancode);
 
@@ -102,23 +118,24 @@ namespace fg
 		static Event WindowResizeCallback(uint32_t x, uint32_t y);
 		static Event WindowCloseCallback();
 
-		friend class Window;
+		static Event FileChangeCallback(int Action, const std::string& dir, const std::string& fileName, const std::string& oldFileName);
 
 	public:
-		Type Type;
+		EventType Type;
 		bool Handled = false;
 		int CategoryFlags;
 
 	private:
 		std::variant<
+			FileChange,
 			KeyPress,
 			KeyRelease,
 			MouseMove,
 			MouseScroll,
+			WindowResize,
 			MouseButtonPress,
 			MouseButtonRelease,
-			WindowClose,
-			WindowResize> m_Data;
+			WindowClose> m_Data;
 
 		friend class EventDispatcher;
 	};

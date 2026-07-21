@@ -7,24 +7,18 @@
 
 namespace fg
 {
-	class OpenGLCubemap final : public Cubemap
+	class OpenGLEnvironmentMap final : public EnvironmentMap
 	{
 	public:
-		OpenGLCubemap(const std::string& path);
+		OpenGLEnvironmentMap(Ref<Texture2D> texture);
 		void Draw(Camera& camera) override;
 
 	private:
-		void LoadFile(const char* path);
-		void CreateCubemap();
-		void ConvertEquirectangularImage();
+		void CreateCubemap(uint32_t width);
+		void ConvertEquirectangularImage(Ref<Texture2D> texture, uint32_t width);
 		
 	private:
 		uint32_t m_RendererID;
 		Ref<VertexArray> m_VertexArray;
-		Ref<Shader> m_CubemapShader;
-		Ref<Shader> m_ConversionShader;
-
-		uint32_t m_TextureID;
-		uint32_t m_CubemapWidth;
 	};
 }

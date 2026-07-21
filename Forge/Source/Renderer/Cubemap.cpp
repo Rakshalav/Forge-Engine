@@ -4,12 +4,12 @@
 
 namespace fg
 {
-	Ref<Cubemap> Cubemap::Create(const std::string& path)
+	Ref<EnvironmentMap> EnvironmentMap::Create(Ref<Texture2D> texture)
 	{
 		switch (RendererAPI::GetAPI())
 		{
 		case RendererAPI::None: return nullptr;
-		case RendererAPI::OpenGL: return CreateRef<OpenGLCubemap>(path);
+		case RendererAPI::OpenGL: return CreateRef<OpenGLEnvironmentMap>(texture);
 		}
 	}
 }

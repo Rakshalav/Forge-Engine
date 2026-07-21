@@ -4,7 +4,7 @@
 #include "Source/Core/Window.hpp"
 #include "Source/Core/Layer.hpp"
 #include "Source/Core/Application.hpp"
-#include "Source/Core/FileSystem.hpp"
+#include "Source/Core/Utility.hpp"
 
 // Engine Debugger
 #include "Source/Debug/Log.hpp"
@@ -14,7 +14,7 @@
 #include "Source/Event/Event.hpp"
 
 // Engine Overlay
-#include "Source/ImGui/ImGuiLayer.hpp"
+#include "Source/Overlay/Overlay.hpp"
 
 // Engine Maths
 #include "Source/Maths/Math.hpp"
@@ -33,7 +33,9 @@
 
 // Engine Scene
 #include "Source/Scene/Mesh.hpp"
-#include "Source/Scene/Model.hpp"
 #include "Source//Scene/Components.hpp"
 #include "Source/Scene/Entity.hpp"
 #include "Source/Scene/Scene.hpp"
+
+// Engine Assets
+#include "Source/AssetManager/Assetmanager.hpp"
