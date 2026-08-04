@@ -1,0 +1,75 @@
+#include <Renderer/Renderer.hpp>
+#include <Debug/Log.hpp>
+#include <thread>
+
+namespace fg
+{
+	static Renderer* s_Instance = nullptr;
+
+	Renderer::Renderer()
+	{
+		s_Instance = this;
+		RenderCommand::Init();
+	}
+
+	Renderer& Renderer::GetInstance()
+	{
+		return *s_Instance;
+	}
+
+	void Renderer::Init()
+	{
+		static Renderer instance;
+
+		if (!s_RenderTaskManager)
+		{
+			uint32_t workerCount = std::thread::hardware_concurrency();
+			workerCount = workerCount > 1 ? workerCount - 1 : 1;
+			s_RenderTaskManager = new TaskManager(workerCount);
+		}
+	}
+
+	void Renderer::BeginScene(Camera& camera)
+	{
+		s_SceneData->ViewProjectionMatrix = camera.GetViewProjectionMatrix();
+	}
+
+	void Renderer::Submit(const Ref<VertexArray>& vertexarray)
+	{
+		auto shader = s_ShaderLibrary->GetShader("Model");
+		if (!shader)
+			return;
+		shader->Bind();
+		shader->SetMat4("u_ViewProjection", s_SceneData->ViewProjectionMatrix);
+		RenderCommand::DrawIndexed(vertexarray);
+	}
+
+	void Renderer::SubmitRenderTask(Task* task)
+	{
+		if (!s_RenderTaskManager)
+			return;
+
+		s_RenderTaskManager->Submit(task);
+	}
+
+	void Renderer::WaitForRenderTasks()
+	{
+		if (!s_RenderTaskManager)
+			return;
+
+		s_RenderTaskManager->WaitIdle();
+	}
+
+	void Renderer::OnWindowResize(const Vec2u& lowerLeft, const Vec2u& size)
+	{
+		RenderCommand::SetViewPort(lowerLeft, size);
+	}
+
+	void Renderer::ShutDown()
+	{
+		s_Instance = nullptr;
+		delete s_SceneData;
+		delete s_ShaderLibrary;
+		s_SceneData = nullptr;
+	}
+}

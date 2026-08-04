@@ -1,0 +1,12 @@
+#pragma once
+
+#include "Asset.hpp"
+#include "AssetManagerBase.hpp"
+
+namespace fg
+{
+	struct AssetImporter
+	{
+		static Ref<Asset> ImportAsset(const AssetHandle& handle, const AssetMetaData& metadata);
+	};
+}

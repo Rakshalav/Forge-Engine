@@ -5,6 +5,4 @@
 *.vcxproj.filters
 *.slnLaunch.user
 
-/Binaries/
-
-*.exe
+/bin
