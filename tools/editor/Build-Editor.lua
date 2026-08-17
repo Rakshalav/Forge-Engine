@@ -2,14 +2,16 @@ project "Editor"
    kind "ConsoleApp"
    language "C++"
    cppdialect "C++23"
-   staticruntime "off"
+   staticruntime "on"
 
-   -- File will be built as "Forge Editor.exe"
    targetname "Forge Editor"
 
    flags { "multiprocessorcompile" }
 
-   defines { "YAML_CPP_STATIC_DEFINE", "_CRT_SECURE_NO_WARNINGS" }
+   defines { 
+      "YAML_CPP_STATIC_DEFINE", 
+      "_CRT_SECURE_NO_WARNINGS" 
+   }
    linkoptions { "/ignore:4099" }
 
    targetdir ("../../bin/" .. OutputDir .. "/%{prj.name}")
@@ -42,63 +44,53 @@ project "Editor"
       "shell32" 
    }
 
-   -- vcpkg Libraries (Debug)
    filter "configurations:Debug"
       libdirs { 
          vcpkg_installed .. "/debug/lib",
          "../../bin/" .. OutputDir .. "/Engine"
       }
       links { 
-         "glfw3dll", 
-         "glad", 
-         "spdlogd", 
+         "assimp-vc143-mtd",
+         "efsw",
+         "fmt-c",
          "fmtd",
-         "efsw", 
-         "yaml-cppd", 
-         "assimp-vc143-mtd" 
-      }
-      postbuildcommands {
-         "{COPY} " .. vcpkg_installed .. "/debug/bin/assimp-vc143-mtd.dll \"%{cfg.targetdir}\"",
-         "{COPY} " .. vcpkg_installed .. "/debug/bin/efsw.dll \"%{cfg.targetdir}\"",
-         "{COPY} " .. vcpkg_installed .. "/debug/bin/fmtd.dll \"%{cfg.targetdir}\"",
-         "{COPY} " .. vcpkg_installed .. "/debug/bin/glfw3.dll \"%{cfg.targetdir}\"",
-         "{COPY} " .. vcpkg_installed .. "/debug/bin/kubazip.dll \"%{cfg.targetdir}\"",
-         "{COPY} " .. vcpkg_installed .. "/debug/bin/minizipd.dll \"%{cfg.targetdir}\"",
-         "{COPY} " .. vcpkg_installed .. "/debug/bin/poly2tri.dll \"%{cfg.targetdir}\"",
-         "{COPY} " .. vcpkg_installed .. "/debug/bin/pugixml.dll \"%{cfg.targetdir}\"",
-         "{COPY} " .. vcpkg_installed .. "/debug/bin/spdlogd.dll \"%{cfg.targetdir}\"",
-         "{COPY} " .. vcpkg_installed .. "/debug/bin/yaml-cppd.dll \"%{cfg.targetdir}\"",
-         "{COPY} " .. vcpkg_installed .. "/debug/bin/zd.dll \"%{cfg.targetdir}\""
+         "glad",
+         "glfw3",
+         "glm",
+         "kubazip",
+         "minizipsd",
+         "poly2tri",
+         "polyclipping",
+         "pugixml",
+         "spdlogd",
+         "yaml-cppd",
+         "zsd"
       }
 
-   -- vcpkg Libraries (Release & Dist)
    filter { "configurations:Release", "configurations:Dist" }
       libdirs { 
          vcpkg_installed .. "/lib",
          "../../bin/" .. OutputDir .. "/Engine"
       }
       links { 
-         "glfw3dll", 
-         "glad", 
-         "spdlog", 
-         "fmt",
+         "assimp-vc143-mt",
          "efsw",
-         "yaml-cpp", 
-         "assimp-vc143-mt" 
+         "fmt-c",
+         "fmt",
+         "glad",
+         "glfw3",
+         "glm",
+         "kubazip",
+         "minizips",
+         "poly2tri",
+         "polyclipping",
+         "pugixml",
+         "spdlog",
+         "yaml-cpp",
+         "zs"
       }
-      postbuildcommands {
-         "{COPY} " .. vcpkg_installed .. "/bin/assimp-vc143-mt.dll \"%{cfg.targetdir}\"",
-         "{COPY} " .. vcpkg_installed .. "/bin/efsw.dll \"%{cfg.targetdir}\"",
-         "{COPY} " .. vcpkg_installed .. "/bin/fmt.dll \"%{cfg.targetdir}\"",
-         "{COPY} " .. vcpkg_installed .. "/bin/glfw3.dll \"%{cfg.targetdir}\"",
-         "{COPY} " .. vcpkg_installed .. "/bin/kubazip.dll \"%{cfg.targetdir}\"",
-         "{COPY} " .. vcpkg_installed .. "/bin/minizip.dll \"%{cfg.targetdir}\"",
-         "{COPY} " .. vcpkg_installed .. "/bin/poly2tri.dll \"%{cfg.targetdir}\"",
-         "{COPY} " .. vcpkg_installed .. "/bin/pugixml.dll \"%{cfg.targetdir}\"",
-         "{COPY} " .. vcpkg_installed .. "/bin/spdlog.dll \"%{cfg.targetdir}\"",
-         "{COPY} " .. vcpkg_installed .. "/bin/yaml-cpp.dll \"%{cfg.targetdir}\"",
-         "{COPY} " .. vcpkg_installed .. "/bin/z.dll \"%{cfg.targetdir}\""
-      }
+
+   filter {}
 
    filter "system:windows"
       systemversion "latest"

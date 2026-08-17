@@ -2,14 +2,16 @@ project "Engine"
    kind "StaticLib"
    language "C++"
    cppdialect "C++23"
-   staticruntime "off"
+   staticruntime "on"
 
-   -- File will be built as Forge.lib
    targetname "Forge"
 
    flags { "multiprocessorcompile" }
 
-   defines { "YAML_CPP_STATIC_DEFINE", "_CRT_SECURE_NO_WARNINGS" }
+   defines { 
+      "YAML_CPP_STATIC_DEFINE", 
+      "_CRT_SECURE_NO_WARNINGS" 
+   }
    linkoptions { "/ignore:4099" }
 
    targetdir ("../bin/" .. OutputDir .. "/%{prj.name}")
@@ -27,7 +29,6 @@ project "Engine"
       "src/**.hpp",
       "src/**.cpp",
 
-      -- ImGui & stb_image compiled directly into Engine
       "dep/imgui/*.h",
       "dep/imgui/*.hpp",
       "dep/imgui/*.cpp",
